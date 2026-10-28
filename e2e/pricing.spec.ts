@@ -125,16 +125,50 @@ test('CTAs point at app sign-up with the right parameters', async ({ page }) => 
   await pick(page, 'currency', 'EUR');
   for (const id of ['developer', 'team', 'business']) await check(`[data-cta=${id}]`, id, 'year', 'eur');
   await expect(page.locator('[data-cta=enterprise]')).toHaveAttribute('href', 'mailto:hello@duskora.ai');
-  for (const sel of ['.hero a.btn-primary', '.closer a.btn']) {
-    await expect(page.locator(sel)).toHaveText('Start free trial');
-    await expect(page.locator(sel)).toHaveAttribute('href', 'https://dev.factory.duskora.ai/signup');
+  const signups = page.locator('a[data-signup]');
+  await expect(signups).toHaveCount(2);
+  await expect(page.locator('.hero a[data-signup]')).toHaveCount(1);
+  await expect(page.locator('.closer a[data-signup]')).toHaveCount(1);
+  for (const href of await signups.evaluateAll((as) => as.map((a) => a.getAttribute('href')!))) {
+    expect(href).toBe('https://dev.factory.duskora.ai/signup');
+    expect(new URL(href).search).toBe('');
   }
+  await expect(signups).toHaveText(['Start free trial', 'Start free trial']);
   await expect(page.locator('.hero a.btn-ghost')).toHaveAttribute('href', '#pricing');
   for (const href of await page.locator('a[href^="mailto:"]').evaluateAll((as) => as.map((a) => a.getAttribute('href')!))) {
     expect(href.toLowerCase()).not.toContain('early');
   }
   await expect(page.locator('body')).not.toContainText(/request early access/i);
 });
+
+for (const [name, width, height] of [['desktop', 1280, 900], ['phone', 375, 800]] as const) {
+  test(`no-card copy is visible next to every free-trial CTA at ${name} width`, async ({ browser }) => {
+    const ctx = await browser.newContext({ viewport: { width, height } });
+    const page = await ctx.newPage();
+    await page.goto(`${base}/`);
+    await expect(page.locator('.hero .cta-note')).toBeVisible();
+    await expect(page.locator('.hero .cta-note')).toHaveText('7 days free · No card needed');
+    await expect(page.locator('.closer .cta-note')).toBeVisible();
+    await expect(page.locator('.closer .cta-note')).toHaveText('7 days free · No card needed');
+    await expect(page.locator('.trial-note')).toContainText('No card needed');
+    for (const id of ['developer', 'team', 'business']) {
+      await expect(page.locator(`[data-cta=${id}]`)).toBeVisible();
+      await expect(page.locator(`[data-plan=${id}] .plan-trial`)).toBeVisible();
+      await expect(page.locator(`[data-plan=${id}] .plan-trial`)).toContainText('7-day free trial, then');
+      await expect(page.locator(`[data-plan=${id}] .plan-trial`)).toContainText('No card needed');
+    }
+    await expect(page.locator('[data-cta=team]')).toHaveText('Start with Team');
+    await expect(page.locator('[data-plan=team] .plan-trial')).toContainText('then $349/mo');
+    await pick(page, 'interval', 'Annual');
+    await pick(page, 'currency', 'GBP');
+    await expect(page.locator('[data-plan=team] .plan-trial')).toContainText('then £2,790/yr');
+    await expect(page.locator('[data-plan=enterprise] .plan-trial')).toHaveText('');
+    await expect(page.locator('[data-cta=enterprise]')).toHaveText('Contact us');
+    const m = await page.evaluate(() => ({ sw: document.documentElement.scrollWidth, cw: document.documentElement.clientWidth }));
+    expect(m.sw).toBeLessThanOrEqual(m.cw);
+    await ctx.close();
+  });
+}
 
 test('pricing cards stack on mobile without horizontal scroll', async ({ browser }) => {
   const ctx = await browser.newContext({ viewport: { width: 375, height: 800 } });
