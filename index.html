@@ -111,13 +111,14 @@
             <label><input type="radio" name="currency" value="eur" /><span>EUR</span></label>
           </fieldset>
         </div>
+        <p class="trial-note"><strong>Free for 7 days, on every plan.</strong> The trial includes 10 tickets, 1 agent, 1 repo, 1 project and 2 chat hours.</p>
         <div class="plans" id="plans"></div>
         <noscript><p class="section-lede">Enable JavaScript to see plan prices, or <a href="mailto:hello@duskora.ai">contact us</a>.</p></noscript>
         <p class="pricing-legal">By starting a trial you agree to our <a href="/terms/">Terms</a> and <a href="/privacy/">Privacy policy</a>. See also <a href="/refunds/">Refunds and cancellation</a>.</p>
         <div class="faq" aria-label="Pricing FAQ">
           <details><summary>What counts as a ticket?</summary><p>A ticket is counted once, when an agent first starts building it. Rework and retries are included, up to a fair-use limit of 10 runs per ticket.</p></details>
           <details><summary>Who pays for model costs?</summary><p>You bring your own Anthropic, OpenAI or Google key. Model usage is billed by that vendor, not by Duskora.</p></details>
-          <details><summary>What happens at the limit?</summary><p>New tickets wait until the next period, or you can upgrade, or turn on extra tickets on Team and Business.</p></details>
+          <details><summary>What happens at the limit?</summary><p>New tickets wait until the next period, or you can upgrade.</p></details>
           <details><summary>Can I cancel?</summary><p>Yes, at any time, from Billing. Cancellation takes effect at the end of the current billing period.</p></details>
         </div>
       </section>
@@ -150,18 +151,17 @@
       var APP_BASE = 'https://dev.factory.duskora.ai';
       var APP_SIGNUP = APP_BASE + '/signup';
 
-      // ---- Catalogue: must match the app's plan catalogue ----
+      // ---- Catalogue: must match the app's plan catalogue (the free trial is not a plan id; every plan starts with it) ----
       var PLANS = [
-        { id: 'trial', name: 'Trial', tickets: '10', agents: '1', repos: '1', projects: '1', chat: '2', integrations: true, extra: false, sso: false, sla: false, cta: 'Start free trial' },
-        { id: 'developer', name: 'Developer', tickets: '50', agents: '2', repos: '3', projects: '1', chat: '20', integrations: true, extra: false, sso: false, sla: false, cta: 'Start free trial' },
-        { id: 'team', name: 'Team', tickets: '200', agents: '5', repos: '15', projects: '5', chat: '100', integrations: true, extra: true, sso: false, sla: false, cta: 'Start free trial', featured: true },
-        { id: 'business', name: 'Business', tickets: '750', agents: '15', repos: 'Unlimited', projects: 'Unlimited', chat: '300', integrations: true, extra: true, sso: true, sla: false, cta: 'Start free trial' },
-        { id: 'enterprise', name: 'Enterprise', tickets: 'Custom', agents: 'Custom', repos: 'Unlimited', projects: 'Unlimited', chat: 'Custom', integrations: true, extra: 'Contract', sso: true, sla: true, cta: 'Contact us' }
+        { id: 'developer', name: 'Developer', tickets: '50', agents: '2', repos: '3', projects: '1', chat: '20', sso: false, sla: false, cta: 'Start free trial' },
+        { id: 'team', name: 'Team', tickets: '200', agents: '5', repos: '15', projects: '5', chat: '100', sso: false, sla: false, cta: 'Start free trial', featured: true },
+        { id: 'business', name: 'Business', tickets: '750', agents: '15', repos: 'Unlimited', projects: 'Unlimited', chat: '300', sso: true, sla: false, cta: 'Start free trial' },
+        { id: 'enterprise', name: 'Enterprise', tickets: 'Custom', agents: 'Custom', repos: 'Unlimited', projects: 'Unlimited', chat: 'Custom', sso: true, sla: true, cta: 'Contact us' }
       ];
       var PRICES = {
-        usd: { symbol: '$', vat: '', extraTicket: 2.5, developer: [99, 990], team: [349, 3490], business: [999, 9990] },
-        gbp: { symbol: '\u00a3', vat: '+ VAT', extraTicket: 2, developer: [79, 790], team: [279, 2790], business: [799, 7990] },
-        eur: { symbol: '\u20ac', vat: 'excl. VAT', extraTicket: 2.25, developer: [89, 890], team: [319, 3190], business: [899, 8990] }
+        usd: { symbol: '$', vat: '', developer: [99, 990], team: [349, 3490], business: [999, 9990] },
+        gbp: { symbol: '\u00a3', vat: '+ VAT', developer: [79, 790], team: [279, 2790], business: [799, 7990] },
+        eur: { symbol: '\u20ac', vat: 'excl. VAT', developer: [89, 890], team: [319, 3190], business: [899, 8990] }
       };
       var EURO_ZONES = ['Europe/Dublin', 'Europe/Paris', 'Europe/Berlin', 'Europe/Madrid', 'Europe/Rome', 'Europe/Amsterdam', 'Europe/Brussels', 'Europe/Vienna', 'Europe/Lisbon', 'Europe/Helsinki', 'Europe/Athens', 'Europe/Luxembourg', 'Europe/Malta', 'Europe/Zagreb', 'Europe/Bratislava', 'Europe/Ljubljana', 'Europe/Tallinn', 'Europe/Riga', 'Europe/Vilnius', 'Europe/Nicosia', 'Europe/Monaco', 'Europe/San_Marino', 'Europe/Vatican', 'Europe/Andorra', 'Atlantic/Azores', 'Atlantic/Madeira'];
       var STORE_KEY = 'duskora.currency';
@@ -195,16 +195,10 @@
 
       function priceBlock(p) {
         var c = state.currency, yearly = state.interval === 'year', pr = PRICES[c][p.id];
-        if (p.id === 'trial') return '<div class="price"><span class="amount">Free</span> <span class="per">for 7 days</span></div><div class="price-sub">' + NO + '</div>';
         if (p.id === 'enterprise') return '<div class="price"><span class="amount">Custom</span></div><div class="price-sub">Contract</div>';
         var vat = PRICES[c].vat ? ' <span class="vat">' + PRICES[c].vat + '</span>' : '';
         return '<div class="price"><span class="amount">' + money(c, pr[yearly ? 1 : 0]) + '</span> <span class="per">/' + (yearly ? 'yr' : 'mo') + '</span>' + vat + '</div>' +
           '<div class="price-sub">' + (yearly ? money(c, pr[1] / 10) + '/mo equivalent \u00b7 2 months free' : 'or ' + money(c, pr[1]) + '/yr') + '</div>';
-      }
-      function extraCell(p) {
-        if (p.id === 'enterprise') return 'Contract';
-        if (!p.extra) return NO;
-        return money(state.currency, PRICES[state.currency].extraTicket) + ' each (opt-in)';
       }
       function render() {
         document.getElementById('plans').innerHTML = PLANS.map(function (p) {
@@ -212,10 +206,9 @@
           return '<article class="plan' + (p.featured ? ' plan-featured' : '') + '" data-plan="' + p.id + '">' +
             '<h3>' + p.name + '</h3>' + priceBlock(p) +
             '<dl>' +
-            row('Tickets per month', p.tickets) + row('Agents working at once', p.agents) + row('Repos', p.repos) +
-            row('Projects', p.projects) + row('Chat hours per month', p.chat) +
-            row('Linear, Jira, Slack', YES) + row('Extra tickets', extraCell(p)) +
-            row('SSO, audit export, role controls', p.sso ? YES : NO) + row('SLA, invoicing, DPA', p.sla ? YES : NO) +
+            row('Tickets per month', p.tickets) + row('Agent concurrency', p.agents) + row('Repos', p.repos) +
+            row('Projects', p.projects) + row('Chat hours / month', p.chat) +
+            row('SSO & audit export', p.sso ? YES : NO) + row('SLA, invoicing, DPA', p.sla ? YES : NO) +
             '</dl>' +
             '<a class="btn ' + (p.featured ? 'btn-primary' : 'btn-ghost') + '" data-cta="' + p.id + '" href="' + href + '">' + p.cta + '</a>' +
             '</article>';
