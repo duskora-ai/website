@@ -32,7 +32,8 @@
         <nav class="nav-links" aria-label="Main">
           <a class="hide-sm" href="#how">How it works</a>
           <a class="hide-sm" href="#features">Features</a>
-          <a class="btn btn-ghost" href="https://d1hatlt13ymonu.cloudfront.net">Sign in</a>
+          <a class="hide-sm" href="#pricing">Pricing</a>
+          <a class="btn btn-ghost" href="https://dev.factory.duskora.ai">Sign in</a>
         </nav>
       </div>
     </header>
@@ -47,8 +48,8 @@
             and you stay in control of what goes live.
           </p>
           <div class="cta">
-            <a class="btn btn-primary btn-lg" href="mailto:hello@duskora.ai?subject=Duskora%20early%20access">Request early access</a>
-            <a class="btn btn-ghost btn-lg" href="#how">See how it works</a>
+            <a class="btn btn-primary btn-lg" data-signup href="https://dev.factory.duskora.ai/signup">Start free trial</a>
+            <a class="btn btn-ghost btn-lg" href="#pricing">See pricing</a>
           </div>
         </div>
       </section>
@@ -94,11 +95,39 @@
         </div>
       </section>
 
+      <section id="pricing" class="wrap" aria-labelledby="pricing-title">
+        <h2 id="pricing-title">Pricing</h2>
+        <p class="section-lede">Start with a free 7-day trial. Pick a plan when your team is ready.</p>
+        <div class="pricing-controls">
+          <fieldset class="seg" id="interval-switch">
+            <legend class="sr-only">Billing interval</legend>
+            <label><input type="radio" name="interval" value="month" checked /><span>Monthly</span></label>
+            <label><input type="radio" name="interval" value="year" /><span>Annual <small>2 months free</small></span></label>
+          </fieldset>
+          <fieldset class="seg" id="currency-switch">
+            <legend class="sr-only">Currency</legend>
+            <label><input type="radio" name="currency" value="usd" checked /><span>USD</span></label>
+            <label><input type="radio" name="currency" value="gbp" /><span>GBP</span></label>
+            <label><input type="radio" name="currency" value="eur" /><span>EUR</span></label>
+          </fieldset>
+        </div>
+        <div class="plans" id="plans"></div>
+        <noscript><p class="section-lede">Enable JavaScript to see plan prices, or <a href="mailto:hello@duskora.ai">contact us</a>.</p></noscript>
+        <p class="pricing-legal">By starting a trial you agree to our <a href="/terms/">Terms</a> and <a href="/privacy/">Privacy policy</a>. See also <a href="/refunds/">Refunds and cancellation</a>.</p>
+        <div class="faq" aria-label="Pricing FAQ">
+          <details><summary>What counts as a ticket?</summary><p>A ticket is counted once, when an agent first starts building it. Rework and retries are included, up to a fair-use limit of 10 runs per ticket.</p></details>
+          <details><summary>Who pays for model costs?</summary><p>You bring your own Anthropic, OpenAI or Google key. Model usage is billed by that vendor, not by Duskora.</p></details>
+          <details><summary>What happens at the limit?</summary><p>New tickets wait until the next period, or you can upgrade, or turn on extra tickets on Team and Business.</p></details>
+          <details><summary>Can I cancel?</summary><p>Yes, at any time, from Billing. Cancellation takes effect at the end of the current billing period.</p></details>
+        </div>
+      </section>
+
       <section class="wrap" aria-labelledby="closer-title">
         <div class="closer">
           <h2 id="closer-title">Hire your first agent team</h2>
-          <p>We're onboarding a small number of teams. Tell us what you're building and we'll get you set up.</p>
-          <a class="btn btn-lg" href="mailto:hello@duskora.ai?subject=Duskora%20early%20access">Request early access</a>
+          <p>Start a free 7-day trial and put your first tickets through the pipeline.</p>
+          <a class="btn btn-lg" data-signup href="https://dev.factory.duskora.ai/signup">Start free trial</a>
+          <p class="closer-legal"><a href="/terms/">Terms</a> · <a href="/privacy/">Privacy</a> · <a href="/refunds/">Refunds</a></p>
         </div>
       </section>
     </main>
@@ -114,6 +143,92 @@
         </nav>
       </div>
     </footer>
-    <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+    <script>
+      document.getElementById('year').textContent = new Date().getFullYear();
+
+      // ---- Config: change the app URL here (the header "Sign in" links on each page repeat it) ----
+      var APP_BASE = 'https://dev.factory.duskora.ai';
+      var APP_SIGNUP = APP_BASE + '/signup';
+
+      // ---- Catalogue: must match the app's plan catalogue ----
+      var PLANS = [
+        { id: 'trial', name: 'Trial', tickets: '10', agents: '1', repos: '1', projects: '1', chat: '2', integrations: true, extra: false, sso: false, sla: false, cta: 'Start free trial' },
+        { id: 'developer', name: 'Developer', tickets: '50', agents: '2', repos: '3', projects: '1', chat: '20', integrations: true, extra: false, sso: false, sla: false, cta: 'Start free trial' },
+        { id: 'team', name: 'Team', tickets: '200', agents: '5', repos: '15', projects: '5', chat: '100', integrations: true, extra: true, sso: false, sla: false, cta: 'Start free trial', featured: true },
+        { id: 'business', name: 'Business', tickets: '750', agents: '15', repos: 'Unlimited', projects: 'Unlimited', chat: '300', integrations: true, extra: true, sso: true, sla: false, cta: 'Start free trial' },
+        { id: 'enterprise', name: 'Enterprise', tickets: 'Custom', agents: 'Custom', repos: 'Unlimited', projects: 'Unlimited', chat: 'Custom', integrations: true, extra: 'Contract', sso: true, sla: true, cta: 'Contact us' }
+      ];
+      var PRICES = {
+        usd: { symbol: '$', vat: '', extraTicket: 2.5, developer: [99, 990], team: [349, 3490], business: [999, 9990] },
+        gbp: { symbol: '\u00a3', vat: '+ VAT', extraTicket: 2, developer: [79, 790], team: [279, 2790], business: [799, 7990] },
+        eur: { symbol: '\u20ac', vat: 'excl. VAT', extraTicket: 2.25, developer: [89, 890], team: [319, 3190], business: [899, 8990] }
+      };
+      var EURO_ZONES = ['Europe/Dublin', 'Europe/Paris', 'Europe/Berlin', 'Europe/Madrid', 'Europe/Rome', 'Europe/Amsterdam', 'Europe/Brussels', 'Europe/Vienna', 'Europe/Lisbon', 'Europe/Helsinki', 'Europe/Athens', 'Europe/Luxembourg', 'Europe/Malta', 'Europe/Zagreb', 'Europe/Bratislava', 'Europe/Ljubljana', 'Europe/Tallinn', 'Europe/Riga', 'Europe/Vilnius', 'Europe/Nicosia', 'Europe/Monaco', 'Europe/San_Marino', 'Europe/Vatican', 'Europe/Andorra', 'Atlantic/Azores', 'Atlantic/Madeira'];
+      var STORE_KEY = 'duskora.currency';
+
+      function storageGet() { try { return localStorage.getItem(STORE_KEY); } catch (e) { return null; } }
+      function storageSet(v) { try { localStorage.setItem(STORE_KEY, v); } catch (e) {} }
+
+      // Saved choice, then Europe/London -> GBP, euro-area zone -> EUR, en-GB locale -> GBP, else USD.
+      function defaultCurrency() {
+        var saved = storageGet();
+        if (saved && PRICES[saved]) return saved;
+        var tz = '';
+        try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || ''; } catch (e) {}
+        if (tz === 'Europe/London') return 'gbp';
+        if (EURO_ZONES.indexOf(tz) !== -1) return 'eur';
+        if (/^en-GB/i.test(navigator.language || '')) return 'gbp';
+        return 'usd';
+      }
+
+      var state = { interval: 'month', currency: defaultCurrency() };
+
+      function money(c, n) {
+        var s = n.toLocaleString('en-US', { minimumFractionDigits: n % 1 || n < 10 ? 2 : 0, maximumFractionDigits: 2 });
+        return PRICES[c].symbol + s;
+      }
+      function signupUrl(planId) {
+        return APP_SIGNUP + '?' + new URLSearchParams({ plan: planId, interval: state.interval, currency: state.currency }).toString();
+      }
+      function row(label, value) { return '<div><dt>' + label + '</dt><dd>' + value + '</dd></div>'; }
+      var YES = '\u2713', NO = '\u2014';
+
+      function priceBlock(p) {
+        var c = state.currency, yearly = state.interval === 'year', pr = PRICES[c][p.id];
+        if (p.id === 'trial') return '<div class="price"><span class="amount">Free</span> <span class="per">for 7 days</span></div><div class="price-sub">' + NO + '</div>';
+        if (p.id === 'enterprise') return '<div class="price"><span class="amount">Custom</span></div><div class="price-sub">Contract</div>';
+        var vat = PRICES[c].vat ? ' <span class="vat">' + PRICES[c].vat + '</span>' : '';
+        return '<div class="price"><span class="amount">' + money(c, pr[yearly ? 1 : 0]) + '</span> <span class="per">/' + (yearly ? 'yr' : 'mo') + '</span>' + vat + '</div>' +
+          '<div class="price-sub">' + (yearly ? money(c, pr[1] / 10) + '/mo equivalent \u00b7 2 months free' : 'or ' + money(c, pr[1]) + '/yr') + '</div>';
+      }
+      function extraCell(p) {
+        if (p.id === 'enterprise') return 'Contract';
+        if (!p.extra) return NO;
+        return money(state.currency, PRICES[state.currency].extraTicket) + ' each (opt-in)';
+      }
+      function render() {
+        document.getElementById('plans').innerHTML = PLANS.map(function (p) {
+          var href = p.id === 'enterprise' ? 'mailto:hello@duskora.ai' : signupUrl(p.id);
+          return '<article class="plan' + (p.featured ? ' plan-featured' : '') + '" data-plan="' + p.id + '">' +
+            '<h3>' + p.name + '</h3>' + priceBlock(p) +
+            '<dl>' +
+            row('Tickets per month', p.tickets) + row('Agents working at once', p.agents) + row('Repos', p.repos) +
+            row('Projects', p.projects) + row('Chat hours per month', p.chat) +
+            row('Linear, Jira, Slack', YES) + row('Extra tickets', extraCell(p)) +
+            row('SSO, audit export, role controls', p.sso ? YES : NO) + row('SLA, invoicing, DPA', p.sla ? YES : NO) +
+            '</dl>' +
+            '<a class="btn ' + (p.featured ? 'btn-primary' : 'btn-ghost') + '" data-cta="' + p.id + '" href="' + href + '">' + p.cta + '</a>' +
+            '</article>';
+        }).join('');
+      }
+
+      document.querySelector('input[name=currency][value=' + state.currency + ']').checked = true;
+      document.getElementById('interval-switch').addEventListener('change', function (e) { state.interval = e.target.value; render(); });
+      document.getElementById('currency-switch').addEventListener('change', function (e) {
+        state.currency = e.target.value; storageSet(state.currency); render();
+      });
+      Array.prototype.forEach.call(document.querySelectorAll('a[data-signup]'), function (a) { a.href = APP_SIGNUP; });
+      render();
+    </script>
   </body>
 </html>
