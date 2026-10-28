@@ -33,7 +33,7 @@ const pick = (page: import('@playwright/test').Page, group: string, label: strin
 test('pricing section, header links and plan table', async ({ page }) => {
   await page.goto(`${base}/`);
   await expect(page.locator('#pricing')).toBeVisible();
-  await expect(page.locator('#pricing .plan')).toHaveCount(5);
+  await expect(page.locator('#pricing .plan')).toHaveCount(4);
   for (const [start, href] of [['/', '#pricing'], ['/terms/', '/#pricing'], ['/privacy/', '/#pricing'], ['/refunds/', '/#pricing']]) {
     await page.goto(`${base}${start}`);
     await expect(page.locator('header a', { hasText: 'Pricing' })).toHaveAttribute('href', href);
@@ -42,8 +42,11 @@ test('pricing section, header links and plan table', async ({ page }) => {
   await page.goto(`${base}/`);
   const team = page.locator('[data-plan=team]');
   await expect(team).toContainText('200');
-  await expect(team).toContainText('$2.50 each (opt-in)');
-  await expect(page.locator('[data-plan=developer]')).not.toContainText('each (opt-in)');
+  await expect(team).toContainText('Agent concurrency');
+  await expect(page.locator('[data-plan=trial]')).toHaveCount(0);
+  await expect(page.locator('#plans')).not.toContainText(/Extra tickets|each \(opt-in\)|Linear, Jira, Slack|working at once/);
+  await expect(page.locator('.trial-note')).toContainText('7 days');
+  await expect(page.locator('.trial-note')).toContainText('10 tickets');
   await expect(page.locator('[data-plan=enterprise]')).toContainText('Contract');
   await expect(page.locator('.faq details')).toHaveCount(4);
   await expect(page.locator('#pricing a[href="/terms/"]')).toHaveCount(1);
@@ -61,13 +64,11 @@ test('interval and currency switches update prices and VAT labels', async ({ pag
   await pick(page, 'currency', 'GBP');
   expect(await price(page, 'team')).toContain('£279');
   expect(await price(page, 'team')).toContain('+ VAT');
-  await expect(page.locator('[data-plan=team]')).toContainText('£2.00 each');
   await pick(page, 'interval', 'Annual');
   expect(await price(page, 'business')).toContain('£7,990');
   await pick(page, 'currency', 'EUR');
   expect(await price(page, 'developer')).toContain('€890');
   expect(await price(page, 'developer')).toContain('excl. VAT');
-  await expect(page.locator('[data-plan=business]')).toContainText('€2.25 each');
   await pick(page, 'interval', 'Monthly');
   expect(await price(page, 'business')).toContain('€899');
 });
@@ -119,10 +120,10 @@ test('CTAs point at app sign-up with the right parameters', async ({ page }) => 
     expect(u.pathname).toBe('/signup');
     expect(Object.fromEntries(u.searchParams)).toEqual({ plan, interval, currency });
   };
-  for (const id of ['trial', 'developer', 'team', 'business']) await check(`[data-cta=${id}]`, id, 'month', 'usd');
+  for (const id of ['developer', 'team', 'business']) await check(`[data-cta=${id}]`, id, 'month', 'usd');
   await pick(page, 'interval', 'Annual');
   await pick(page, 'currency', 'EUR');
-  for (const id of ['trial', 'developer', 'team', 'business']) await check(`[data-cta=${id}]`, id, 'year', 'eur');
+  for (const id of ['developer', 'team', 'business']) await check(`[data-cta=${id}]`, id, 'year', 'eur');
   await expect(page.locator('[data-cta=enterprise]')).toHaveAttribute('href', 'mailto:hello@duskora.ai');
   for (const sel of ['.hero a.btn-primary', '.closer a.btn']) {
     await expect(page.locator(sel)).toHaveText('Start free trial');
@@ -141,9 +142,29 @@ test('pricing cards stack on mobile without horizontal scroll', async ({ browser
   await page.goto(`${base}/`);
   const m = await page.evaluate(() => ({ sw: document.documentElement.scrollWidth, cw: document.documentElement.clientWidth }));
   expect(m.sw).toBeLessThanOrEqual(m.cw);
-  const a = (await page.locator('[data-plan=trial]').boundingBox())!;
-  const b = (await page.locator('[data-plan=developer]').boundingBox())!;
+  const a = (await page.locator('[data-plan=developer]').boundingBox())!;
+  const b = (await page.locator('[data-plan=team]').boundingBox())!;
   expect(b.y).toBeGreaterThan(a.y + a.height - 1);
   expect(Math.abs(a.x - b.x)).toBeLessThan(1);
+  await ctx.close();
+});
+
+test('plan rows stay on one line and CTAs align at desktop width', async ({ browser }) => {
+  const ctx = await browser.newContext({ viewport: { width: 1280, height: 900 } });
+  const page = await ctx.newPage();
+  await page.goto(`${base}/`);
+  const tops = await page.locator('#plans .plan').evaluateAll((cards) => cards.map((c) => c.getBoundingClientRect().top));
+  expect(Math.max(...tops) - Math.min(...tops)).toBeLessThan(1);
+  const tall = await page.locator('.plan dt, .plan dd').evaluateAll(
+    (els) => els.filter((e) => e.getBoundingClientRect().height > 24).length,
+  );
+  expect(tall).toBe(0);
+  const btn = await page.locator('.plan .btn').evaluateAll((bs) => bs.map((b) => b.getBoundingClientRect().top));
+  expect(Math.max(...btn) - Math.min(...btn)).toBeLessThan(1);
+  const stageTops = await page.locator('.stage').evaluateAll((s) => s.map((e) => e.getBoundingClientRect().top));
+  expect(stageTops.length).toBe(5);
+  expect(Math.max(...stageTops) - Math.min(...stageTops)).toBeLessThan(1);
+  const m = await page.evaluate(() => ({ sw: document.documentElement.scrollWidth, cw: document.documentElement.clientWidth }));
+  expect(m.sw).toBeLessThanOrEqual(m.cw);
   await ctx.close();
 });
