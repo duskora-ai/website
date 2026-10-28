@@ -161,6 +161,9 @@ test('plan rows stay on one line and CTAs align at desktop width', async ({ brow
   expect(tall).toBe(0);
   const btn = await page.locator('.plan .btn').evaluateAll((bs) => bs.map((b) => b.getBoundingClientRect().top));
   expect(Math.max(...btn) - Math.min(...btn)).toBeLessThan(1);
+  const stageTops = await page.locator('.stage').evaluateAll((s) => s.map((e) => e.getBoundingClientRect().top));
+  expect(stageTops.length).toBe(5);
+  expect(Math.max(...stageTops) - Math.min(...stageTops)).toBeLessThan(1);
   const m = await page.evaluate(() => ({ sw: document.documentElement.scrollWidth, cw: document.documentElement.clientWidth }));
   expect(m.sw).toBeLessThanOrEqual(m.cw);
   await ctx.close();

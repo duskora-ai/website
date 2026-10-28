@@ -71,7 +71,7 @@ h1 em { font-style: normal; background: var(--dusk); -webkit-background-clip: te
 .lede { position: relative; font-size: clamp(17px, 2vw, 20px); color: var(--text-2); max-width: 46ch; margin: 0 auto 36px; }
 .cta { position: relative; display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
 
-.pipeline { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 16px 0 96px; }
+.pipeline { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin: 16px 0 96px; }
 .stage { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow); position: relative; }
 .stage-num { font-size: 12px; font-weight: 600; color: var(--accent); letter-spacing: 0.04em; text-transform: uppercase; }
 .stage h3 { margin: 6px 0 6px; font-size: 17px; letter-spacing: -0.01em; }
@@ -163,11 +163,8 @@ section[id] { scroll-margin-top: 80px; }
 .faq summary { cursor: pointer; font-weight: 600; }
 .faq p { margin: 8px 0 0; color: var(--text-2); font-size: 15px; }
 
-@media (max-width: 1060px) {
+@media (max-width: 1100px) {
   .plans { grid-template-columns: repeat(2, 1fr); }
-}
-@media (max-width: 860px) {
-  .plans { grid-template-columns: 1fr 1fr; }
 }
 @media (max-width: 560px) {
   .plans { grid-template-columns: 1fr; }
