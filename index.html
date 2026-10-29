@@ -51,6 +51,7 @@
             <a class="btn btn-primary btn-lg" data-signup href="https://dev.factory.duskora.ai/signup">Start free trial</a>
             <a class="btn btn-ghost btn-lg" href="#pricing">See pricing</a>
           </div>
+          <p class="cta-note">7 days free · No card needed</p>
         </div>
       </section>
 
@@ -111,7 +112,7 @@
             <label><input type="radio" name="currency" value="eur" /><span>EUR</span></label>
           </fieldset>
         </div>
-        <p class="trial-note"><strong>Free for 7 days, on every plan.</strong> The trial includes 10 tickets, 1 agent, 1 repo, 1 project and 2 chat hours.</p>
+        <p class="trial-note"><strong>Free for 7 days, on every plan. No card needed.</strong> The trial includes 10 tickets, 1 agent, 1 repo, 1 project and 2 chat hours.</p>
         <div class="plans" id="plans"></div>
         <noscript><p class="section-lede">Enable JavaScript to see plan prices, or <a href="mailto:hello@duskora.ai">contact us</a>.</p></noscript>
         <p class="pricing-legal">By starting a trial you agree to our <a href="/terms/">Terms</a> and <a href="/privacy/">Privacy policy</a>. See also <a href="/refunds/">Refunds and cancellation</a>.</p>
@@ -128,6 +129,7 @@
           <h2 id="closer-title">Hire your first agent team</h2>
           <p>Start a free 7-day trial and put your first tickets through the pipeline.</p>
           <a class="btn btn-lg" data-signup href="https://dev.factory.duskora.ai/signup">Start free trial</a>
+          <p class="cta-note">7 days free · No card needed</p>
           <p class="closer-legal"><a href="/terms/">Terms</a> · <a href="/privacy/">Privacy</a> · <a href="/refunds/">Refunds</a></p>
         </div>
       </section>
@@ -153,9 +155,9 @@
 
       // ---- Catalogue: must match the app's plan catalogue (the free trial is not a plan id; every plan starts with it) ----
       var PLANS = [
-        { id: 'developer', name: 'Developer', tickets: '50', agents: '2', repos: '3', projects: '1', chat: '20', sso: false, sla: false, cta: 'Start free trial' },
-        { id: 'team', name: 'Team', tickets: '200', agents: '5', repos: '15', projects: '5', chat: '100', sso: false, sla: false, cta: 'Start free trial', featured: true },
-        { id: 'business', name: 'Business', tickets: '750', agents: '15', repos: 'Unlimited', projects: 'Unlimited', chat: '300', sso: true, sla: false, cta: 'Start free trial' },
+        { id: 'developer', name: 'Developer', tickets: '50', agents: '2', repos: '3', projects: '1', chat: '20', sso: false, sla: false, cta: 'Start with Developer' },
+        { id: 'team', name: 'Team', tickets: '200', agents: '5', repos: '15', projects: '5', chat: '100', sso: false, sla: false, cta: 'Start with Team', featured: true },
+        { id: 'business', name: 'Business', tickets: '750', agents: '15', repos: 'Unlimited', projects: 'Unlimited', chat: '300', sso: true, sla: false, cta: 'Start with Business' },
         { id: 'enterprise', name: 'Enterprise', tickets: 'Custom', agents: 'Custom', repos: 'Unlimited', projects: 'Unlimited', chat: 'Custom', sso: true, sla: true, cta: 'Contact us' }
       ];
       var PRICES = {
@@ -200,6 +202,11 @@
         return '<div class="price"><span class="amount">' + money(c, pr[yearly ? 1 : 0]) + '</span> <span class="per">/' + (yearly ? 'yr' : 'mo') + '</span>' + vat + '</div>' +
           '<div class="price-sub">' + (yearly ? money(c, pr[1] / 10) + '/mo equivalent \u00b7 2 months free' : 'or ' + money(c, pr[1]) + '/yr') + '</div>';
       }
+      function trialLine(p) {
+        if (p.id === 'enterprise') return '<p class="plan-trial" aria-hidden="true"></p>';
+        var c = state.currency, yearly = state.interval === 'year';
+        return '<p class="plan-trial">7-day free trial, then ' + money(c, PRICES[c][p.id][yearly ? 1 : 0]) + (yearly ? '/yr' : '/mo') + '. No card needed.</p>';
+      }
       function render() {
         document.getElementById('plans').innerHTML = PLANS.map(function (p) {
           var href = p.id === 'enterprise' ? 'mailto:hello@duskora.ai' : signupUrl(p.id);
@@ -210,7 +217,7 @@
             row('Projects', p.projects) + row('Chat hours / month', p.chat) +
             row('SSO & audit export', p.sso ? YES : NO) + row('SLA, invoicing, DPA', p.sla ? YES : NO) +
             '</dl>' +
-            '<a class="btn ' + (p.featured ? 'btn-primary' : 'btn-ghost') + '" data-cta="' + p.id + '" href="' + href + '">' + p.cta + '</a>' +
+            '<a class="btn ' + (p.featured ? 'btn-primary' : 'btn-ghost') + '" data-cta="' + p.id + '" href="' + href + '">' + p.cta + '</a>' + trialLine(p) +
             '</article>';
         }).join('');
       }
