@@ -31,6 +31,7 @@
         </a>
         <nav class="nav-links" aria-label="Main">
           <a class="hide-sm" href="#how">How it works</a>
+          <a class="hide-sm" href="#platform">Platform</a>
           <a class="hide-sm" href="#features">Features</a>
           <a class="hide-sm" href="#pricing">Pricing</a>
           <a class="btn btn-ghost" href="https://dev.factory.duskora.ai">Sign in</a>
@@ -67,6 +68,32 @@
           <div class="stage"><div class="stage-num">03</div><h3>Review</h3><p>A separate agent reviews the diff and sends it back if it isn't right.</p></div>
           <div class="stage"><div class="stage-num">04</div><h3>QA</h3><p>Tests every acceptance criterion and attaches screenshots and recordings as evidence.</p></div>
           <div class="stage"><div class="stage-num">05</div><h3>Deploy</h3><p>After your approval, merges and watches the deploy through to production.</p></div>
+        </div>
+      </section>
+
+      <section id="platform" class="wrap" aria-labelledby="platform-title">
+        <h2 id="platform-title">An autonomous agent team, end to end</h2>
+        <p class="section-lede">
+          Duskora is a fully autonomous, agentic system. Agents hand work to each other, check each
+          other's output and stop at the gates you set. Here is what that looks like in the app.
+        </p>
+        <div class="shots">
+          <figure class="shot">
+            <img src="/screenshots/plan.png" width="1200" height="750" loading="lazy" alt="Plan artifact written by the planning agent for a ticket" />
+            <figcaption><h3>Plan before code</h3><p>The planning agent reads the ticket and your codebase, then writes a plan you can read before any code changes.</p></figcaption>
+          </figure>
+          <figure class="shot">
+            <img src="/screenshots/build-pr.png" width="1200" height="750" loading="lazy" alt="Pull request opened by the build agent after CI checks pass" />
+            <figcaption><h3>Built on a branch, opened after CI</h3><p>The build agent implements the plan on its own branch, runs your CI checks and opens a pull request.</p></figcaption>
+          </figure>
+          <figure class="shot">
+            <img src="/screenshots/review.png" width="1200" height="750" loading="lazy" alt="Review agent findings on a pull request diff" />
+            <figcaption><h3>A separate agent reviews</h3><p>A different agent reviews the diff and sends it back to build if it isn't right.</p></figcaption>
+          </figure>
+          <figure class="shot">
+            <img src="/screenshots/qa-approval.png" width="1200" height="750" loading="lazy" alt="QA evidence and approval gate for a ticket" />
+            <figcaption><h3>QA evidence, then your approval</h3><p>QA tests each acceptance criterion and attaches screenshots as evidence. Nothing deploys until you approve.</p></figcaption>
+          </figure>
         </div>
       </section>
 
