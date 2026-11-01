@@ -86,6 +86,13 @@ section h2 { font-size: clamp(26px, 3.5vw, 36px); letter-spacing: -0.025em; line
 .feature h3 { margin: 0 0 4px; font-size: 16px; }
 .feature p { margin: 0; font-size: 15px; color: var(--muted); }
 
+.shots { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; margin-bottom: 96px; }
+.shot { margin: 0; min-width: 0; }
+.shot img { display: block; width: 100%; height: auto; border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); }
+.shot figcaption { margin-top: 12px; }
+.shot h3 { margin: 0 0 4px; font-size: 16px; color: var(--text); }
+.shot p { margin: 0; font-size: 15px; color: var(--muted); }
+
 .integrations { display: flex; flex-wrap: wrap; gap: 10px; margin: -56px 0 96px; }
 .chip { padding: 8px 14px; border: 1px solid var(--border); border-radius: 999px; font-size: 14px; color: var(--text-2); background: var(--surface); }
 
@@ -103,6 +110,7 @@ footer { border-top: 1px solid var(--border); padding: 32px 0 48px; font-size: 1
 @media (max-width: 860px) {
   .pipeline { grid-template-columns: 1fr 1fr; }
   .features { grid-template-columns: 1fr; }
+  .shots { grid-template-columns: 1fr; }
 }
 @media (max-width: 560px) {
   .wrap { padding: 0 16px; }
