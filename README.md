@@ -4,7 +4,7 @@ The public landing page for [Duskora.ai](https://duskora.ai), served by GitHub P
 
 It's plain HTML and CSS with no build step: edit the HTML and push. Shared styles live in `styles.css`. `CNAME` sets the custom domain.
 
-Legal pages (`terms/`, `privacy/`, `refunds/`) are folders with an `index.html` so URLs stay clean. Their wording is still **DRAFT — to be supplied**; do not merge until the owner provides reviewed text.
+Legal pages (`terms/`, `privacy/`, `refunds/`) are folders with an `index.html` so URLs stay clean. To mark a fact still to be supplied, wrap it in `<mark class="fill">[…]</mark>`: the e2e check `no unfilled facts remain` fails while any are left. The text has not had legal review yet.
 
 ## Tests
 

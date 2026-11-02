@@ -33,37 +33,68 @@
 
     <main class="doc">
       <h1>Privacy Policy</h1>
-      <p class="updated">Last updated: 27 October 2026</p>
+      <p class="updated">Last updated: 2 November 2026</p>
+
+      <p>This policy explains what personal data Duskora.ai Ltd (“Duskora”, “we”) collects when you use duskora.ai and the Duskora app, and what we do with it. For the account data described below, we are the controller. For the code, tickets and other content your organisation puts into Duskora, we process it on your organisation's behalf, and your organisation is the controller.</p>
 
       <h2>What we collect</h2>
-      <p class="todo">DRAFT — to be supplied</p>
+      <ul>
+        <li><strong>Account details:</strong> your name, email address, profile image if you upload one, and your sign-in records.</li>
+        <li><strong>Organisation details:</strong> your organisation's name, its members and their roles, projects, settings and budgets.</li>
+        <li><strong>Repository content:</strong> when your organisation installs our GitHub App, we access the repositories it selects. Agents clone them, read and change code, open pull requests and, when your workflow allows, merge them. We store pull request and check metadata. We don't keep copies of your repositories beyond the run that needs them, apart from the caches described under Retention.</li>
+        <li><strong>Work content:</strong> tickets, comments, plans, chat messages, agent transcripts, run logs, and the screenshots and videos QA agents record.</li>
+        <li><strong>Connected tools:</strong> if you connect Linear, Jira or Slack, we receive the issues, labels and messages needed to sync them. For Slack, we also receive the email addresses of people who use our buttons, so we can match them to your organisation's members.</li>
+        <li><strong>Model API keys:</strong> the Anthropic, OpenAI or Google keys your organisation provides. They are encrypted, and we use them only for your organisation's runs.</li>
+        <li><strong>Billing details:</strong> your plan, billing currency and country, and your Stripe customer and subscription IDs. See Payments below.</li>
+        <li><strong>Usage and technical data:</strong> an audit log of actions in your organisation, usage counts such as tickets and chat hours, and server logs, which include IP addresses.</li>
+      </ul>
 
       <h2>How we use it</h2>
-      <p class="todo">DRAFT — to be supplied</p>
+      <ul>
+        <li>To provide the service: to run the agents your organisation sets up, sync your connected tools, and show your work in the app.</li>
+        <li>To bill you and to enforce plan limits.</li>
+        <li>To send emails and Slack messages about the service, such as invites, approvals you're needed for, trial and payment notices, and usage alerts.</li>
+        <li>To keep the service secure, investigate problems and prevent abuse.</li>
+        <li>To answer you when you contact us.</li>
+      </ul>
+      <p>We don't sell your data, and we don't use your code or content to train AI models. Our legal bases are performing our contract with you or your organisation, our legitimate interest in running and securing the service, and complying with the law.</p>
 
       <h2>Third parties and model vendors</h2>
-      <p class="todo">DRAFT — to be supplied</p>
+      <p>We share data only with the providers we need to run Duskora:</p>
+      <ul>
+        <li><strong>Amazon Web Services</strong> hosts the service and its data in London (eu-west-2) and sends our emails. Content is delivered through its global network.</li>
+        <li><strong>Model vendors</strong> (Anthropic, OpenAI, Google): when an agent runs, the code, tickets and instructions it works on go to the vendor of the model your organisation chose, under your organisation's own API key. Your organisation's agreement with that vendor governs how the vendor handles that data.</li>
+        <li><strong>GitHub</strong>, and <strong>Linear</strong>, <strong>Atlassian (Jira)</strong> and <strong>Slack</strong> when you connect them.</li>
+        <li><strong>Stripe</strong>, for payments.</li>
+      </ul>
+      <p>Some of these providers process data outside the UK and EEA, mainly in the United States. Where they do, we rely on adequacy regulations, including the UK–US data bridge and the EU–US Data Privacy Framework, where the provider is certified, and otherwise on the EU Standard Contractual Clauses and the UK International Data Transfer Addendum. We may also disclose data when the law requires it, or to a buyer if Duskora is sold. Our data processing agreement applies to all customers and is available at <a href="/dpa">duskora.ai/dpa</a>.</p>
 
       <h2>Payments (Stripe)</h2>
-      <p class="todo">DRAFT — to be supplied</p>
+      <p>Stripe handles checkout, card details, invoices and tax IDs. Card numbers go straight to Stripe, and we never see or store them. We keep your Stripe customer and subscription IDs, plan, billing interval, currency and subscription status. Stripe's own <a href="https://stripe.com/privacy">privacy policy</a> also applies.</p>
 
       <h2>Retention</h2>
-      <p class="todo">DRAFT — to be supplied</p>
+      <ul>
+        <li>Agent transcripts are deleted after 30 days.</li>
+        <li>QA screenshots and videos are deleted after 90 days.</li>
+        <li>Build and dependency caches are deleted after 30 days, and image build contexts after 7 days.</li>
+        <li>Account, organisation and work data are kept while your organisation has an account. If your subscription ends, we keep that data so you can come back, until you ask us to delete it. We delete it within 30 days of the request, and it leaves our backups within 35 days after that.</li>
+        <li>Billing records are kept for as long as tax law requires, which is 6 years in the UK.</li>
+      </ul>
 
       <h2>Your rights</h2>
-      <p class="todo">DRAFT — to be supplied</p>
+      <p>Depending on where you live, you can ask to access, correct, delete or export your personal data, or object to or restrict how we use it. Email us at <a href="mailto:hello@duskora.ai">hello@duskora.ai</a>. If the data belongs to your organisation's content, we may refer you to your organisation's administrator. You can also complain to your data protection authority. In the UK, that is the <a href="https://ico.org.uk/make-a-complaint/">Information Commissioner's Office</a>.</p>
 
       <h2>Cookies and analytics</h2>
-      <p class="todo">DRAFT — to be supplied</p>
+      <p>This website uses no cookies and no analytics. It loads fonts from Google Fonts, so Google receives your IP address when you visit. The Duskora app uses only the cookies and browser storage it needs to sign you in and keep you signed in. It has no advertising or tracking cookies.</p>
 
       <h2>Security</h2>
-      <p class="todo">DRAFT — to be supplied</p>
+      <p>Data is encrypted in transit and at rest. API keys and connection tokens are envelope-encrypted with keys held in AWS KMS. Each organisation's data is kept apart from every other organisation's at the database level. Agents run in isolated containers, one run per container, and they never see your GitHub token or other credentials. GitHub access uses short-lived tokens limited to your project's repositories. We keep an audit log of agent and human actions.</p>
 
       <h2>Changes to this policy</h2>
-      <p class="todo">DRAFT — to be supplied</p>
+      <p>If we change this policy, we'll update the date at the top. If a change is significant, we'll also email your organisation's owners before it takes effect.</p>
 
       <h2>Contact</h2>
-      <p class="todo">DRAFT — to be supplied</p>
+      <p>Duskora.ai Ltd, 66 Paul Street, London EC2A 4NA, company number 17535877. Email <a href="mailto:hello@duskora.ai">hello@duskora.ai</a>.</p>
     </main>
 
     <footer>

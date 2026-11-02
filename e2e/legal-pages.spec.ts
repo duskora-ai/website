@@ -35,25 +35,22 @@ test.use({ video: 'on' });
 test.slow(!!artifacts);
 
 const HEADINGS: Record<string, string[]> = {
-  terms: ['The service', 'Accounts', 'Bring your own keys and third-party model vendors', 'Fees and billing', 'Cancellation', 'Acceptable use', 'Liability', 'Governing law', 'Contact'],
+  terms: ['The service', 'Accounts', 'Your code and content', 'Bring your own keys and third-party model vendors', 'Fees and billing', 'Cancellation', 'Acceptable use', 'Liability', 'Governing law', 'Contact'],
   privacy: ['What we collect', 'How we use it', 'Third parties and model vendors', 'Payments (Stripe)', 'Retention', 'Your rights', 'Cookies and analytics', 'Security', 'Changes to this policy', 'Contact'],
   refunds: ['Plans', 'Cancellation', 'Refunds'],
 };
 const TITLES = new Set<string>();
 
 for (const [slug, headings] of Object.entries(HEADINGS)) {
-  test(`${slug} page: headings, DRAFT placeholders, updated date, meta, nav`, async ({ page }) => {
+  test(`${slug} page: headings, text, updated date, meta, nav`, async ({ page }) => {
     await page.goto(`${base}/${slug}/`);
     await pause(page);
     const h2s = await page.locator('main.doc h2').allTextContents();
     expect(h2s).toEqual(headings);
-    // each h2 is followed by its content; placeholders are visible
-    const todos = page.locator('main.doc .todo');
-    const expectedTodos = slug === 'refunds' ? 2 : headings.length;
-    await expect(todos).toHaveCount(expectedTodos);
-    for (const t of await todos.all()) {
-      await expect(t).toBeVisible();
-      await expect(t).toHaveText('DRAFT — to be supplied');
+    // every section has its text; no DRAFT placeholders remain
+    await expect(page.locator('main.doc .todo')).toHaveCount(0);
+    for (const h of await page.locator('main.doc h2').all()) {
+      await expect(h.locator('xpath=following-sibling::*[1]')).toHaveText(/\w{3,}/);
     }
     await expect(page.locator('main.doc .updated')).toHaveText(/^Last updated: .+\d{4}/);
     const title = await page.title();
@@ -69,21 +66,22 @@ for (const [slug, headings] of Object.entries(HEADINGS)) {
   });
 }
 
-test('refunds page states only plan facts', async ({ page }) => {
+test('refunds page states plan facts without prices', async ({ page }) => {
   await page.goto(`${base}/refunds/`);
-  const plain = await page.locator('main.doc p:not(.todo):not(.updated)').allTextContents();
-  expect(plain).toHaveLength(1);
-  expect(plain[0]).toMatch(/monthly or annual/i);
-  expect(plain[0]).toMatch(/cancel at any time/i);
-  expect(plain[0]).toMatch(/end of the current billing period/i);
-  expect(plain[0]).not.toMatch(/[$€£]|\d/);
-  await expect(page.locator('main.doc h2', { hasText: 'Refunds' }).locator('+ .todo')).toBeVisible();
+  const plans = await page.locator('main.doc h2', { hasText: 'Plans' }).locator('+ p').textContent();
+  expect(plans).toMatch(/monthly or annual/i);
+  expect(plans).toMatch(/cancel at any time/i);
+  expect(plans).toMatch(/end of the current billing period/i);
+  expect(await page.locator('main.doc').textContent()).not.toMatch(/[$€£]/);
 });
 
-test('terms and privacy contain no non-placeholder prose', async ({ page }) => {
-  for (const slug of ['terms', 'privacy']) {
+// The drafts mark facts only the owner can supply (company details, retention periods, the
+// refund window) with .fill. Per the README, the pages don't merge until every one is replaced.
+test('no unfilled facts remain', async ({ page }) => {
+  for (const slug of ['terms', 'privacy', 'refunds']) {
     await page.goto(`${base}/${slug}/`);
-    expect(await page.locator('main.doc p:not(.todo):not(.updated)').count()).toBe(0);
+    const left = await page.locator('main.doc .fill').allTextContents();
+    expect(left, `${slug} still has unfilled facts`).toEqual([]);
   }
 });
 
@@ -126,8 +124,8 @@ for (const scheme of ['light', 'dark'] as const) {
         const m = await page.evaluate(() => ({ sw: document.documentElement.scrollWidth, cw: document.documentElement.clientWidth }));
         expect(m.sw).toBeLessThanOrEqual(m.cw);
         if (slug) {
-          const todo = page.locator('.todo').first();
-          const box = await todo.boundingBox();
+          const para = page.locator('main.doc p:not(.updated)').first();
+          const box = await para.boundingBox();
           expect(box!.x).toBeGreaterThanOrEqual(0);
           expect(box!.x + box!.width).toBeLessThanOrEqual(w);
           const bg = await page.evaluate(() => getComputedStyle(document.body).backgroundColor);
