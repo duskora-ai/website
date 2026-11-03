@@ -1,0 +1,54 @@
+{
+  "appUrl": "https://dev.factory.duskora.ai",
+  "viewport": {
+    "width": 1152,
+    "height": 720
+  },
+  "colorScheme": "dark",
+  "replaceText": {
+    "nour+demo1@duskora.ai": "Demo User",
+    "nd": "du"
+  },
+  "shots": [
+    {
+      "name": "plan",
+      "url": "/orgs/cmw0qnosl002p02kzgxtgsx8k/projects/cmw0qnot9002s02kzjfq07fco/tickets/cmw0y6d18000602i0klr8nvs3",
+      "waitFor": "main",
+      "click": [
+        "role=heading[name=\"Plan\"] >> xpath=ancestor::*[.//button][1] >> role=button[name=\"Show\"]"
+      ],
+      "scrollTo": "role=heading[name=\"Plan\"]",
+      "mask": []
+    },
+    {
+      "name": "build-pr",
+      "url": "/orgs/cmw0qnosl002p02kzgxtgsx8k/projects/cmw0qnot9002s02kzjfq07fco/tickets/cmw0y5gid003902i9dbcd7t1t",
+      "waitFor": "main",
+      "click": [
+        "role=heading[name=\"Conversation\"] >> xpath=ancestor::*[.//button][1] >> role=button[name=\"Hide\"]"
+      ],
+      "scrollTo": "role=heading[name=\"Shipping\"]",
+      "mask": []
+    },
+    {
+      "name": "review",
+      "url": "/orgs/cmw0qnosl002p02kzgxtgsx8k/projects/cmw0qnot9002s02kzjfq07fco/tickets/cmw0y6d18000602i0klr8nvs3",
+      "waitFor": "main",
+      "click": [
+        "text=\"Review agent\" >> nth=-1"
+      ],
+      "scrollTo": "text=\"Review agent\" >> nth=-1",
+      "mask": []
+    },
+    {
+      "name": "qa-approval",
+      "url": "/orgs/cmw0qnosl002p02kzgxtgsx8k/projects/cmw0qnot9002s02kzjfq07fco/tickets/cmw0y6d18000602i0klr8nvs3",
+      "waitFor": "main",
+      "mask": [],
+      "click": [
+        "role=heading[name=\"Conversation\"] >> xpath=ancestor::*[.//button][1] >> role=button[name=\"Hide\"]"
+      ],
+      "scrollTo": "text=\"QA agent\" >> nth=0"
+    }
+  ]
+}

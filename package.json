@@ -2,7 +2,11 @@
   "name": "duskora-website",
   "private": true,
   "scripts": {
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "shots": "node scripts/shots.mjs",
+    "shots:login": "node scripts/shots.mjs login",
+    "shots:capture": "node scripts/shots.mjs capture",
+    "shots:frame": "node scripts/shots.mjs frame"
   },
   "devDependencies": {
     "@playwright/test": "^1.49.0"
