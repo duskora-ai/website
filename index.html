@@ -179,6 +179,9 @@
       // ---- Config: change the app URL here (the header "Sign in" links on each page repeat it) ----
       var APP_BASE = 'https://dev.factory.duskora.ai';
       var APP_SIGNUP = APP_BASE + '/signup';
+      // While the beta is on, sign-up buttons go to the access request form. Set BETA_ON to false to restore /signup.
+      var BETA_ON = true;
+      var BETA_URL = '/beta/';
 
       // ---- Catalogue: must match the app's plan catalogue (the free trial is not a plan id; every plan starts with it) ----
       var PLANS = [
@@ -217,6 +220,7 @@
         return PRICES[c].symbol + s;
       }
       function signupUrl(planId) {
+        if (BETA_ON) return BETA_URL;
         return APP_SIGNUP + '?' + new URLSearchParams({ plan: planId, interval: state.interval, currency: state.currency }).toString();
       }
       function row(label, value) { return '<div><dt>' + label + '</dt><dd>' + value + '</dd></div>'; }
@@ -254,7 +258,7 @@
       document.getElementById('currency-switch').addEventListener('change', function (e) {
         state.currency = e.target.value; storageSet(state.currency); render();
       });
-      Array.prototype.forEach.call(document.querySelectorAll('a[data-signup]'), function (a) { a.href = APP_SIGNUP; });
+      Array.prototype.forEach.call(document.querySelectorAll('a[data-signup]'), function (a) { a.href = BETA_ON ? BETA_URL : APP_SIGNUP; });
       render();
     </script>
   </body>

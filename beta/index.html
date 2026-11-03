@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Request beta access · Duskora.ai</title>
+    <meta name="description" content="Request access to the Duskora.ai beta." />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <header>
+      <div class="wrap nav">
+        <a class="brand" href="/" aria-label="Duskora.ai home">
+          <img src="/logo.svg" width="44" height="30" alt="" />
+          <span class="wordmark">Duskora<span>.ai</span></span>
+        </a>
+        <nav class="nav-links" aria-label="Main">
+          <a class="hide-sm" href="/#how">How it works</a>
+          <a class="hide-sm" href="/#features">Features</a>
+          <a class="hide-sm" href="/#pricing">Pricing</a>
+          <a class="btn btn-ghost" href="https://dev.factory.duskora.ai">Sign in</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="doc">
+      <h1>Request beta access</h1>
+
+      <form id="beta-form" class="beta-form" novalidate>
+        <div class="field">
+          <label for="f-name">Name</label>
+          <input id="f-name" name="name" required autocomplete="name" aria-describedby="e-name" />
+          <p class="field-error" id="e-name" role="alert"></p>
+        </div>
+        <div class="field">
+          <label for="f-email">Work email</label>
+          <input id="f-email" type="email" name="email" required autocomplete="email" aria-describedby="e-email" />
+          <p class="field-error" id="e-email" role="alert"></p>
+        </div>
+        <fieldset class="field" aria-describedby="e-host">
+          <legend>Where's your code hosted?</legend>
+          <div class="beta-hosts">
+            <label><input type="radio" name="codeHost" value="github" required /><span>GitHub</span></label>
+            <label><input type="radio" name="codeHost" value="gitlab" required /><span>GitLab</span></label>
+            <label><input type="radio" name="codeHost" value="bitbucket" required /><span>Bitbucket</span></label>
+            <label><input type="radio" name="codeHost" value="azure-devops" required /><span>Azure DevOps</span></label>
+            <label><input type="radio" name="codeHost" value="self-hosted" required /><span>Self-hosted</span></label>
+            <label><input type="radio" name="codeHost" value="other" required /><span>Other</span></label>
+          </div>
+          <p class="field-error" id="e-host" role="alert"></p>
+          <input id="f-host-other" name="hostOther" aria-label="Where's your code hosted? (other)" autocomplete="off" aria-describedby="e-host-other" hidden />
+          <p class="field-error" id="e-host-other" role="alert"></p>
+        </fieldset>
+        <div class="field">
+          <label for="f-use">What do you want to use Duskora for?</label>
+          <textarea id="f-use" name="useCase" rows="4" required placeholder="Extend our Nest.js API with new endpoints, Postgres via Prisma." aria-describedby="e-use"></textarea>
+          <p class="field-error" id="e-use" role="alert"></p>
+        </div>
+        <button class="btn btn-primary btn-lg" type="submit" id="beta-submit">Request access</button>
+        <p class="beta-privacy"><a href="/privacy/">Privacy policy</a></p>
+        <p class="field-error" id="e-form" role="alert"></p>
+      </form>
+      <p id="beta-done" role="status" tabindex="-1" hidden>Thanks, we'll be in touch.</p>
+    </main>
+
+    <footer>
+      <div class="wrap foot">
+        <span>© <span id="year">2026</span> Duskora.ai</span>
+        <nav class="foot-links" aria-label="Legal">
+          <a href="/terms/">Terms</a>
+          <a href="/privacy/">Privacy</a>
+          <a href="/refunds/">Refunds</a>
+          <a href="mailto:hello@duskora.ai">hello@duskora.ai</a>
+        </nav>
+      </div>
+    </footer>
+    <script>
+      document.getElementById('year').textContent = new Date().getFullYear();
+
+      // Beta requests API (same host as APP_BASE in the home page config)
+      var API_URL = 'https://dev.factory.duskora.ai/beta-requests';
+
+      var form = document.getElementById('beta-form');
+      var btn = document.getElementById('beta-submit');
+      var other = document.getElementById('f-host-other');
+      var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+      function setError(input, errId, msg) {
+        var el = document.getElementById(errId);
+        el.textContent = msg;
+        if (input) { if (msg) input.setAttribute('aria-invalid', 'true'); else input.removeAttribute('aria-invalid'); }
+      }
+      function checkedHost() { return form.querySelector('input[name=codeHost]:checked'); }
+
+      form.addEventListener('change', function (e) {
+        if (e.target.name !== 'codeHost') return;
+        var isOther = e.target.value === 'other';
+        other.hidden = !isOther;
+        other.required = isOther;
+        if (isOther) other.focus(); else { other.value = ''; setError(other, 'e-host-other', ''); }
+        setError(null, 'e-host', '');
+      });
+
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        if (btn.disabled) return;
+        var name = form.name.value.trim();
+        var email = form.email.value.trim();
+        var host = checkedHost();
+        var hostOther = other.value.trim();
+        var useCase = form.useCase.value.trim();
+        var first = null;
+        function fail(input, errId, msg) { setError(input, errId, msg); if (msg && !first) first = input; }
+        document.getElementById('e-form').textContent = '';
+        fail(form.name, 'e-name', name ? '' : 'Enter your name.');
+        fail(form.email, 'e-email', !email ? 'Enter your work email.' : EMAIL_RE.test(email) ? '' : 'Enter a valid email address.');
+        fail(form.querySelector('input[name=codeHost]'), 'e-host', host ? '' : 'Choose where your code is hosted.');
+        fail(other, 'e-host-other', host && host.value === 'other' && !hostOther ? 'Tell us where your code is hosted.' : '');
+        fail(form.useCase, 'e-use', useCase ? '' : 'Tell us what you want to use Duskora for.');
+        if (first) { first.focus(); return; }
+
+        var label = btn.textContent;
+        btn.disabled = true;
+        btn.textContent = 'Sending…';
+        fetch(API_URL, {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ name: name, email: email, codeHost: host.value, codeHostOther: host.value === 'other' ? hostOther : undefined, useCase: useCase })
+        }).then(function (res) {
+          if (!res.ok) throw new Error('status ' + res.status);
+          form.hidden = true;
+          var done = document.getElementById('beta-done');
+          done.hidden = false;
+          done.focus();
+        }).catch(function () {
+          btn.disabled = false;
+          btn.textContent = label;
+          document.getElementById('e-form').textContent = 'Something went wrong. Please try again.';
+        });
+      });
+    </script>
+  </body>
+</html>

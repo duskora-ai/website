@@ -112,13 +112,12 @@ test.describe('default currency', () => {
   });
 });
 
-test('CTAs point at app sign-up with the right parameters', async ({ page }) => {
+test('CTAs point at the beta request form while the beta is on', async ({ page }) => {
   await page.goto(`${base}/`);
   const check = async (sel: string, plan: string, interval: string, currency: string) => {
-    const u = new URL((await page.locator(sel).getAttribute('href'))!);
-    expect(u.origin).toBe('https://dev.factory.duskora.ai');
-    expect(u.pathname).toBe('/signup');
-    expect(Object.fromEntries(u.searchParams)).toEqual({ plan, interval, currency });
+    const u = new URL((await page.locator(sel).getAttribute('href'))!, base);
+    expect(u.pathname).toBe('/beta/');
+    expect(u.search).toBe('');
   };
   for (const id of ['developer', 'team', 'business']) await check(`[data-cta=${id}]`, id, 'month', 'usd');
   await pick(page, 'interval', 'Annual');
@@ -130,8 +129,7 @@ test('CTAs point at app sign-up with the right parameters', async ({ page }) => 
   await expect(page.locator('.hero a[data-signup]')).toHaveCount(1);
   await expect(page.locator('.closer a[data-signup]')).toHaveCount(1);
   for (const href of await signups.evaluateAll((as) => as.map((a) => a.getAttribute('href')!))) {
-    expect(href).toBe('https://dev.factory.duskora.ai/signup');
-    expect(new URL(href).search).toBe('');
+    expect(href).toBe('/beta/');
   }
   await expect(signups).toHaveText(['Start free trial', 'Start free trial']);
   await expect(page.locator('.hero a.btn-ghost')).toHaveAttribute('href', '#pricing');
