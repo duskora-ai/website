@@ -85,8 +85,9 @@
     <script>
       document.getElementById('year').textContent = new Date().getFullYear();
 
-      // Beta requests API (same host as APP_BASE in the home page config)
-      var API_URL = 'https://dev.factory.duskora.ai/beta-requests';
+      // Beta requests API: the API Gateway host, not APP_BASE (the app host is the S3/CloudFront SPA,
+      // which answers any path with index.html and no CORS headers).
+      var API_URL = 'https://g2ruw5f210.execute-api.eu-west-2.amazonaws.com/beta-requests';
 
       var form = document.getElementById('beta-form');
       var btn = document.getElementById('beta-submit');
