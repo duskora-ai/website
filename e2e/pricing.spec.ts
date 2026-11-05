@@ -37,7 +37,7 @@ test('pricing section, header links and plan table', async ({ page }) => {
   for (const [start, href] of [['/', '#pricing'], ['/terms/', '/#pricing'], ['/privacy/', '/#pricing'], ['/refunds/', '/#pricing']]) {
     await page.goto(`${base}${start}`);
     await expect(page.locator('header a', { hasText: 'Pricing' })).toHaveAttribute('href', href);
-    await expect(page.locator('header a', { hasText: 'Sign in' })).toHaveAttribute('href', 'https://dev.factory.duskora.ai');
+    await expect(page.locator('header a', { hasText: 'Sign in' })).toHaveAttribute('href', 'https://factory.duskora.ai');
   }
   await page.goto(`${base}/`);
   const team = page.locator('[data-plan=team]');
