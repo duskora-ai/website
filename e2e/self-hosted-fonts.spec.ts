@@ -23,7 +23,7 @@ test.beforeAll(async () => {
 });
 test.afterAll(() => server.close());
 
-for (const p of ['/', '/beta/', '/privacy/', '/refunds/', '/terms/']) {
+for (const p of ['/', '/beta/', '/privacy/', '/refunds/', '/terms/', '/404.html']) {
   test(`${p} uses self-hosted Inter and makes no Google Fonts requests`, async ({ page }) => {
     const requests: string[] = [];
     page.on('request', (r) => requests.push(r.url()));
