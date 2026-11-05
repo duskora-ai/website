@@ -168,6 +168,42 @@ for (const [name, width, height] of [['desktop', 1280, 900], ['phone', 375, 800]
   });
 }
 
+test('plans and USD prices are in the static HTML with JavaScript disabled', async ({ browser }) => {
+  const ctx = await browser.newContext({ javaScriptEnabled: false });
+  const page = await ctx.newPage();
+  await page.goto(`${base}/`);
+  await expect(page.locator('#plans .plan')).toHaveCount(4);
+  await expect(page.locator('#plans .plan h3')).toHaveText(['Developer', 'Team', 'Business', 'Enterprise']);
+  for (const p of await page.locator('#plans .plan').all()) await expect(p).toBeVisible();
+  await expect(page.locator('#plans .price .amount')).toHaveText(['$99', '$349', '$999', 'Custom']);
+  await expect(page.locator('#plans .price-sub')).toHaveText(['or $990/yr', 'or $3,490/yr', 'or $9,990/yr', 'Contract']);
+  await expect(page.locator('#pricing noscript p')).toContainText('Prices shown in USD, billed monthly');
+  await expect(page.locator('#pricing noscript p')).not.toContainText('to see plan prices');
+  await ctx.close();
+});
+
+test('static plan markup matches what render() produces for USD, monthly', async ({ browser }) => {
+  // Whitespace text nodes between cards are only source indentation; grid layout ignores them.
+  const plans = (page: import('@playwright/test').Page) =>
+    page.locator('#plans').evaluate((el) => {
+      const c = el.cloneNode(true) as Element;
+      for (const n of Array.from(c.childNodes)) if (n.nodeType === Node.TEXT_NODE && !n.textContent!.trim()) n.remove();
+      return c.innerHTML;
+    });
+  const off = await browser.newContext({ javaScriptEnabled: false, timezoneId: 'America/New_York', locale: 'en-US' });
+  const staticPage = await off.newPage();
+  await staticPage.goto(`${base}/`);
+  const html = await plans(staticPage);
+  await off.close();
+  const on = await browser.newContext({ timezoneId: 'America/New_York', locale: 'en-US' });
+  const page = await on.newPage();
+  await page.goto(`${base}/`);
+  // render() replaced the static cards: only the four articles remain, with no indentation text nodes.
+  expect(await page.locator('#plans').evaluate((el) => el.childNodes.length)).toBe(4);
+  expect(await plans(page)).toBe(html);
+  await on.close();
+});
+
 test('pricing cards stack on mobile without horizontal scroll', async ({ browser }) => {
   const ctx = await browser.newContext({ viewport: { width: 375, height: 800 } });
   const page = await ctx.newPage();
