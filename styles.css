@@ -1,3 +1,12 @@
+/* Inter, self-hosted: Latin subset, variable weight 400–700. Licence: /fonts/OFL.txt */
+@font-face {
+  font-family: 'Inter';
+  src: url('/fonts/inter-latin-variable.woff2') format('woff2');
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   color-scheme: light;
   --font: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
