@@ -10,6 +10,10 @@ Legal pages (`terms/`, `privacy/`, `refunds/`) are folders with an `index.html` 
 
 `pnpm install && pnpm test:e2e` runs the Playwright checks in `e2e/` against a built-in static server (browsers: `pnpm exec playwright install chromium` if missing).
 
+## Share image
+
+Every page's Open Graph and Twitter card tags point at `og-image.png`, a 1200×630 preview image. It is rasterised from `scripts/og-image.svg` by `node scripts/og-image.mjs`; after editing the SVG, run it and commit both files. The e2e check `social-meta` asserts the tags on every page and the image's size, so add the same tag block to any new page.
+
 ## Platform screenshots
 
 The four images in the "Platform" section (`screenshots/*.png`) are real app screens framed in a laptop on a dusk-coloured background. `scripts/shots.mjs` regenerates them:
