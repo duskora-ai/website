@@ -74,19 +74,35 @@
         </p>
         <div class="shots">
           <figure class="shot">
-            <img src="/screenshots/plan.png" width="1200" height="750" loading="lazy" alt="Plan artifact written by the planning agent for a ticket" />
+            <picture>
+              <source type="image/avif" srcset="/screenshots/plan-600.avif 600w, /screenshots/plan-1200.avif 1200w" sizes="(max-width: 860px) 92vw, 504px" />
+              <source type="image/webp" srcset="/screenshots/plan-600.webp 600w, /screenshots/plan-1200.webp 1200w" sizes="(max-width: 860px) 92vw, 504px" />
+              <img src="/screenshots/plan.png" width="1200" height="750" loading="lazy" alt="Plan artifact written by the planning agent for a ticket" />
+            </picture>
             <figcaption><h3>Plan before code</h3><p>The planning agent reads the ticket and your codebase, then writes a plan you can read before any code changes.</p></figcaption>
           </figure>
           <figure class="shot">
-            <img src="/screenshots/build-pr.png" width="1200" height="750" loading="lazy" alt="Pull request opened by the build agent after CI checks pass" />
+            <picture>
+              <source type="image/avif" srcset="/screenshots/build-pr-600.avif 600w, /screenshots/build-pr-1200.avif 1200w" sizes="(max-width: 860px) 92vw, 504px" />
+              <source type="image/webp" srcset="/screenshots/build-pr-600.webp 600w, /screenshots/build-pr-1200.webp 1200w" sizes="(max-width: 860px) 92vw, 504px" />
+              <img src="/screenshots/build-pr.png" width="1200" height="750" loading="lazy" alt="Pull request opened by the build agent after CI checks pass" />
+            </picture>
             <figcaption><h3>Built on a branch, opened after CI</h3><p>The build agent implements the plan on its own branch, runs your CI checks and opens a pull request.</p></figcaption>
           </figure>
           <figure class="shot">
-            <img src="/screenshots/review.png" width="1200" height="750" loading="lazy" alt="Review agent findings on a pull request diff" />
+            <picture>
+              <source type="image/avif" srcset="/screenshots/review-600.avif 600w, /screenshots/review-1200.avif 1200w" sizes="(max-width: 860px) 92vw, 504px" />
+              <source type="image/webp" srcset="/screenshots/review-600.webp 600w, /screenshots/review-1200.webp 1200w" sizes="(max-width: 860px) 92vw, 504px" />
+              <img src="/screenshots/review.png" width="1200" height="750" loading="lazy" alt="Review agent findings on a pull request diff" />
+            </picture>
             <figcaption><h3>A separate agent reviews</h3><p>A different agent reviews the diff and sends it back to build if it isn't right.</p></figcaption>
           </figure>
           <figure class="shot">
-            <img src="/screenshots/qa-approval.png" width="1200" height="750" loading="lazy" alt="QA evidence and approval gate for a ticket" />
+            <picture>
+              <source type="image/avif" srcset="/screenshots/qa-approval-600.avif 600w, /screenshots/qa-approval-1200.avif 1200w" sizes="(max-width: 860px) 92vw, 504px" />
+              <source type="image/webp" srcset="/screenshots/qa-approval-600.webp 600w, /screenshots/qa-approval-1200.webp 1200w" sizes="(max-width: 860px) 92vw, 504px" />
+              <img src="/screenshots/qa-approval.png" width="1200" height="750" loading="lazy" alt="QA evidence and approval gate for a ticket" />
+            </picture>
             <figcaption><h3>QA evidence, then your approval</h3><p>QA tests each acceptance criterion and attaches screenshots as evidence. Nothing deploys until you approve.</p></figcaption>
           </figure>
         </div>

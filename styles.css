@@ -105,6 +105,7 @@ section h2 { font-size: clamp(26px, 3.5vw, 36px); letter-spacing: -0.025em; line
 
 .shots { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; margin-bottom: 96px; }
 .shot { margin: 0; min-width: 0; }
+.shot picture { display: block; }
 .shot img { display: block; width: 100%; height: auto; border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); }
 .shot figcaption { margin-top: 12px; }
 .shot h3 { margin: 0 0 4px; font-size: 16px; color: var(--text); }
