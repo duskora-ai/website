@@ -17,6 +17,86 @@
     <meta property="og:type" content="website" />
     <link rel="preload" href="/fonts/inter-latin-variable.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="stylesheet" href="/styles.css" />
+    <!-- Structured data. Offer prices mirror PRICES.usd (monthly) and the FAQ mirrors .faq word for word (e2e/structured-data.spec.ts checks both). -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "Organization",
+            "@id": "https://duskora.ai/#organization",
+            "name": "Duskora.ai",
+            "legalName": "Duskora.ai Ltd",
+            "url": "https://duskora.ai/",
+            "logo": "https://duskora.ai/apple-touch-icon.png",
+            "email": "hello@duskora.ai",
+            "contactPoint": { "@type": "ContactPoint", "contactType": "customer support", "email": "hello@duskora.ai" }
+          },
+          {
+            "@type": "SoftwareApplication",
+            "@id": "https://duskora.ai/#software",
+            "name": "Duskora",
+            "url": "https://duskora.ai/",
+            "description": "Duskora turns tickets into shipped code. AI agents plan, build, review, test and deploy, and you approve what goes live.",
+            "applicationCategory": "DeveloperApplication",
+            "operatingSystem": "Web",
+            "publisher": { "@id": "https://duskora.ai/#organization" },
+            "offers": [
+              {
+                "@type": "Offer",
+                "name": "Developer",
+                "price": 99,
+                "priceCurrency": "USD",
+                "url": "https://duskora.ai/#pricing",
+                "priceSpecification": { "@type": "UnitPriceSpecification", "price": 99, "priceCurrency": "USD", "billingDuration": "P1M", "unitCode": "MON" }
+              },
+              {
+                "@type": "Offer",
+                "name": "Team",
+                "price": 349,
+                "priceCurrency": "USD",
+                "url": "https://duskora.ai/#pricing",
+                "priceSpecification": { "@type": "UnitPriceSpecification", "price": 349, "priceCurrency": "USD", "billingDuration": "P1M", "unitCode": "MON" }
+              },
+              {
+                "@type": "Offer",
+                "name": "Business",
+                "price": 999,
+                "priceCurrency": "USD",
+                "url": "https://duskora.ai/#pricing",
+                "priceSpecification": { "@type": "UnitPriceSpecification", "price": 999, "priceCurrency": "USD", "billingDuration": "P1M", "unitCode": "MON" }
+              }
+            ]
+          },
+          {
+            "@type": "FAQPage",
+            "@id": "https://duskora.ai/#faq",
+            "mainEntity": [
+              {
+                "@type": "Question",
+                "name": "What counts as a ticket?",
+                "acceptedAnswer": { "@type": "Answer", "text": "A ticket is counted once, when an agent first starts building it. Rework and retries are included, up to a fair-use limit of 10 runs per ticket." }
+              },
+              {
+                "@type": "Question",
+                "name": "Who pays for model costs?",
+                "acceptedAnswer": { "@type": "Answer", "text": "You bring your own Anthropic, OpenAI or Google key. Model usage is billed by that vendor, not by Duskora." }
+              },
+              {
+                "@type": "Question",
+                "name": "What happens at the limit?",
+                "acceptedAnswer": { "@type": "Answer", "text": "New tickets wait until the next period, or you can upgrade." }
+              },
+              {
+                "@type": "Question",
+                "name": "Can I cancel?",
+                "acceptedAnswer": { "@type": "Answer", "text": "Yes, at any time, from Billing. Cancellation takes effect at the end of the current billing period." }
+              }
+            ]
+          }
+        ]
+      }
+    </script>
   </head>
   <body>
     <header>
@@ -222,6 +302,7 @@
         { id: 'business', name: 'Business', tickets: '750', agents: '15', repos: 'Unlimited', projects: 'Unlimited', chat: '300', sso: true, sla: false, cta: 'Start with Business' },
         { id: 'enterprise', name: 'Enterprise', tickets: 'Custom', agents: 'Custom', repos: 'Unlimited', projects: 'Unlimited', chat: 'Custom', sso: true, sla: true, cta: 'Contact us' }
       ];
+      // The JSON-LD offers in <head> repeat PRICES.usd (monthly): update them together (e2e/structured-data.spec.ts checks it).
       var PRICES = {
         usd: { symbol: '$', vat: '', developer: [99, 990], team: [349, 3490], business: [999, 9990] },
         gbp: { symbol: '\u00a3', vat: '+ VAT', developer: [79, 790], team: [279, 2790], business: [799, 7990] },
