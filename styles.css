@@ -113,6 +113,8 @@ section h2 { font-size: clamp(26px, 3.5vw, 36px); letter-spacing: -0.025em; line
 
 .integrations { display: flex; flex-wrap: wrap; gap: 10px; margin: -56px 0 96px; }
 .chip { padding: 8px 14px; border: 1px solid var(--border); border-radius: 999px; font-size: 14px; color: var(--text-2); background: var(--surface); }
+a.chip { text-decoration: none; transition: border-color 0.15s, color 0.15s; }
+a.chip:hover { border-color: var(--muted); color: var(--text); }
 
 .closer { text-align: center; padding: 64px 32px; border-radius: 20px; background: var(--dusk); color: #fff; margin-bottom: 96px; }
 .closer h2 { color: #fff; }

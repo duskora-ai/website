@@ -16,4 +16,20 @@
     <loc>https://duskora.ai/refunds/</loc>
     <lastmod>2026-11-05</lastmod>
   </url>
+  <url>
+    <loc>https://duskora.ai/integrations/</loc>
+    <lastmod>2026-11-05</lastmod>
+  </url>
+  <url>
+    <loc>https://duskora.ai/integrations/github/</loc>
+    <lastmod>2026-11-05</lastmod>
+  </url>
+  <url>
+    <loc>https://duskora.ai/integrations/linear/</loc>
+    <lastmod>2026-11-05</lastmod>
+  </url>
+  <url>
+    <loc>https://duskora.ai/integrations/jira/</loc>
+    <lastmod>2026-11-05</lastmod>
+  </url>
 </urlset>

@@ -34,7 +34,16 @@ test.beforeAll(async () => {
 test.afterAll(() => server.close());
 
 const ORIGIN = 'https://duskora.ai';
-const CANONICAL = [`${ORIGIN}/`, `${ORIGIN}/terms/`, `${ORIGIN}/privacy/`, `${ORIGIN}/refunds/`];
+const CANONICAL = [
+  `${ORIGIN}/`,
+  `${ORIGIN}/terms/`,
+  `${ORIGIN}/privacy/`,
+  `${ORIGIN}/refunds/`,
+  `${ORIGIN}/integrations/`,
+  `${ORIGIN}/integrations/github/`,
+  `${ORIGIN}/integrations/linear/`,
+  `${ORIGIN}/integrations/jira/`,
+];
 
 test('robots.txt allows all crawlers and points at the sitemap', async ({ request }) => {
   const res = await request.get(`${base}/robots.txt`);
