@@ -32,6 +32,12 @@ async function fillValid(page: Page) {
   await page.getByLabel('What do you want to use Duskora for?').fill('Extend our API');
 }
 
+test('beta page is kept out of search results but keeps its canonical URL', async ({ page }) => {
+  await page.goto(`${base}/beta/`);
+  await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex, follow');
+  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', 'https://duskora.ai/beta/');
+});
+
 for (const [name, width, height] of [['desktop', 1280, 900], ['phone', 375, 800]] as const) {
   test.describe(`beta form at ${name} width`, () => {
     test.use({ viewport: { width, height } });
