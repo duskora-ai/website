@@ -35,5 +35,15 @@ for (const p of ['/', '/beta/', '/privacy/', '/refunds/', '/terms/']) {
     await expect(page.locator('link[rel="preload"][as="font"][type="font/woff2"][crossorigin]')).toHaveAttribute('href', '/fonts/inter-latin-variable.woff2');
     const loaded = await page.evaluate(() => [...document.fonts].filter((f) => f.family.replace(/['"]/g, '') === 'Inter' && f.status === 'loaded').length);
     expect(loaded).toBeGreaterThan(0);
+
+    // Every character on the page must come from the Inter subset, not a fallback font:
+    // a glyph Inter lacks measures differently with a serif vs a monospace fallback.
+    const missing = await page.evaluate(() => {
+      const ctx = document.createElement('canvas').getContext('2d')!;
+      const width = (c: string, fallback: string) => ((ctx.font = `16px Inter, ${fallback}`), ctx.measureText(c).width);
+      const chars = [...new Set(document.body.innerText.replace(/\s/g, ''))];
+      return chars.filter((c) => width(c, 'serif') !== width(c, 'monospace'));
+    });
+    expect(missing).toEqual([]);
   });
 }
