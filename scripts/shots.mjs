@@ -1,11 +1,14 @@
 // Captures the Duskora app screens shown in the #platform section and frames each one
-// in a laptop on a dusk-coloured background, writing screenshots/<name>.png.
+// in a laptop on a dusk-coloured background, writing screenshots/<name>.png plus smaller
+// WebP and AVIF copies (screenshots/<name>-600.webp, -1200.webp, -600.avif, -1200.avif).
 //
 //   node scripts/shots.mjs login     sign in once in a real browser window; the session is saved to .auth/
 //   node scripts/shots.mjs capture   screenshot each page in shots.config.json into screenshots/raw/
-//   node scripts/shots.mjs frame     frame every screenshots/raw/*.png into screenshots/<name>.png
+//   node scripts/shots.mjs frame     frame every screenshots/raw/*.png into screenshots/<name>.png and its variants
+//   node scripts/shots.mjs variants  rebuild only the WebP/AVIF variants from the framed screenshots/*.png
 //   node scripts/shots.mjs           capture, then frame
 import { chromium } from '@playwright/test';
+import sharp from 'sharp';
 import fs from 'node:fs';
 import path from 'node:path';
 import readline from 'node:readline/promises';
@@ -19,6 +22,10 @@ const outDir = path.join(root, 'screenshots');
 
 // The <img> slots in index.html are 1200x750; frames are rendered at 2x for retina screens.
 const OUT = { width: 1200, height: 750, scale: 2 };
+// The images show at ~500px wide, so index.html serves these widths via <picture>/srcset: 600w for 1x, 1200w for 2x.
+// The 2400px PNG stays as the fallback for browsers without WebP/AVIF support.
+const VARIANT_WIDTHS = [600, 1200];
+const VARIANT_FORMATS = { webp: { quality: 80 }, avif: { quality: 50 } };
 
 async function login() {
   const browser = await chromium.launch({ headless: false });
@@ -170,12 +177,31 @@ async function frame() {
     const file = path.join(outDir, f);
     await page.screenshot({ path: file });
     console.log(`Framed ${path.relative(root, file)}`);
+    await writeVariants(file);
   }
   await browser.close();
 }
 
+// Writes <name>-<width>.<format> next to a framed <name>.png.
+async function writeVariants(file) {
+  const base = file.replace(/\.png$/, '');
+  for (const width of VARIANT_WIDTHS) {
+    for (const [format, options] of Object.entries(VARIANT_FORMATS)) {
+      const out = `${base}-${width}.${format}`;
+      await sharp(file).resize({ width, withoutEnlargement: true })[format](options).toFile(out);
+      console.log(`Wrote ${path.relative(root, out)}`);
+    }
+  }
+}
+
+async function variants() {
+  const framed = fs.readdirSync(outDir).filter((f) => f.endsWith('.png'));
+  if (!framed.length) throw new Error(`No framed PNGs in ${path.relative(root, outDir)}. Run frame first.`);
+  for (const f of framed) await writeVariants(path.join(outDir, f));
+}
+
 const cmd = process.argv[2] || 'all';
-const commands = { login, capture, frame, all: async () => { await capture(); await frame(); } };
+const commands = { login, capture, frame, variants, all: async () => { await capture(); await frame(); } };
 if (!commands[cmd]) {
   console.error(`Unknown command "${cmd}". Use one of: ${Object.keys(commands).join(', ')}`);
   process.exit(1);

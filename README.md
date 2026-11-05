@@ -19,3 +19,5 @@ The four images in the "Platform" section (`screenshots/*.png`) are real app scr
 3. `pnpm shots` captures each page into `screenshots/raw/` (git-ignored) and writes the framed 2400×1500 PNGs over `screenshots/<name>.png`.
 
 Already have screenshots? Drop 16:10 PNGs named `plan.png`, `build-pr.png`, `review.png` and `qa-approval.png` into `screenshots/raw/` and run `pnpm shots:frame`. The images show at roughly 500px wide on the page, so the config captures at a 1152×720 viewport to keep the app text as large as possible.
+
+Next to each PNG, `shots:frame` also writes WebP and AVIF copies at 600w and 1200w (`screenshots/<name>-600.webp`, `<name>-1200.webp`, `<name>-600.avif`, `<name>-1200.avif`). The Platform section serves them with `<picture>`/`srcset` and `sizes`, so 1x screens get the 600w file and 2x screens the 1200w one. The 2400×1500 PNG is only the fallback for browsers without WebP or AVIF support. The variants are encoded with the `sharp` dev dependency (installed by `pnpm install`). To rebuild only the variants from the framed PNGs already in `screenshots/`, run `node scripts/shots.mjs variants`. Commit the PNG and all four variants together.
