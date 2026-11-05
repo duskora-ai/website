@@ -76,3 +76,23 @@ test('sitemap.xml lists the canonical pages, each with lastmod, and each one is 
     expect(page.headers()['content-type']).toContain('text/html');
   }
 });
+
+// every HTML page, including /beta/ (which is left out of the sitemap)
+const PAGE_CANONICALS: Record<string, string> = {
+  '/': `${ORIGIN}/`,
+  '/beta/': `${ORIGIN}/beta/`,
+  '/terms/': `${ORIGIN}/terms/`,
+  '/privacy/': `${ORIGIN}/privacy/`,
+  '/refunds/': `${ORIGIN}/refunds/`,
+};
+
+test('every page declares its absolute canonical URL', async ({ request }) => {
+  for (const [p, expected] of Object.entries(PAGE_CANONICALS)) {
+    const res = await request.get(`${base}${p}`);
+    expect(res.status(), `${p} should be served`).toBe(200);
+    const html = await res.text();
+    const tags = [...html.matchAll(/<link\b[^>]*\brel="canonical"[^>]*>/g)].map((m) => m[0]);
+    expect(tags, `${p} should have exactly one canonical link`).toHaveLength(1);
+    expect(tags[0].match(/\bhref="([^"]*)"/)?.[1], `${p} canonical href`).toBe(expected);
+  }
+});
