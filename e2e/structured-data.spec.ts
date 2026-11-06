@@ -60,6 +60,21 @@ test('Organization names Duskora with a PNG logo and contact email', async ({ pa
   expect(png.readUInt32BE(20)).toBeGreaterThanOrEqual(112);
 });
 
+test('WebSite names the site Duskora.ai to match og:site_name and the Organization', async ({ page }) => {
+  const nodes = await graph(page);
+  const site = byType(nodes, 'WebSite');
+  const org = byType(nodes, 'Organization');
+  expect(site['@id']).toBe('https://duskora.ai/#website');
+  expect(site.url).toBe('https://duskora.ai/');
+  expect(site.name).toBe('Duskora.ai');
+  expect(site.name).toBe(org.name);
+  await expect(page.locator('meta[property="og:site_name"]')).toHaveAttribute('content', site.name);
+  expect(site.alternateName).toEqual(['Duskora AI', 'Duskora']);
+  expect(site.publisher).toEqual({ '@id': org['@id'] });
+  // The site has no search, so no SearchAction.
+  expect(site).not.toHaveProperty('potentialAction');
+});
+
 test('SoftwareApplication offers match PRICES.usd monthly', async ({ page }) => {
   const nodes = await graph(page);
   const app = byType(nodes, 'SoftwareApplication');
