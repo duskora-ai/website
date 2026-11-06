@@ -96,3 +96,64 @@ test('every page declares its absolute canonical URL', async ({ request }) => {
     expect(tags[0].match(/\bhref="([^"]*)"/)?.[1], `${p} canonical href`).toBe(expected);
   }
 });
+
+test('llms.txt is served as text, summarises the site and links to each integration page', async ({ request }) => {
+  const res = await request.get(`${base}/llms.txt`);
+  expect(res.status()).toBe(200);
+  expect(res.headers()['content-type']).toContain('text/plain');
+  const txt = await res.text();
+  const lines = txt.split(/\r?\n/);
+  expect(lines[0]).toBe('# Duskora.ai');
+  expect(lines.filter((l) => l.startsWith('> '))).toHaveLength(1);
+  expect(txt).toContain('Duskora.ai Ltd (UK)');
+
+  for (const p of ['/', '/integrations/', '/integrations/github/', '/integrations/linear/', '/integrations/jira/', '/#pricing', '/beta/', '/terms/', '/privacy/', '/refunds/']) {
+    expect(txt, `llms.txt should link to ${p}`).toContain(`](${ORIGIN}${p})`);
+  }
+});
+
+test('llms.txt prices match PRICES.usd monthly', async ({ page, request }) => {
+  const txt = await (await request.get(`${base}/llms.txt`)).text();
+  await page.goto(`${base}/`);
+  const usd = await page.evaluate(() => (window as any).PRICES.usd);
+  const plans = await page.evaluate(() => (window as any).PLANS as { id: string; name: string }[]);
+  for (const p of plans) {
+    if (usd[p.id]) expect(txt, `${p.name} price`).toContain(`- ${p.name}: $${usd[p.id][0]}/month`);
+    else expect(txt, `${p.name} should be custom`).toContain(`- ${p.name}: custom`);
+  }
+});
+
+// llms.txt may only repeat what the site already says
+test('llms.txt only states facts the site already states', async ({ request }) => {
+  const txt = await (await request.get(`${base}/llms.txt`)).text();
+  const html = async (p: string) => (await (await request.get(`${base}${p}`)).text()).replace(/\s+/g, ' ');
+
+  // each link note is the linked page's own meta description (the pricing note is copied from the integrations pages)
+  const links = [...txt.matchAll(/^- \[[^\]]+\]\(https:\/\/duskora\.ai([^)]*)\): (.+)$/gm)];
+  expect(links.length).toBeGreaterThanOrEqual(10);
+  for (const [, p, note] of links) {
+    const page = await html(p === '/#pricing' ? '/integrations/' : p);
+    if (p === '/#pricing') expect(page, 'pricing note').toContain(note);
+    else expect(page.match(/<meta name="description"\s+content="([^"]*)"/)?.[1], `note for ${p}`).toBe(note);
+  }
+
+  // each claim in the blockquote, and where the site makes it
+  const quote = txt.split(/\r?\n/).find((l) => l.startsWith('> '))!;
+  const sources: [string, string, string][] = [
+    ['by Duskora.ai Ltd (UK)', '/terms/', 'Duskora.ai Ltd, 66 Paul Street, London'],
+    ['AI coding agents', '/', 'AI coding agents that turn Linear and Jira tickets into reviewed GitHub pull requests'],
+    ['plan, build, review, QA and deploy', '/', '<h3>QA</h3>'],
+    ['reviewed GitHub pull requests in your repo', '/', 'Real pull requests in your repo'],
+    ['human approval gate', '/terms/', 'human approval'],
+    ['Every change waits at a', '/', 'Every change waits at an approval gate'],
+    ['nothing ships without you', '/', 'Nothing ships without you'],
+  ];
+  for (const [claim, p, onSite] of sources) {
+    expect(quote, 'blockquote claim').toContain(claim);
+    expect(await html(p), `${p} should say "${onSite}"`).toContain(onSite);
+  }
+});
+
+test('llms.txt is not listed in sitemap.xml', async ({ request }) => {
+  expect(await (await request.get(`${base}/sitemap.xml`)).text()).not.toContain('llms.txt');
+});
