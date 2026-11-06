@@ -151,7 +151,9 @@ footer { border-top: 1px solid var(--border); padding: 32px 0 48px; font-size: 1
 /* A fact the owner still has to supply; e2e fails while any remain. */
 .doc .fill { padding: 0 4px; border-radius: 4px; background: var(--accent-soft); color: var(--accent); font-weight: 600; }
 
-.foot-links { display: flex; gap: 20px; flex-wrap: wrap; }
+.foot-links { display: flex; gap: 12px 20px; flex-wrap: wrap; }
+/* Product and Legal link groups: one row on wide screens, stacked when they don't fit. */
+.foot-groups { display: flex; flex-wrap: wrap; gap: 12px 40px; }
 
 @media (max-width: 560px) {
   .doc { padding: 40px 16px 64px; }
