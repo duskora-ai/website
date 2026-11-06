@@ -1,0 +1,34 @@
+# Duskora.ai
+
+> Duskora.ai is a software product by Duskora.ai Ltd (UK). It provides AI coding agents that take Linear and Jira tickets through plan, build, review, QA and deploy, and deliver the work as reviewed GitHub pull requests in your repo. Every change waits at a human approval gate, so nothing ships without you.
+
+Each link below is followed by the description that page gives of itself.
+
+## Product
+
+- [Home](https://duskora.ai/): AI coding agents that turn Linear and Jira tickets into reviewed GitHub pull requests. Plan, build, review, test and deploy. You approve what ships.
+
+## Integrations
+
+- [Integrations](https://duskora.ai/integrations/): How Duskora's AI agents work with GitHub, Linear and Jira: two-way issue sync, real pull requests checked against your CI, and approval gates before anything deploys.
+- [GitHub](https://duskora.ai/integrations/github/): Duskora's AI agents turn tickets into real pull requests in your GitHub repo, built on a branch, checked against your CI, reviewed, and merged only after you approve.
+- [Linear](https://duskora.ai/integrations/linear/): Duskora syncs two ways with Linear. Label an issue and AI agents plan, build, review and test it as a GitHub pull request, and progress flows back to Linear.
+- [Jira](https://duskora.ai/integrations/jira/): Duskora syncs two ways with Jira. Label an issue and AI agents take the ticket to a reviewed GitHub pull request, and progress flows back to Jira.
+
+## Pricing
+
+- [Pricing](https://duskora.ai/#pricing): Every plan starts with a free 7-day trial, and no card is needed.
+  - Developer: $99/month
+  - Team: $349/month
+  - Business: $999/month
+  - Enterprise: custom pricing (Contact us)
+
+## Get started
+
+- [Beta access](https://duskora.ai/beta/): Request access to the Duskora.ai beta.
+
+## Legal
+
+- [Terms of Service](https://duskora.ai/terms/): Terms of Service for Duskora.ai.
+- [Privacy Policy](https://duskora.ai/privacy/): Privacy Policy for Duskora.ai.
+- [Refunds and cancellation](https://duskora.ai/refunds/): Plans, cancellation and refund policy for Duskora.ai.

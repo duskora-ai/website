@@ -324,7 +324,7 @@
         { id: 'business', name: 'Business', tickets: '750', agents: '15', repos: 'Unlimited', projects: 'Unlimited', chat: '300', sso: true, sla: false, cta: 'Start with Business' },
         { id: 'enterprise', name: 'Enterprise', tickets: 'Custom', agents: 'Custom', repos: 'Unlimited', projects: 'Unlimited', chat: 'Custom', sso: true, sla: true, cta: 'Contact us' }
       ];
-      // The JSON-LD offers in <head> repeat PRICES.usd (monthly): update them together (e2e/structured-data.spec.ts checks it).
+      // The JSON-LD offers in <head> repeat PRICES.usd (monthly): update them together (e2e/structured-data.spec.ts checks it). So does the Pricing section of /llms.txt (e2e/seo-files.spec.ts checks it).
       var PRICES = {
         usd: { symbol: '$', vat: '', developer: [99, 990], team: [349, 3490], business: [999, 9990] },
         gbp: { symbol: '\u00a3', vat: '+ VAT', developer: [79, 790], team: [279, 2790], business: [799, 7990] },
