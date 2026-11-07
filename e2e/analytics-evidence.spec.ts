@@ -32,7 +32,7 @@ test('analytics evidence: beta signup flow sends events', async ({ page }) => {
   test.slow(!!artifacts);
   const src = fs.readFileSync(path.join(root, 'analytics.js'), 'utf8');
   await page.route('**/analytics.js', (route) =>
-    route.fulfill({ contentType: 'text/javascript', body: src.replace("var GA_ID = '';", "var GA_ID = 'G-TEST123';") }));
+    route.fulfill({ contentType: 'text/javascript', body: src.replace(/var GA_ID = '[^']*';/, "var GA_ID = 'G-TEST123';").replace("location.hostname !== 'duskora.ai'", 'false') }));
   await page.route(/^https:\/\/www\.googletagmanager\.com\//, (route) => route.fulfill({ contentType: 'text/javascript', body: '' }));
   await page.route('**/beta-requests', (route) => route.fulfill({ status: 201, body: '{}', contentType: 'application/json' }));
 

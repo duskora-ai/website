@@ -27,18 +27,31 @@ const PAGES = ['/', '/404.html', '/beta/', '/terms/', '/privacy/', '/refunds/', 
 const GTM = /^https:\/\/www\.googletagmanager\.com\//;
 const TEST_ID = 'G-TEST123';
 
-// Serve analytics.js with a measurement ID set, and record (but never send) gtag.js requests.
+const ID_LINE = /var GA_ID = '[^']*';/;
+const HOST_CHECK = "location.hostname !== 'duskora.ai'";
+
+// Serve analytics.js with the given measurement ID and the duskora.ai-only check lifted, so it runs on the test server.
+async function serveAnalytics(page: Page, id: string) {
+  const src = fs.readFileSync(path.join(root, 'analytics.js'), 'utf8');
+  expect(src).toMatch(ID_LINE);
+  expect(src).toContain(HOST_CHECK);
+  await page.route('**/analytics.js', (route) =>
+    route.fulfill({ contentType: 'text/javascript', body: src.replace(ID_LINE, `var GA_ID = '${id}';`).replace(HOST_CHECK, 'false') }));
+}
+
+// Serve analytics.js with a test measurement ID, and record (but never send) gtag.js requests.
 async function withId(page: Page) {
   const gtm: string[] = [];
-  const src = fs.readFileSync(path.join(root, 'analytics.js'), 'utf8');
-  expect(src).toContain("var GA_ID = '';");
-  await page.route('**/analytics.js', (route) =>
-    route.fulfill({ contentType: 'text/javascript', body: src.replace("var GA_ID = '';", `var GA_ID = '${TEST_ID}';`) }));
+  await serveAnalytics(page, TEST_ID);
   await page.route(GTM, (route) => { gtm.push(route.request().url()); return route.fulfill({ contentType: 'text/javascript', body: '' }); });
   return gtm;
 }
 
 // gtag() pushes its arguments objects onto dataLayer
+test('analytics.js has the live measurement ID', () => {
+  expect(fs.readFileSync(path.join(root, 'analytics.js'), 'utf8')).toContain("var GA_ID = 'G-CGBBLYCXMM';");
+});
+
 const events = (page: Page) =>
   page.evaluate(() => ((window as any).dataLayer || []).map((a: IArguments) => Array.from(a)).filter((a: unknown[]) => a[0] === 'event'));
 
@@ -52,7 +65,7 @@ for (const p of PAGES) {
     expect(order).toEqual(['LINK', 'SCRIPT']);
   });
 
-  test(`${p} makes no Google Analytics requests and throws nothing while the ID is empty`, async ({ page }) => {
+  test(`${p} makes no Google Analytics requests and throws nothing off duskora.ai`, async ({ page }) => {
     const requests: string[] = [];
     const errors: string[] = [];
     page.on('request', (r) => requests.push(r.url()));
@@ -61,6 +74,15 @@ for (const p of PAGES) {
     expect(requests.filter((u) => GTM.test(u) || /google-analytics\.com/.test(u))).toEqual([]);
     expect(await page.evaluate(() => typeof (window as any).gtag)).toBe('undefined');
     expect(errors).toEqual([]);
+  });
+
+  test(`${p} makes no Google Analytics requests while the ID is empty`, async ({ page }) => {
+    const requests: string[] = [];
+    page.on('request', (r) => requests.push(r.url()));
+    await serveAnalytics(page, '');
+    await page.goto(base + p, { waitUntil: 'networkidle' });
+    expect(requests.filter((u) => GTM.test(u) || /google-analytics\.com/.test(u))).toEqual([]);
+    expect(await page.evaluate(() => typeof (window as any).gtag)).toBe('undefined');
   });
 
   test(`${p} loads gtag.js and configures GA with IP anonymisation once the ID is set`, async ({ page }) => {

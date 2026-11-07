@@ -1,9 +1,10 @@
-// Google Analytics 4, loaded on every page. Set GA_ID to the property's measurement ID (G-…) to turn it on;
-// while it is empty nothing loads and window.gtag stays undefined, so callers must guard with `window.gtag &&`.
+// Google Analytics 4, loaded on every page. GA_ID is the property's measurement ID (G-…). It only loads on the live
+// site (duskora.ai), so local previews and test runs don't send fake visits; elsewhere, or with GA_ID empty, nothing
+// loads and window.gtag stays undefined, so callers must guard with `window.gtag &&`.
 // Events: page views (automatic), sign_up_click (sign-up and pricing CTAs), beta_request_submitted (beta/index.html).
 (function () {
-  var GA_ID = '';
-  if (!GA_ID) return;
+  var GA_ID = 'G-CGBBLYCXMM';
+  if (!GA_ID || location.hostname !== 'duskora.ai') return;
 
   window.dataLayer = window.dataLayer || [];
   window.gtag = function () { window.dataLayer.push(arguments); };

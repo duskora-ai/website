@@ -20,7 +20,7 @@ Every page declares `favicon.ico` (16, 32 and 48px, for search results and brows
 
 ## Analytics
 
-`analytics.js` loads Google Analytics 4 on every page (each page's `<head>` has `<script src="/analytics.js" defer>` after the stylesheet). It does nothing until `GA_ID` at its top is set to the property's measurement ID (`G-…`). Besides page views it sends `sign_up_click` (the `data-signup` and pricing `data-cta` buttons, with `link_url`, `page_path` and `plan`) and `beta_request_submitted` (a successful `/beta/` request, with `code_host` only, never the name, email or use case). The privacy page's "Cookies and analytics" section describes this, so update it with any change. The e2e check `analytics` covers it; add the same script tag to any new page.
+`analytics.js` loads Google Analytics 4 on every page (each page's `<head>` has `<script src="/analytics.js" defer>` after the stylesheet). `GA_ID` at its top is the property's measurement ID (`G-CGBBLYCXMM`), and it only loads on `duskora.ai`, so local previews and test runs never send visits to the live property. Besides page views it sends `sign_up_click` (the `data-signup` and pricing `data-cta` buttons, with `link_url`, `page_path` and `plan`) and `beta_request_submitted` (a successful `/beta/` request, with `code_host` only, never the name, email or use case). The privacy page's "Cookies and analytics" section describes this, so update it with any change. The e2e check `analytics` covers it; add the same script tag to any new page.
 
 ## llms.txt
 
