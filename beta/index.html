@@ -25,6 +25,7 @@
     <meta name="twitter:image" content="https://duskora.ai/og-image.png" />
     <link rel="preload" href="/fonts/inter-latin-variable.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="stylesheet" href="/styles.css" />
+    <script src="/analytics.js" defer></script>
   </head>
   <body>
     <header>
@@ -159,6 +160,8 @@
           body: JSON.stringify({ name: name, email: email, codeHost: host.value, codeHostOther: host.value === 'other' ? hostOther : undefined, useCase: useCase })
         }).then(function (res) {
           if (!res.ok) throw new Error('status ' + res.status);
+          // Analytics gets the code host only, never the name, email or use case.
+          if (window.gtag) window.gtag('event', 'beta_request_submitted', { code_host: host.value });
           form.hidden = true;
           var done = document.getElementById('beta-done');
           done.hidden = false;
