@@ -24,6 +24,7 @@
     <meta name="twitter:image" content="https://duskora.ai/og-image.png" />
     <link rel="preload" href="/fonts/inter-latin-variable.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="stylesheet" href="/styles.css" />
+    <script src="/analytics.js" defer></script>
   </head>
   <body>
     <header>
@@ -95,7 +96,7 @@
       <p>Depending on where you live, you can ask to access, correct, delete or export your personal data, or object to or restrict how we use it. Email us at <a href="mailto:hello@duskora.ai">hello@duskora.ai</a>. If the data belongs to your organisation's content, we may refer you to your organisation's administrator. You can also complain to your data protection authority. In the UK, that is the <a href="https://ico.org.uk/make-a-complaint/">Information Commissioner's Office</a>.</p>
 
       <h2>Cookies and analytics</h2>
-      <p>This website uses no cookies and no analytics. It loads fonts from Google Fonts, so Google receives your IP address when you visit. The Duskora app uses only the cookies and browser storage it needs to sign you in and keep you signed in. It has no advertising or tracking cookies.</p>
+      <p>This website uses Google Analytics 4 to count page views, clicks on its sign-up buttons and completed beta access requests. We use this to see how people find the site and how many of them go on to sign up, so we can improve the site. Google Analytics sets the cookies <code>_ga</code> and <code>_ga_&lt;ID&gt;</code>, which last up to 2 years, and IP addresses are anonymised. When you request beta access, analytics records only which code host you chose, never your name, email or what you want to use Duskora for. The Duskora app uses only the cookies and browser storage it needs to sign you in and keep you signed in. It has no advertising or tracking cookies.</p>
 
       <h2>Security</h2>
       <p>Data is encrypted in transit and at rest. API keys and connection tokens are envelope-encrypted with keys held in AWS KMS. Each organisation's data is kept apart from every other organisation's at the database level. Agents run in isolated containers, one run per container, and they never see your GitHub token or other credentials. GitHub access uses short-lived tokens limited to your project's repositories. We keep an audit log of agent and human actions.</p>

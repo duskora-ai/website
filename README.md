@@ -18,6 +18,10 @@ Every page's Open Graph and Twitter card tags point at `og-image.png`, a 1200×6
 
 Every page declares `favicon.ico` (16, 32 and 48px, for search results and browsers that request it directly), then `favicon.svg`, then `apple-touch-icon.png`. `favicon.ico` and `favicon-48x48.png` are rasterised from `favicon.svg` by `node scripts/favicon.mjs`; after editing the SVG, run it and commit all three files. The e2e check `favicon` asserts the files and the link order on every page, so add the same links to any new page.
 
+## Analytics
+
+`analytics.js` loads Google Analytics 4 on every page (each page's `<head>` has `<script src="/analytics.js" defer>` after the stylesheet). It does nothing until `GA_ID` at its top is set to the property's measurement ID (`G-…`). Besides page views it sends `sign_up_click` (the `data-signup` and pricing `data-cta` buttons, with `link_url`, `page_path` and `plan`) and `beta_request_submitted` (a successful `/beta/` request, with `code_host` only, never the name, email or use case). The privacy page's "Cookies and analytics" section describes this, so update it with any change. The e2e check `analytics` covers it; add the same script tag to any new page.
+
 ## llms.txt
 
 `llms.txt` at the site root summarises Duskora.ai for AI search tools in the [llms.txt](https://llmstxt.org) format. Use only facts the site already states: each link note is the linked page's meta description, and the e2e check `llms.txt only states facts the site already states` enforces this. Its Pricing section repeats `PRICES.usd` (monthly) from `index.html`, so update them together: the e2e check `llms.txt prices match PRICES.usd monthly` fails if they drift.
