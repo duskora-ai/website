@@ -42,7 +42,9 @@ const LEGAL = [
   ['Refunds', '/refunds/'],
   ['hello@duskora.ai', 'mailto:hello@duskora.ai'],
   ['Instagram', 'https://www.instagram.com/duskora_ai/'],
+  ['GitHub', 'https://github.com/duskora-ai'],
 ];
+const SAME_AS = ['https://www.instagram.com/duskora_ai/', 'https://github.com/duskora-ai'];
 
 for (const start of PAGES) {
   test(`footer on ${start} links the product and legal pages`, async ({ page }) => {
@@ -54,6 +56,8 @@ for (const start of PAGES) {
       await expect(a).toHaveText(links.map(([name]) => name));
       for (const [i, [, href]] of links.entries()) await expect(a.nth(i)).toHaveAttribute('href', href);
     }
+    // Profiles we own carry rel="me"; the Organization sameAs lists the same URLs (e2e/structured-data.spec.ts).
+    for (const href of SAME_AS) await expect(page.locator(`footer nav[aria-label="Legal"] a[href="${href}"]`)).toHaveAttribute('rel', 'me');
     for (const [, href] of PRODUCT.slice(0, 4)) {
       const res = await page.request.get(`${base}${href}`);
       expect(res.status(), href).toBe(200);

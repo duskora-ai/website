@@ -60,6 +60,14 @@ test('Organization names Duskora with a PNG logo and contact email', async ({ pa
   expect(png.readUInt32BE(20)).toBeGreaterThanOrEqual(112);
 });
 
+test('Organization sameAs lists exactly our confirmed profiles, each linked rel="me" in the footer', async ({ page }) => {
+  const org = byType(await graph(page), 'Organization');
+  // Only confirmed Duskora.ai profiles: these tell Google we are not duskora.com.
+  expect(org.sameAs).toEqual(['https://www.instagram.com/duskora_ai/', 'https://github.com/duskora-ai']);
+  const me = await page.locator('footer a[rel~="me"]').evaluateAll((as) => as.map((a) => a.getAttribute('href')));
+  expect(me).toEqual(org.sameAs);
+});
+
 test('WebSite names the site Duskora.ai to match og:site_name and the Organization', async ({ page }) => {
   const nodes = await graph(page);
   const site = byType(nodes, 'WebSite');
