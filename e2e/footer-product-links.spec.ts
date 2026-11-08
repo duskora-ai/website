@@ -42,9 +42,14 @@ const LEGAL = [
   ['Refunds', '/refunds/'],
   ['hello@duskora.ai', 'mailto:hello@duskora.ai'],
   ['Instagram', 'https://www.instagram.com/duskora_ai/'],
+  ['LinkedIn', 'https://www.linkedin.com/company/duskora-ai/'],
   ['GitHub', 'https://github.com/duskora-ai'],
 ];
-const SAME_AS = ['https://www.instagram.com/duskora_ai/', 'https://github.com/duskora-ai'];
+const SAME_AS = [
+  'https://www.instagram.com/duskora_ai/',
+  'https://www.linkedin.com/company/duskora-ai/',
+  'https://github.com/duskora-ai',
+];
 
 for (const start of PAGES) {
   test(`footer on ${start} links the product and legal pages`, async ({ page }) => {

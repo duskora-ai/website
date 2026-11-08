@@ -63,7 +63,11 @@ test('Organization names Duskora with a PNG logo and contact email', async ({ pa
 test('Organization sameAs lists exactly our confirmed profiles, each linked rel="me" in the footer', async ({ page }) => {
   const org = byType(await graph(page), 'Organization');
   // Only confirmed Duskora.ai profiles: these tell Google we are not duskora.com.
-  expect(org.sameAs).toEqual(['https://www.instagram.com/duskora_ai/', 'https://github.com/duskora-ai']);
+  expect(org.sameAs).toEqual([
+    'https://www.instagram.com/duskora_ai/',
+    'https://www.linkedin.com/company/duskora-ai/',
+    'https://github.com/duskora-ai',
+  ]);
   const me = await page.locator('footer a[rel~="me"]').evaluateAll((as) => as.map((a) => a.getAttribute('href')));
   expect(me).toEqual(org.sameAs);
 });
