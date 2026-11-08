@@ -25,6 +25,18 @@ test.afterAll(() => server.close());
 
 const DONE = "Thanks, we'll be in touch.";
 
+async function expectFollowLinks(page: Page) {
+  const follow = page.locator('#beta-follow');
+  await expect(follow).toBeVisible();
+  await expect(follow).toContainText('Follow along while you wait:');
+  for (const [name, href] of [['LinkedIn', 'https://www.linkedin.com/company/duskora-ai/'], ['Instagram', 'https://www.instagram.com/duskora_ai/']]) {
+    const link = follow.getByRole('link', { name, exact: true });
+    await expect(link).toHaveAttribute('href', href);
+    await expect(link).toHaveAttribute('target', '_blank');
+    await expect(link).toHaveAttribute('rel', 'noopener');
+  }
+}
+
 async function fillValid(page: Page) {
   await page.getByLabel('Name', { exact: true }).fill('Ada Lovelace');
   await page.getByLabel('Work email').fill('ada@example.com');
@@ -94,10 +106,13 @@ for (const [name, width, height] of [['desktop', 1280, 900], ['phone', 375, 800]
     });
 
     test('valid submit posts the fields and shows the confirmation', async ({ page }) => {
+      await expect(page.locator('#beta-follow')).toBeHidden();
       await fillValid(page);
       await page.getByRole('button', { name: 'Request access' }).click();
       await expect(page.getByRole('status')).toHaveText(DONE);
       await expect(page.locator('#beta-form')).toBeHidden();
+      await expectFollowLinks(page);
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
       expect(requests).toHaveLength(1);
       expect(requests[0].body).toEqual({ name: 'Ada Lovelace', email: 'ada@example.com', codeHost: 'gitlab', useCase: 'Extend our API' });
     });
@@ -123,6 +138,7 @@ for (const [name, width, height] of [['desktop', 1280, 900], ['phone', 375, 800]
       await fillValid(page);
       await page.getByRole('button', { name: 'Request access' }).click();
       await expect(page.getByRole('status')).toHaveText(DONE);
+      await expectFollowLinks(page);
     });
 
     test('500 and network failure show an error and allow retry', async ({ page }) => {
@@ -137,6 +153,7 @@ for (const [name, width, height] of [['desktop', 1280, 900], ['phone', 375, 800]
       await page.getByRole('button', { name: 'Request access' }).click();
       await expect(page.locator('#e-form')).toHaveText('Something went wrong. Please try again.');
       await expect(page.locator('#beta-submit')).toBeEnabled();
+      await expect(page.locator('#beta-follow')).toBeHidden();
     });
   });
 }
