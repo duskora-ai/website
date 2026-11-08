@@ -81,6 +81,13 @@
         <p class="field-error" id="e-form" role="alert"></p>
       </form>
       <p id="beta-done" role="status" tabindex="-1" hidden>Thanks, we'll be in touch.</p>
+      <div id="beta-follow" class="beta-follow" hidden>
+        <p>Follow along while you wait:</p>
+        <ul>
+          <li><a href="https://www.linkedin.com/company/duskora-ai/" target="_blank" rel="noopener">LinkedIn</a></li>
+          <li><a href="https://www.instagram.com/duskora_ai/" target="_blank" rel="noopener">Instagram</a></li>
+        </ul>
+      </div>
     </main>
 
     <footer>
@@ -166,6 +173,7 @@
           form.hidden = true;
           var done = document.getElementById('beta-done');
           done.hidden = false;
+          document.getElementById('beta-follow').hidden = false;
           done.focus();
         }).catch(function () {
           btn.disabled = false;
