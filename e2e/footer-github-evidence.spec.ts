@@ -28,7 +28,7 @@ test.beforeAll(async () => {
 });
 test.afterAll(() => server.close());
 
-test('footer shows GitHub next to Instagram with rel="me" on every page', async ({ page }) => {
+test('footer shows GitHub after Instagram and LinkedIn with rel="me" on every page', async ({ page }) => {
   test.slow(!!out);
   for (const [slug, url] of [['home', '/'], ['404', '/404.html'], ['beta', '/beta/'], ['terms', '/terms/'], ['jira', '/integrations/jira/']]) {
     await page.goto(`${base}${url}`);
@@ -37,7 +37,8 @@ test('footer shows GitHub next to Instagram with rel="me" on every page', async 
     const gh = legal.getByRole('link', { name: 'GitHub' });
     await expect(gh).toHaveAttribute('href', 'https://github.com/duskora-ai');
     await expect(gh).toHaveAttribute('rel', 'me');
-    await expect(legal.locator('a').nth(-2)).toHaveText('Instagram');
+    await expect(legal.locator('a').nth(-3)).toHaveText('Instagram');
+    await expect(legal.locator('a').nth(-2)).toHaveText('LinkedIn');
     await pause(page);
     if (out) await legal.screenshot({ path: path.join(out, `github-footer-${slug}.png`) });
   }
