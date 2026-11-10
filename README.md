@@ -37,3 +37,16 @@ The four images in the "Platform" section (`screenshots/*.png`) are real app scr
 Already have screenshots? Drop 16:10 PNGs named `plan.png`, `build-pr.png`, `review.png` and `qa-approval.png` into `screenshots/raw/` and run `pnpm shots:frame`. The images show at roughly 500px wide on the page, so the config captures at a 1152×720 viewport to keep the app text as large as possible.
 
 Next to each PNG, `shots:frame` also writes WebP and AVIF copies at 600w and 1200w (`screenshots/<name>-600.webp`, `<name>-1200.webp`, `<name>-600.avif`, `<name>-1200.avif`). The Platform section serves them with `<picture>`/`srcset` and `sizes`, so 1x screens get the 600w file and 2x screens the 1200w one. The 2400×1500 PNG is only the fallback for browsers without WebP or AVIF support. The variants are encoded with the `sharp` dev dependency (installed by `pnpm install`). To rebuild only the variants from the framed PNGs already in `screenshots/`, run `node scripts/shots.mjs variants`. Commit the PNG and all four variants together.
+
+## Blog
+
+`/blog/` lists the posts and each post lives in `blog/<slug>/index.html`. `blog/welcome-to-duskora/` is the template to copy. To publish a post:
+
+1. Copy `blog/welcome-to-duskora/` to `blog/<slug>/`. Update the title, meta description, canonical, `og:*`/`twitter:*` tags (keep `og:type` as `article`), `article:published_time`, the `BlogPosting` JSON-LD, the date and read time (about 230 words a minute), the share links' encoded URL and the copy-link `data-url`.
+2. Keep at least one `.post-cta` box linking to `/beta/` with `data-signup`, so clicks are counted as `sign_up_click` in Analytics.
+3. On `blog/index.html`, make the new post the `.featured` card, add it to the top of `.post-list` and the `blogPost` JSON-LD.
+4. Add an `<item>` to the top of `blog/feed.xml` (RSS) and update `lastBuildDate`.
+5. Add the URL to `sitemap.xml`, and a link to `llms.txt` whose note is the post's meta description word for word.
+6. Add the post to `POSTS` in `e2e/blog.spec.ts` and to the page lists in the other specs (search for `/blog/welcome-to-duskora/`).
+
+When sharing a post on social media, add UTM parameters to the link (for example `?utm_source=linkedin&utm_medium=social&utm_campaign=welcome`) so Analytics shows which channel the visit came from.
