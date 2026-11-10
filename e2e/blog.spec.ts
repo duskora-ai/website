@@ -55,6 +55,16 @@ test('the blog listing features the newest post and lists every post, newest fir
   await expect(page.locator('.closer a[href="/beta/"]')).toHaveText('Request beta access');
 });
 
+test('subpage headers carry the same links as the home page header', async ({ page }) => {
+  await page.goto(`${base}/`);
+  const home = await page.locator('header nav a').evaluateAll((as) => as.map((a) => [a.textContent, new URL(a.getAttribute('href')!, location.origin + '/').pathname + new URL(a.getAttribute('href')!, location.origin + '/').hash]));
+  for (const p of ['/blog/', ...POSTS.map((x) => x.path), '/integrations/', '/terms/', '/beta/']) {
+    await page.goto(`${base}${p}`);
+    const links = await page.locator('header nav a').evaluateAll((as) => as.map((a) => [a.textContent, new URL(a.getAttribute('href')!, location.origin + '/').pathname + new URL(a.getAttribute('href')!, location.origin + '/').hash]));
+    expect(links, p).toEqual(home);
+  }
+});
+
 test('the blog is linked from the header and footer of every page', async ({ page }) => {
   for (const p of ['/', '/integrations/', '/terms/', '/beta/', ...POSTS.map((x) => x.path)]) {
     await page.goto(`${base}${p}`);
