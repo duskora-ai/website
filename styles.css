@@ -152,6 +152,16 @@ footer { border-top: 1px solid var(--border); padding: 32px 0 48px; font-size: 1
 .doc .fill { padding: 0 4px; border-radius: 4px; background: var(--accent-soft); color: var(--accent); font-weight: 600; }
 
 .foot-links { display: flex; gap: 12px 20px; flex-wrap: wrap; }
+/* "Cookie settings" in the footer: a button (it opens the consent banner) that looks like the links beside it. */
+.foot-button { padding: 0; border: 0; background: none; font: inherit; color: inherit; cursor: pointer; }
+.foot-button:hover { color: var(--text); }
+
+/* Cookie consent banner, added by analytics.js on duskora.ai until the visitor accepts or rejects. Both choices are styled the same. */
+.consent { position: fixed; z-index: 20; left: 16px; right: 16px; bottom: 16px; max-width: 560px; margin: 0 auto; display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; padding: 16px 20px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); box-shadow: 0 8px 24px rgba(16, 24, 40, 0.16); font-size: 14px; color: var(--text-2); }
+.consent[hidden] { display: none; }
+.consent p { flex: 1 1 260px; margin: 0; }
+.consent a { color: var(--accent); }
+.consent-actions { display: flex; gap: 8px; }
 /* Product and Legal link groups: one row on wide screens, stacked when they don't fit. */
 .foot-groups { display: flex; flex-wrap: wrap; gap: 12px 40px; }
 
