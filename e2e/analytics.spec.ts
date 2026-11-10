@@ -39,13 +39,21 @@ async function serveAnalytics(page: Page, id: string) {
     route.fulfill({ contentType: 'text/javascript', body: src.replace(ID_LINE, `var GA_ID = '${id}';`).replace(HOST_CHECK, 'false') }));
 }
 
-// Serve analytics.js with a test measurement ID, and record (but never send) gtag.js requests.
-async function withId(page: Page) {
+// Serve analytics.js with a test measurement ID, and record (but never send) gtag.js requests. Unless `fresh` is set,
+// the visitor has already accepted cookies, so the consent banner stays out of the way of the click tests.
+async function withId(page: Page, { fresh = false } = {}) {
   const gtm: string[] = [];
   await serveAnalytics(page, TEST_ID);
   await page.route(GTM, (route) => { gtm.push(route.request().url()); return route.fulfill({ contentType: 'text/javascript', body: '' }); });
+  if (!fresh) await page.addInitScript(() => { if (!sessionStorage.getItem('seeded')) { localStorage.setItem('duskora-consent', 'granted'); sessionStorage.setItem('seeded', '1'); } });
   return gtm;
 }
+
+const SIGNALS = ['ad_storage', 'ad_user_data', 'ad_personalization', 'analytics_storage'];
+const all = (v: string) => Object.fromEntries(SIGNALS.map((k) => [k, v]));
+// Every gtag() call made so far, as arrays.
+const calls = (page: Page) => page.evaluate(() => ((window as any).dataLayer || []).map((a: IArguments) => Array.from(a)).filter((a: unknown[]) => typeof a[0] === 'string').map((a: unknown[]) => a[0] === 'js' ? ['js'] : a));
+const banner = (page: Page) => page.getByRole('region', { name: 'Cookie consent' });
 
 // gtag() pushes its arguments objects onto dataLayer
 test('analytics.js has the live measurement ID', () => {
@@ -74,6 +82,30 @@ for (const p of PAGES) {
     expect(requests.filter((u) => GTM.test(u) || /google-analytics\.com/.test(u))).toEqual([]);
     expect(await page.evaluate(() => typeof (window as any).gtag)).toBe('undefined');
     expect(errors).toEqual([]);
+    await expect(banner(page)).toHaveCount(0);
+    await expect(page.getByRole('button', { name: 'Cookie settings' })).toHaveCount(0);
+  });
+
+  test(`${p} asks for cookie consent with everything denied until the visitor chooses`, async ({ page, context }) => {
+    await withId(page, { fresh: true });
+    await page.goto(base + p, { waitUntil: 'networkidle' });
+    await expect(banner(page)).toBeVisible();
+    await expect(banner(page).getByRole('button', { name: 'Accept' })).toBeVisible();
+    await expect(banner(page).getByRole('button', { name: 'Reject' })).toBeVisible();
+    await expect(banner(page).getByRole('link', { name: 'Privacy policy' })).toHaveAttribute('href', '/privacy/#cookies');
+    expect((await calls(page)).slice(0, 2)).toEqual([['consent', 'default', all('denied')], ['set', 'ads_data_redaction', true]]);
+    expect((await calls(page)).filter((c) => c[0] === 'consent' && c[1] === 'update')).toEqual([]);
+    expect((await context.cookies()).filter((c) => c.name.startsWith('_ga'))).toEqual([]);
+  });
+
+  test(`${p} footer "Cookie settings" reopens the consent banner`, async ({ page }) => {
+    await withId(page);
+    await page.goto(base + p);
+    await expect(banner(page)).toBeHidden();
+    const settings = page.locator('footer nav[aria-label="Legal"]').getByRole('button', { name: 'Cookie settings' });
+    await expect(settings).toHaveCount(1);
+    await settings.click();
+    await expect(banner(page)).toBeVisible();
   });
 
   test(`${p} makes no Google Analytics requests while the ID is empty`, async ({ page }) => {
@@ -154,4 +186,73 @@ test('the beta form still works while analytics is off', async ({ page }) => {
   await submitBeta(page);
   await expect(page.getByRole('status')).toHaveText("Thanks, we'll be in touch.");
   expect(errors).toEqual([]);
+});
+
+test('accepting cookies grants every consent signal and is remembered', async ({ page }) => {
+  await withId(page, { fresh: true });
+  await page.goto(`${base}/`);
+  await banner(page).getByRole('button', { name: 'Accept' }).click();
+  await expect(banner(page)).toBeHidden();
+  expect((await calls(page)).filter((c) => c[0] === 'consent')).toEqual([['consent', 'default', all('denied')], ['consent', 'update', all('granted')]]);
+  expect(await page.evaluate(() => localStorage.getItem('duskora-consent'))).toBe('granted');
+
+  await page.reload({ waitUntil: 'networkidle' });
+  await expect(banner(page)).toHaveCount(0);
+  // the stored choice is applied before GA is configured
+  expect((await calls(page)).slice(0, 5)).toEqual([
+    ['consent', 'default', all('denied')], ['set', 'ads_data_redaction', true], ['consent', 'update', all('granted')], ['js'], ['config', TEST_ID, { anonymize_ip: true }],
+  ]);
+});
+
+test('rejecting cookies keeps every consent signal denied and is remembered', async ({ page }) => {
+  await withId(page, { fresh: true });
+  await page.goto(`${base}/`);
+  await banner(page).getByRole('button', { name: 'Reject' }).click();
+  await expect(banner(page)).toBeHidden();
+  expect((await calls(page)).filter((c) => c[0] === 'consent')).toEqual([['consent', 'default', all('denied')], ['consent', 'update', all('denied')]]);
+  expect(await page.evaluate(() => localStorage.getItem('duskora-consent'))).toBe('denied');
+
+  await page.reload({ waitUntil: 'networkidle' });
+  await expect(banner(page)).toHaveCount(0);
+  expect((await calls(page)).filter((c) => c[0] === 'consent')).toEqual([['consent', 'default', all('denied')]]);
+});
+
+test('a visitor can change their mind from the footer', async ({ page }) => {
+  await withId(page, { fresh: true });
+  await page.goto(`${base}/`);
+  await banner(page).getByRole('button', { name: 'Reject' }).click();
+  await page.getByRole('button', { name: 'Cookie settings' }).click();
+  await banner(page).getByRole('button', { name: 'Accept' }).click();
+  await expect(banner(page)).toBeHidden();
+  expect(await page.evaluate(() => localStorage.getItem('duskora-consent'))).toBe('granted');
+});
+
+test('the consent banner can be used with the keyboard', async ({ page }) => {
+  await withId(page, { fresh: true });
+  await page.goto(`${base}/privacy/`);
+  await banner(page).getByRole('button', { name: 'Accept' }).focus();
+  await page.keyboard.press('Enter');
+  await expect(banner(page)).toBeHidden();
+  expect(await page.evaluate(() => localStorage.getItem('duskora-consent'))).toBe('granted');
+});
+
+test('the consent banner still works when storage is blocked', async ({ page }) => {
+  const errors: string[] = [];
+  page.on('pageerror', (e) => errors.push(e.message));
+  await withId(page, { fresh: true });
+  await page.addInitScript(() => {
+    Object.defineProperty(window, 'localStorage', { get() { throw new Error('blocked'); } });
+  });
+  await page.goto(`${base}/`);
+  await expect(banner(page)).toBeVisible();
+  await banner(page).getByRole('button', { name: 'Accept' }).click();
+  await expect(banner(page)).toBeHidden();
+  expect(errors).toEqual([]);
+});
+
+test('the privacy page explains the cookie banner and how to change your choice', async ({ page }) => {
+  await page.goto(`${base}/privacy/`);
+  const section = page.locator('#cookies + p');
+  await expect(section).toContainText('only sets cookies if you accept them in the cookie banner');
+  await expect(section).toContainText('Cookie settings');
 });
