@@ -45,9 +45,13 @@ const PAGES = [
   '/integrations/github/',
   '/integrations/linear/',
   '/integrations/jira/',
+  '/blog/',
+  '/blog/welcome-to-duskora/',
 ];
 // the 404 page has no URL of its own, so it shares the home page's
 const OG_URL: Record<string, string> = { '/404.html': '/' };
+// blog posts are articles; every other page is a website
+const ogType = (p: string) => (/^\/blog\/[^/]+\/$/.test(p) ? 'article' : 'website');
 
 const nonEmpty = /\S/;
 const og = (name: string) => `meta[property="og:${name}"]`;
@@ -64,7 +68,7 @@ for (const p of PAGES) {
     await one(og('title'), nonEmpty);
     await one(og('description'), nonEmpty);
     await one(og('url'), `${ORIGIN}${OG_URL[p] ?? p}`);
-    await one(og('type'), 'website');
+    await one(og('type'), ogType(p));
     await one(og('site_name'), 'Duskora.ai');
     await one(og('image'), IMAGE);
     await one(og('image:width'), '1200');

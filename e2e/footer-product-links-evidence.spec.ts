@@ -37,7 +37,7 @@ for (const [name, width] of [['desktop', 1280], ['mobile', 375]] as const) {
       await page.goto(`${base}${url}`);
       const footer = page.locator('footer');
       await footer.scrollIntoViewIfNeeded();
-      await expect(footer.locator('nav[aria-label="Product"] a')).toHaveCount(5);
+      await expect(footer.locator('nav[aria-label="Product"] a')).toHaveCount(6);
       await pause(page);
       if (out) await footer.screenshot({ path: path.join(out, `footer-${name}-${slug}.png`) });
     }

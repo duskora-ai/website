@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Duskora.ai blog</title>
+    <link>https://duskora.ai/blog/</link>
+    <atom:link href="https://duskora.ai/blog/feed.xml" rel="self" type="application/rss+xml" />
+    <description>News, product updates and notes from the Duskora team on building with AI coding agents that turn tickets into reviewed pull requests.</description>
+    <language>en</language>
+    <lastBuildDate>Tue, 10 Nov 2026 09:00:00 GMT</lastBuildDate>
+    <item>
+      <title>Welcome to Duskora: your software team, staffed by agents</title>
+      <link>https://duskora.ai/blog/welcome-to-duskora/</link>
+      <guid isPermaLink="true">https://duskora.ai/blog/welcome-to-duskora/</guid>
+      <pubDate>Tue, 10 Nov 2026 09:00:00 GMT</pubDate>
+      <category>Announcements</category>
+      <description>Meet Duskora: AI agents that take a ticket from your Linear or Jira board to a reviewed GitHub pull request, and wait for your approval before anything ships. Here is what it does today and how to join the beta.</description>
+    </item>
+  </channel>
+</rss>

@@ -27,7 +27,7 @@ test.beforeAll(async () => {
 test.afterAll(() => server.close());
 
 // 404.html is served at an unknown URL by GitHub Pages; here it is loaded directly.
-const PAGES = ['/', '/beta/', '/terms/', '/privacy/', '/refunds/', '/404.html', '/integrations/', '/integrations/github/', '/integrations/linear/', '/integrations/jira/'];
+const PAGES = ['/', '/beta/', '/terms/', '/privacy/', '/refunds/', '/404.html', '/integrations/', '/integrations/github/', '/integrations/linear/', '/integrations/jira/', '/blog/', '/blog/welcome-to-duskora/'];
 
 const PRODUCT = [
   ['Integrations', '/integrations/'],
@@ -35,6 +35,7 @@ const PRODUCT = [
   ['Linear', '/integrations/linear/'],
   ['Jira', '/integrations/jira/'],
   ['Pricing', '/#pricing'],
+  ['Blog', '/blog/'],
 ];
 const LEGAL = [
   ['Terms', '/terms/'],

@@ -15,6 +15,11 @@ Each link below is followed by the description that page gives of itself.
 - [Linear](https://duskora.ai/integrations/linear/): Duskora syncs two ways with Linear. Label an issue and AI agents plan, build, review and test it as a GitHub pull request, and progress flows back to Linear.
 - [Jira](https://duskora.ai/integrations/jira/): Duskora syncs two ways with Jira. Label an issue and AI agents take the ticket to a reviewed GitHub pull request, and progress flows back to Jira.
 
+## Blog
+
+- [Blog](https://duskora.ai/blog/): News, product updates and notes from the Duskora team on building with AI coding agents that turn tickets into reviewed pull requests.
+- [Welcome to Duskora: your software team, staffed by agents](https://duskora.ai/blog/welcome-to-duskora/): Meet Duskora: AI agents that take a ticket from your Linear or Jira board to a reviewed GitHub pull request, and wait for your approval before anything ships. Here is what it does today and how to join the beta.
+
 ## Pricing
 
 - [Pricing](https://duskora.ai/#pricing): Every plan starts with a free 7-day trial, and no card is needed.

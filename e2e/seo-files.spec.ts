@@ -43,6 +43,8 @@ const CANONICAL = [
   `${ORIGIN}/integrations/github/`,
   `${ORIGIN}/integrations/linear/`,
   `${ORIGIN}/integrations/jira/`,
+  `${ORIGIN}/blog/`,
+  `${ORIGIN}/blog/welcome-to-duskora/`,
 ];
 
 test('robots.txt allows all crawlers and points at the sitemap', async ({ request }) => {
@@ -84,6 +86,8 @@ const PAGE_CANONICALS: Record<string, string> = {
   '/terms/': `${ORIGIN}/terms/`,
   '/privacy/': `${ORIGIN}/privacy/`,
   '/refunds/': `${ORIGIN}/refunds/`,
+  '/blog/': `${ORIGIN}/blog/`,
+  '/blog/welcome-to-duskora/': `${ORIGIN}/blog/welcome-to-duskora/`,
 };
 
 test('every page declares its absolute canonical URL', async ({ request }) => {
@@ -107,7 +111,7 @@ test('llms.txt is served as text, summarises the site and links to each integrat
   expect(lines.filter((l) => l.startsWith('> '))).toHaveLength(1);
   expect(txt).toContain('Duskora.ai Ltd (UK)');
 
-  for (const p of ['/', '/integrations/', '/integrations/github/', '/integrations/linear/', '/integrations/jira/', '/#pricing', '/beta/', '/terms/', '/privacy/', '/refunds/']) {
+  for (const p of ['/', '/integrations/', '/integrations/github/', '/integrations/linear/', '/integrations/jira/', '/#pricing', '/beta/', '/terms/', '/privacy/', '/refunds/', '/blog/', '/blog/welcome-to-duskora/']) {
     expect(txt, `llms.txt should link to ${p}`).toContain(`](${ORIGIN}${p})`);
   }
 });
