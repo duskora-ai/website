@@ -1,4 +1,4 @@
-// Turns capture.mjs's output (blog/getting-started-with-duskora/raw/) into the files the post
+// Turns compose.mjs's output (blog/getting-started-with-duskora/raw/) into the files the post
 // serves, next to its index.html:
 //   <name>-760.webp/.avif and <name>-1520.webp/.avif  for <picture> srcset (1x and 2x of the ~712px column)
 //   <name>.png                                          1520px fallback for browsers without WebP/AVIF
@@ -17,7 +17,7 @@ const raw = path.join(dir, 'raw');
 const WIDTHS = [760, 1520];
 const FORMATS = { webp: { quality: 82 }, avif: { quality: 55 } };
 // Stills the post doesn't use.
-const SKIP = new Set(['board-plan']);
+const SKIP = new Set(['board-plan', 'poster']);
 
 for (const file of fs.readdirSync(raw).filter((f) => f.endsWith('.png')).sort()) {
   const name = file.replace(/^\d+-/, '').replace(/\.png$/, '');
@@ -36,8 +36,8 @@ const run = (args) => {
   const r = spawnSync('ffmpeg', ['-y', '-loglevel', 'error', ...args], { stdio: 'inherit' });
   if (r.status !== 0) throw new Error(`ffmpeg ${args.join(' ')} failed`);
 };
-run(['-i', path.join(raw, 'walkthrough.mp4'), '-vf', 'scale=1440:900:flags=lanczos', '-c:v', 'libx264', '-crf', '24',
+run(['-i', path.join(raw, 'walkthrough.mp4'), '-vf', 'scale=1440:900:flags=lanczos', '-c:v', 'libx264', '-crf', '23',
   '-preset', 'slow', '-profile:v', 'high', '-pix_fmt', 'yuv420p', '-an', '-movflags', '+faststart', path.join(dir, 'walkthrough.mp4')]);
-await sharp(path.join(raw, '09-board-approval.png')).resize({ width: 1440 }).jpeg({ quality: 82, mozjpeg: true })
+await sharp(path.join(raw, 'poster.png')).resize({ width: 1440 }).jpeg({ quality: 82, mozjpeg: true })
   .toFile(path.join(dir, 'walkthrough-poster.jpg'));
 console.log('encoded walkthrough.mp4 and walkthrough-poster.jpg');

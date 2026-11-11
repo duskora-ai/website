@@ -55,8 +55,11 @@ Next to each PNG, `shots:frame` also writes WebP and AVIF copies at 600w and 120
 
 1. In the Duskora checkout, start Postgres and apply the migrations to an empty database (its README → Local development), and run the web app twice: `pnpm dev:web` (dev sign-in, port 5173) and a Cognito-mode copy on port 5175 for the sign-up screen (`VITE_AUTH_MODE=cognito VITE_COGNITO_AUTHORITY=… VITE_COGNITO_CLIENT_ID=… VITE_COGNITO_DOMAIN=… VITE_COGNITO_GOOGLE=true pnpm --filter @df/web exec vite --port 5175`; any placeholder values work, since nothing signs in there).
 2. Instead of `pnpm dev:api`, start `scripts/onboarding/demo-api.mts` from `apps/api` (`pnpm exec tsx --env-file=../../.env <path to demo-api.mts>`). It is the real API with demo stand-ins: "Connect GitHub" returns at once with a demo `acme-labs` installation, any model key validates, and no agent containers start. Instead, a ticket moved into Plan plays a scripted run through Plan, Build, Review and QA to Approval, and approving it plays the deploy.
-3. `node scripts/onboarding/capture.mjs` walks through sign-up to a shipped ticket, writing 2x stills and `walkthrough.mp4` to `blog/getting-started-with-duskora/raw/` (git-ignored). It needs `ffmpeg`.
-4. `node scripts/onboarding/encode.mjs` writes the WebP/AVIF/PNG images, the 1440×900 MP4 and its poster next to the post. Commit those.
+3. `node scripts/onboarding/capture.mjs` walks through sign-up to a shipped ticket, recording Chrome's screencast frames and a timeline (chapters, where the camera should look, and when to take each still) to `blog/getting-started-with-duskora/raw/` (git-ignored).
+4. `node scripts/onboarding/compose.mjs` renders the finished video from those frames: the app framed in a window on the site's dusk background, eased zooms toward each step, chapter captions, crossfades over page loads, sped-up waits, and intro and outro cards. The post's stills come from the same frames and camera, without the captions. `compose.mjs stills` renders only the stills and `compose.mjs preview 12 30` single frames at those seconds, both much quicker than the full video (about five minutes). It needs `ffmpeg`.
+5. `node scripts/onboarding/encode.mjs` writes the WebP/AVIF/PNG images, the 1440×900 MP4 and its poster next to the post. Commit those.
+
+To change where the camera looks or what each caption says, edit the `chapter()` and `look()` calls in `capture.mjs` and capture again.
 
 Reset the database before each capture: the walkthrough expects a brand-new user.
 

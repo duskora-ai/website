@@ -10,10 +10,11 @@
 //
 //   node scripts/onboarding/capture.mjs
 //
-// Writes blog/getting-started-with-duskora/raw/*.png (2x stills) and raw/walkthrough.mp4;
-// `node scripts/onboarding/encode.mjs` turns them into the files the post serves.
+// Writes the screencast to blog/getting-started-with-duskora/raw/ (git-ignored): frames/*.jpg and
+// timeline.json, which lists each frame's time plus marks for compose.mjs: chapter starts, where
+// the camera should look, and the moments the post's stills are taken from.
+// `node scripts/onboarding/compose.mjs` then renders the finished video and stills.
 import { chromium } from '@playwright/test';
-import { spawnSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -98,12 +99,22 @@ const startCast = () =>
   cdp.send('Page.startScreencast', { format: 'jpeg', quality: 92, maxWidth: 2560, maxHeight: 1600, everyNthFrame: 1 });
 
 const pause = (ms) => page.waitForTimeout(ms);
-let still = 0;
+// Marks share the screencast frames' clock (seconds since the epoch).
+const marks = [];
+const mark = (type, data = {}) => marks.push({ t: Date.now() / 1000, type, ...data });
+const chapter = (title) => mark('chapter', { title });
+// Where the camera should frame from now on: a box in page pixels (or none for the whole screen).
+const look = async (target, pad = 40) => {
+  if (!target) return mark('camera', { box: null });
+  // { main: y } frames the content area beside the sidebar exactly, so the crop falls on its border.
+  if (target.main !== undefined) return mark('camera', { box: { x: 236, y: target.main, width: 1044, height: 653 }, exact: true });
+  const b = typeof target.boundingBox === 'function' ? await target.boundingBox() : target;
+  if (b) mark('camera', { box: { x: b.x - pad, y: b.y - pad, width: b.width + pad * 2, height: b.height + pad * 2 } });
+};
 const shot = async (name) => {
-  await pause(400);
-  const file = path.join(out, `${String(++still).padStart(2, '0')}-${name}.png`);
-  await page.screenshot({ path: file });
-  console.log(`still ${path.relative(root, file)}`);
+  await pause(500);
+  mark('still', { name });
+  console.log(`still ${name}`);
 };
 let mouse = { x: VIEWPORT.width / 2, y: VIEWPORT.height / 2 };
 const moveTo = async (locator, { steps = 22 } = {}) => {
@@ -130,7 +141,10 @@ await page.goto(`${SIGNUP}/signup`);
 await page.getByRole('button', { name: 'Create your account' }).waitFor();
 await page.mouse.move(mouse.x, mouse.y);
 await startCast();
-await pause(1200);
+await pause(300);
+chapter('Sign up');
+await look(null);
+await pause(1600);
 await shot('signup');
 await click(page.getByRole('button', { name: 'Create your account' }));
 await pause(500);
@@ -139,15 +153,21 @@ await pause(500);
 await page.goto(`${APP}/onboarding`);
 await page.getByPlaceholder('Acme Inc.').waitFor();
 await page.mouse.move(mouse.x, mouse.y);
+chapter('Name your organization');
+await look(null);
 await pause(800);
 await type(page.getByPlaceholder('Acme Inc.'), 'Acme Labs', 70);
 await shot('create-org');
+await look(null);
+await pause(600);
 await click(page.getByRole('button', { name: 'Create organization' }));
 
 // 3. Model vendor: Anthropic
 const dialog = page.getByRole('dialog');
 await dialog.waitFor();
+chapter('Add your Anthropic key');
 await pause(1200);
+await look(dialog, 10);
 await click(dialog.getByText('Anthropic', { exact: true }));
 await pause(400);
 await type(dialog.getByPlaceholder(/sk-ant/), 'sk-ant-api03-demo0000000000000000000000000000000000000000x7Qe', 10);
@@ -156,6 +176,7 @@ await dialog.getByText(/key ending/).waitFor();
 await shot('anthropic-key');
 
 // 4. Connect GitHub (the demo API stands in for GitHub's install screen and returns straight away)
+chapter('Connect GitHub');
 await click(dialog.getByRole('button', { name: 'Connect GitHub' }));
 await page.waitForURL(/github=connected/);
 await dialog.getByText('GitHub connected').waitFor();
@@ -166,6 +187,8 @@ await pause(700);
 await shot('github-connected');
 await click(dialog.getByRole('button', { name: 'Done' }));
 await dialog.waitFor({ state: 'hidden' });
+chapter('Pick a repository');
+await look(null);
 
 // 5. Pick the repository for the project
 await click(page.getByRole('link', { name: 'Project settings' }));
@@ -176,15 +199,20 @@ await repoSelect.selectOption({ label: 'acme-labs/storefront · private' });
 await pause(500);
 await click(page.getByRole('button', { name: 'Add', exact: true }));
 await page.getByText('acme-labs/storefront').first().waitFor();
+await look({ main: 110 });
 await moveTo(page.getByText('acme-labs/storefront').first());
 await pause(600);
 await shot('repository');
 
 // 6. Write the first ticket
+chapter('Write your first ticket');
+await look(null);
 await click(page.getByRole('link', { name: /^Main/ }).first());
 await page.getByRole('button', { name: 'New ticket' }).first().waitFor();
 await pause(700);
 await click(page.getByRole('button', { name: 'New ticket' }).first());
+await page.getByRole('dialog').waitFor();
+await look(page.getByRole('dialog'), 10);
 const TITLE = 'Add a "Save for later" button to the cart';
 await type(page.getByPlaceholder('Add rate limiting to the login endpoint'), TITLE, 22);
 await type(
@@ -193,8 +221,11 @@ await type(
   6,
 );
 await shot('new-ticket');
+await look(null);
+await pause(500);
 await click(page.getByRole('button', { name: 'Create ticket' }));
 await page.getByRole('dialog').waitFor({ state: 'hidden' });
+chapter('Agents take it across the board');
 await pause(900);
 
 // 7. Drag it into Plan and watch the agents take it across the board
@@ -231,6 +262,7 @@ for (;;) {
 }
 await pause(1500);
 await shot('board-approval');
+chapter('Review the trail, then approve');
 
 // 8. Open the ticket: plan, agent activity, QA evidence and the approval gate
 await click(card);
@@ -240,7 +272,9 @@ await pause(1200);
 const showPlan = page.locator('.card', { has: planCard }).getByRole('button', { name: 'Show' });
 if (await showPlan.isVisible()) await click(showPlan);
 await planCard.evaluate((el) => el.scrollIntoView({ block: 'start', behavior: 'smooth' }));
-await pause(1200);
+await pause(900);
+await look({ main: 40 });
+await pause(900);
 await shot('ticket-plan');
 const qa = page.getByRole('button', { name: /QA agent/ });
 await moveTo(qa, { steps: 30 });
@@ -248,42 +282,37 @@ await page.mouse.wheel(0, 0);
 if ((await qa.getAttribute('aria-expanded')) !== 'true') await click(qa);
 await pause(800);
 await page.getByRole('heading', { name: 'Activity' }).evaluate((el) => el.scrollIntoView({ block: 'start', behavior: 'smooth' }));
-await pause(1200);
+await pause(900);
+await look({ main: Math.round((await page.locator('.card', { has: page.getByRole('heading', { name: 'Activity' }) }).boundingBox()).y + 500 - 653) });
+await pause(900);
 await shot('qa-evidence');
 const approve = page.getByRole('button', { name: 'Approve & deploy' });
+await look(null);
 await approve.evaluate((el) => el.scrollIntoView({ block: 'center', behavior: 'smooth' }));
-await pause(1200);
+await pause(900);
+await look({ main: 50 });
+await pause(500);
 await moveTo(approve);
 await shot('approval');
 await click(approve);
 
 // 9. Shipped
+chapter('Approved, merged and shipped');
+await pause(400);
+await look(null);
 await page.getByText('merged', { exact: true }).first().waitFor({ timeout: 60_000 });
 await page.evaluate(() => window.scrollTo({ top: 0, behavior: 'smooth' }));
-await pause(1500);
+await pause(900);
+await look({ main: 50 });
+await pause(1200);
 await shot('shipped');
 await pause(1500);
 
 await cdp.send('Page.stopScreencast');
 await browser.close();
 
-// Frames arrive only when the screen changes: hold each one until the next.
-const list = shotTimes
-  .map((f, i) => {
-    const next = shotTimes[i + 1]?.t ?? f.t + 1.5;
-    return `file '${f.file}'\nduration ${Math.max(next - f.t, 0.01).toFixed(4)}`;
-  })
-  .join('\n');
-fs.writeFileSync(path.join(out, 'frames.txt'), `${list}\nfile '${shotTimes.at(-1).file}'\n`);
-const video = path.join(out, 'walkthrough.mp4');
-const ff = spawnSync(
-  'ffmpeg',
-  ['-y', '-loglevel', 'error', '-f', 'concat', '-safe', '0', '-i', path.join(out, 'frames.txt'),
-    '-vf', 'scale=1920:1200:flags=lanczos,fps=30,format=yuv420p', '-c:v', 'libx264', '-crf', '20', '-preset', 'slow',
-    '-movflags', '+faststart', video],
-  { stdio: 'inherit' },
+fs.writeFileSync(
+  path.join(out, 'timeline.json'),
+  JSON.stringify({ viewport: VIEWPORT, scale: 2, frames: shotTimes.map((f) => ({ file: path.basename(f.file), t: f.t })), marks }, null, 1),
 );
-if (ff.status !== 0) throw new Error('ffmpeg failed');
-fs.rmSync(frames, { recursive: true, force: true });
-fs.rmSync(path.join(out, 'frames.txt'));
-console.log(`video ${path.relative(root, video)}`);
+console.log(`${shotTimes.length} frames, ${marks.length} marks in ${path.relative(root, out)}`);
