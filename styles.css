@@ -320,6 +320,12 @@ section[id] { scroll-margin-top: 80px; }
 .feature-list li { margin: 0; padding: 16px 18px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); font-size: 15px; line-height: 1.55; }
 .feature-list strong { display: block; margin-bottom: 2px; font-size: 16px; }
 
+/* Screenshots and screen recordings inside a post */
+.post-figure { margin: 28px 0 36px; }
+.post-figure img, .post-figure video { display: block; width: 100%; height: auto; border: 1px solid var(--border); border-radius: 12px; background: #0b0c0f; box-shadow: 0 12px 32px rgba(16, 24, 40, 0.16); }
+.post-figure video { aspect-ratio: 16 / 10; }
+.post-figure figcaption { margin-top: 10px; font-size: 14px; line-height: 1.5; color: var(--muted); text-align: center; }
+
 .chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 20px; padding: 0 !important; list-style: none; }
 .chips li { margin: 0; }
 

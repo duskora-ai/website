@@ -18,6 +18,7 @@ Each link below is followed by the description that page gives of itself.
 ## Blog
 
 - [Blog](https://duskora.ai/blog/): News, product updates and notes from the Duskora team on building with AI coding agents that turn tickets into reviewed pull requests.
+- [From sign-up to shipped: your first ticket with Duskora](https://duskora.ai/blog/getting-started-with-duskora/): A screen-by-screen walkthrough of getting started with Duskora: sign up, add your Anthropic key, connect GitHub, pick a repository and write your first ticket, then watch agents plan, build, review and test it while you approve what ships.
 - [Welcome to Duskora: your software team, staffed by agents](https://duskora.ai/blog/welcome-to-duskora/): Meet Duskora: AI agents that take a ticket from your Linear or Jira board to a reviewed GitHub pull request, and wait for your approval before anything ships. Here is what it does today and how to join the beta.
 
 ## Pricing

@@ -49,4 +49,15 @@ Next to each PNG, `shots:frame` also writes WebP and AVIF copies at 600w and 120
 5. Add the URL to `sitemap.xml`, and a link to `llms.txt` whose note is the post's meta description word for word.
 6. Add the post to `POSTS` in `e2e/blog.spec.ts` and to the page lists in the other specs (search for `/blog/welcome-to-duskora/`).
 
+### Onboarding walkthrough screenshots and video
+
+`blog/getting-started-with-duskora/` shows the real app's sign-up and setup flow. `scripts/onboarding/` regenerates its stills and screen recording against a local Duskora checkout, with no real GitHub or model accounts:
+
+1. In the Duskora checkout, start Postgres and apply the migrations to an empty database (its README → Local development), and run the web app twice: `pnpm dev:web` (dev sign-in, port 5173) and a Cognito-mode copy on port 5175 for the sign-up screen (`VITE_AUTH_MODE=cognito VITE_COGNITO_AUTHORITY=… VITE_COGNITO_CLIENT_ID=… VITE_COGNITO_DOMAIN=… VITE_COGNITO_GOOGLE=true pnpm --filter @df/web exec vite --port 5175`; any placeholder values work, since nothing signs in there).
+2. Instead of `pnpm dev:api`, start `scripts/onboarding/demo-api.mts` from `apps/api` (`pnpm exec tsx --env-file=../../.env <path to demo-api.mts>`). It is the real API with demo stand-ins: "Connect GitHub" returns at once with a demo `acme-labs` installation, any model key validates, and no agent containers start. Instead, a ticket moved into Plan plays a scripted run through Plan, Build, Review and QA to Approval, and approving it plays the deploy.
+3. `node scripts/onboarding/capture.mjs` walks through sign-up to a shipped ticket, writing 2x stills and `walkthrough.mp4` to `blog/getting-started-with-duskora/raw/` (git-ignored). It needs `ffmpeg`.
+4. `node scripts/onboarding/encode.mjs` writes the WebP/AVIF/PNG images, the 1440×900 MP4 and its poster next to the post. Commit those.
+
+Reset the database before each capture: the walkthrough expects a brand-new user.
+
 When sharing a post on social media, add UTM parameters to the link (for example `?utm_source=linkedin&utm_medium=social&utm_campaign=welcome`) so Analytics shows which channel the visit came from.

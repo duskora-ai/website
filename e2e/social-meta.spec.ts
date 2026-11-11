@@ -47,6 +47,7 @@ const PAGES = [
   '/integrations/jira/',
   '/blog/',
   '/blog/welcome-to-duskora/',
+  '/blog/getting-started-with-duskora/',
 ];
 // the 404 page has no URL of its own, so it shares the home page's
 const OG_URL: Record<string, string> = { '/404.html': '/' };
