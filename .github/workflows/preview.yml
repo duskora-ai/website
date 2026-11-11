@@ -2,10 +2,11 @@ name: Preview
 
 # Every pull request gets its own copy of the site at https://pr-<number>.preview.duskora.ai/,
 # updated on each push and deleted when the pull request closes. The link is posted as a comment
-# on the pull request (one comment, edited in place). Infrastructure: infra/previews/.
+# on the pull request (one comment, edited in place). The bucket, CloudFront distribution and
+# AWS role are Terraform in the private duskora-ai/duskora repo (infra/terraform/envs/website-previews).
 #
 # Needs the repository variables WEBSITE_PREVIEW_ROLE_ARN, WEBSITE_PREVIEW_BUCKET and
-# WEBSITE_PREVIEW_DOMAIN (Terraform outputs). Until they are set the jobs are skipped.
+# WEBSITE_PREVIEW_DOMAIN (that stack's outputs). Until they are set the jobs are skipped.
 # Pull requests from forks (and Dependabot) get no preview: GitHub gives them no AWS (OIDC) token.
 
 on:

@@ -8,7 +8,7 @@ Legal pages (`terms/`, `privacy/`, `refunds/`) are folders with an `index.html` 
 
 ## Pull request previews
 
-Each pull request from a branch of this repo is deployed to `https://pr-<number>.preview.duskora.ai/`, and a comment on the pull request links to it. Every push updates the preview, and closing the pull request deletes it. The infrastructure and its one-off setup are in [`infra/previews/`](infra/previews/README.md).
+Each pull request from a branch of this repo is deployed to `https://pr-<number>.preview.duskora.ai/`, and a comment on the pull request links to it. Every push updates the preview, and closing the pull request deletes it. The workflow is `.github/workflows/preview.yml`. The AWS side (an S3 bucket, a CloudFront distribution on `*.preview.duskora.ai` and the role the workflow assumes) is Terraform in the private Duskora repo, under `infra/terraform/envs/website-previews`, with its setup steps. The workflow needs the repository variables `WEBSITE_PREVIEW_ROLE_ARN`, `WEBSITE_PREVIEW_BUCKET` and `WEBSITE_PREVIEW_DOMAIN` from that stack, and skips its jobs until they are set. Pull requests from forks and Dependabot get no preview.
 
 ## Tests
 
