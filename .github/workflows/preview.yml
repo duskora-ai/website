@@ -1,0 +1,150 @@
+name: Preview
+
+# Every pull request gets its own copy of the site at https://pr-<number>.preview.duskora.ai/,
+# updated on each push and deleted when the pull request closes. The link is posted as a comment
+# on the pull request (one comment, edited in place). Infrastructure: infra/previews/.
+#
+# Needs the repository variables WEBSITE_PREVIEW_ROLE_ARN, WEBSITE_PREVIEW_BUCKET and
+# WEBSITE_PREVIEW_DOMAIN (Terraform outputs). Until they are set the jobs are skipped.
+# Pull requests from forks (and Dependabot) get no preview: GitHub gives them no AWS (OIDC) token.
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+
+# One run per pull request at a time; a newer push replaces a deploy still in progress.
+concurrency:
+  group: preview-${{ github.event.pull_request.number }}
+  cancel-in-progress: ${{ github.event.action != 'closed' }}
+
+permissions:
+  id-token: write
+  contents: read
+  pull-requests: write
+
+env:
+  PREFIX: pr-${{ github.event.pull_request.number }}
+  BUCKET: ${{ vars.WEBSITE_PREVIEW_BUCKET }}
+  PREVIEW_URL: https://pr-${{ github.event.pull_request.number }}.${{ vars.WEBSITE_PREVIEW_DOMAIN }}/
+
+jobs:
+  deploy:
+    if: >-
+      github.event.action != 'closed' &&
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      github.actor != 'dependabot[bot]' &&
+      vars.WEBSITE_PREVIEW_ROLE_ARN != ''
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.WEBSITE_PREVIEW_ROLE_ARN }}
+          aws-region: eu-west-2
+
+      # The site is the repo minus its tooling. Uploads are marked no-cache so a refresh after a
+      # push shows the new version (CloudFront doesn't cache previews either).
+      - name: Upload the site
+        run: |
+          set -euo pipefail
+          EXCLUDES=(
+            --exclude '.git*' --exclude '.github/*' --exclude 'node_modules/*'
+            --exclude 'e2e/*' --exclude 'scripts/*' --exclude 'infra/*'
+            --exclude 'test-results/*' --exclude 'playwright-report/*' --exclude '.auth/*'
+            --exclude '*/raw/*' --exclude 'package.json' --exclude 'pnpm-lock.yaml'
+            --exclude 'playwright.config.ts' --exclude 'README.md' --exclude 'CNAME'
+          )
+          DEST="s3://$BUCKET/$PREFIX/"
+          # Types the CLI may not know are uploaded on their own with an explicit Content-Type.
+          aws s3 sync . "$DEST" --delete --only-show-errors --cache-control no-cache \
+            "${EXCLUDES[@]}" --exclude '*.avif' --exclude '*.woff2'
+          aws s3 sync . "$DEST" --delete --only-show-errors --cache-control no-cache \
+            "${EXCLUDES[@]}" --exclude '*' --include '*.avif' --content-type image/avif
+          aws s3 sync . "$DEST" --delete --only-show-errors --cache-control no-cache \
+            "${EXCLUDES[@]}" --exclude '*' --include '*.woff2' --content-type font/woff2
+          # CloudFront serves this for any missing page (one copy for all previews).
+          aws s3 cp 404.html "s3://$BUCKET/_errors/404.html" --only-show-errors \
+            --cache-control no-cache --content-type 'text/html; charset=utf-8'
+
+      - name: Comment the preview link
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const url = process.env.PREVIEW_URL;
+            const pr = context.payload.pull_request;
+            const sha = pr.head.sha.slice(0, 7);
+            // Link straight to the pages this pull request changes.
+            const files = await github.paginate(github.rest.pulls.listFiles, {
+              ...context.repo,
+              pull_number: pr.number,
+              per_page: 100,
+            });
+            const pages = files
+              .filter((f) => f.status !== 'removed' && f.filename.endsWith('.html'))
+              .map((f) => f.filename.replace(/(^|\/)index\.html$/, '$1'))
+              .sort();
+            const lines = [
+              '<!-- website-preview -->',
+              '### 🔍 Website preview',
+              '',
+              `**${url}**`,
+              '',
+              ...(pages.length
+                ? ['Pages changed in this pull request:', '', ...pages.map((p) => `- [/${p}](${url}${p})`), '']
+                : []),
+              `Updated for ${sha} on ${new Date().toUTCString()}. Every push updates this preview, and it is deleted when the pull request closes. Previews are not indexed and don't send analytics.`,
+            ];
+            await upsertComment(lines.join('\n'));
+
+            async function upsertComment(body) {
+              const comments = await github.paginate(github.rest.issues.listComments, {
+                ...context.repo,
+                issue_number: pr.number,
+                per_page: 100,
+              });
+              const mine = comments.find((c) => c.user.type === 'Bot' && c.body.includes('<!-- website-preview -->'));
+              if (mine) {
+                await github.rest.issues.updateComment({ ...context.repo, comment_id: mine.id, body });
+              } else {
+                await github.rest.issues.createComment({ ...context.repo, issue_number: pr.number, body });
+              }
+            }
+
+  cleanup:
+    if: >-
+      github.event.action == 'closed' &&
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      github.actor != 'dependabot[bot]' &&
+      vars.WEBSITE_PREVIEW_ROLE_ARN != ''
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.WEBSITE_PREVIEW_ROLE_ARN }}
+          aws-region: eu-west-2
+
+      - name: Delete the preview
+        run: aws s3 rm "s3://$BUCKET/$PREFIX/" --recursive --only-show-errors
+
+      - name: Update the comment
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+            const comments = await github.paginate(github.rest.issues.listComments, {
+              ...context.repo,
+              issue_number: pr.number,
+              per_page: 100,
+            });
+            const mine = comments.find((c) => c.user.type === 'Bot' && c.body.includes('<!-- website-preview -->'));
+            if (!mine) return;
+            const body = [
+              '<!-- website-preview -->',
+              '### 🔍 Website preview',
+              '',
+              `The preview at ${process.env.PREVIEW_URL} was deleted when this pull request was ${pr.merged ? 'merged' : 'closed'}.`,
+            ].join('\n');
+            await github.rest.issues.updateComment({ ...context.repo, comment_id: mine.id, body });

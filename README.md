@@ -6,6 +6,10 @@ It's plain HTML and CSS with no build step: edit the HTML and push. Shared style
 
 Legal pages (`terms/`, `privacy/`, `refunds/`) are folders with an `index.html` so URLs stay clean. To mark a fact still to be supplied, wrap it in `<mark class="fill">[…]</mark>`: the e2e check `no unfilled facts remain` fails while any are left. The text has not had legal review yet.
 
+## Pull request previews
+
+Each pull request from a branch of this repo is deployed to `https://pr-<number>.preview.duskora.ai/`, and a comment on the pull request links to it. Every push updates the preview, and closing the pull request deletes it. The infrastructure and its one-off setup are in [`infra/previews/`](infra/previews/README.md).
+
 ## Tests
 
 `pnpm install && pnpm test:e2e` runs the Playwright checks in `e2e/` against a built-in static server (browsers: `pnpm exec playwright install chromium` if missing).

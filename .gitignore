@@ -4,3 +4,5 @@ playwright-report/
 .auth/
 screenshots/raw/
 blog/getting-started-with-duskora/raw/
+.terraform/
+.terraform.lock.hcl

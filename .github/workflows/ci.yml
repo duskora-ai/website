@@ -45,3 +45,20 @@ jobs:
             test-results/
           retention-days: 14
           if-no-files-found: ignore
+
+  # infra/previews (the pull request preview infrastructure): formatting and validity. Applying
+  # it is manual; see infra/previews/README.md.
+  terraform:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    defaults:
+      run:
+        working-directory: infra/previews
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.14.8
+      - run: terraform fmt -check -diff
+      - run: terraform init -backend=false -input=false
+      - run: terraform validate
