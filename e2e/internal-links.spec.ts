@@ -31,7 +31,7 @@ test.afterAll(() => server.close());
 // URLs and bare #fragments are skipped; /#how is checked as /.
 test('no internal link on any page returns 404', async ({ page }) => {
   const checked = new Set<string>();
-  for (const start of ['/', '/beta/', '/terms/', '/privacy/', '/refunds/', '/integrations/', '/integrations/github/', '/integrations/linear/', '/integrations/jira/', '/blog/', '/blog/welcome-to-duskora/', '/404.html']) {
+  for (const start of ['/', '/beta/', '/terms/', '/privacy/', '/refunds/', '/integrations/', '/integrations/github/', '/integrations/linear/', '/integrations/jira/', '/blog/', '/blog/welcome-to-duskora/', '/blog/getting-started-with-duskora/', '/404.html']) {
     await page.goto(`${base}${start}`);
     const hrefs = await page.evaluate(() =>
       [...document.querySelectorAll('a[href], link[href]')]

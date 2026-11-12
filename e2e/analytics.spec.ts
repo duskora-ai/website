@@ -23,7 +23,7 @@ test.beforeAll(async () => {
 });
 test.afterAll(() => server.close());
 
-const PAGES = ['/', '/404.html', '/beta/', '/terms/', '/privacy/', '/refunds/', '/integrations/', '/integrations/github/', '/integrations/linear/', '/integrations/jira/', '/blog/', '/blog/welcome-to-duskora/'];
+const PAGES = ['/', '/404.html', '/beta/', '/terms/', '/privacy/', '/refunds/', '/integrations/', '/integrations/github/', '/integrations/linear/', '/integrations/jira/', '/blog/', '/blog/welcome-to-duskora/', '/blog/getting-started-with-duskora/'];
 const GTM = /^https:\/\/www\.googletagmanager\.com\//;
 const TEST_ID = 'G-TEST123';
 

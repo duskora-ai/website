@@ -23,7 +23,7 @@ test.beforeAll(async () => {
 });
 test.afterAll(() => server.close());
 
-for (const p of ['/', '/beta/', '/privacy/', '/refunds/', '/terms/', '/integrations/', '/integrations/github/', '/integrations/linear/', '/integrations/jira/', '/blog/', '/blog/welcome-to-duskora/', '/404.html']) {
+for (const p of ['/', '/beta/', '/privacy/', '/refunds/', '/terms/', '/integrations/', '/integrations/github/', '/integrations/linear/', '/integrations/jira/', '/blog/', '/blog/welcome-to-duskora/', '/blog/getting-started-with-duskora/', '/404.html']) {
   test(`${p} uses self-hosted Inter and makes no Google Fonts requests`, async ({ page }) => {
     const requests: string[] = [];
     page.on('request', (r) => requests.push(r.url()));
