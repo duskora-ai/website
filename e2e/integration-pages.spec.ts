@@ -93,9 +93,11 @@ test('home page chips link GitHub, Linear and Jira to their pages, and only thos
   for (const [name, slug] of [['GitHub', 'github'], ['Linear', 'linear'], ['Jira', 'jira']]) {
     await expect(chips.filter({ hasText: name })).toHaveAttribute('href', `/integrations/${slug}/`);
   }
-  for (const name of ['Slack', 'Anthropic', 'OpenAI', 'Google']) {
+  for (const name of ['Slack', 'Anthropic', 'OpenAI']) {
     await expect(page.locator('.integrations span.chip', { hasText: name })).toHaveCount(1);
   }
+  // Google models aren't part of launch.
+  await expect(page.locator('.integrations .chip', { hasText: 'Google' })).toHaveCount(0);
   await expect(page.locator('.integrations a.chip')).toHaveCount(3);
 
   await chips.filter({ hasText: 'Linear' }).click();
