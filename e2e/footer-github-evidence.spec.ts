@@ -37,8 +37,10 @@ test('footer shows GitHub after Instagram and LinkedIn with rel="me" on every pa
     const gh = legal.getByRole('link', { name: 'GitHub' });
     await expect(gh).toHaveAttribute('href', 'https://github.com/duskora-ai');
     await expect(gh).toHaveAttribute('rel', 'me');
-    await expect(legal.locator('a').nth(-3)).toHaveText('Instagram');
-    await expect(legal.locator('a').nth(-2)).toHaveText('LinkedIn');
+    await expect(legal.locator('a').nth(-4)).toHaveText('Instagram');
+    await expect(legal.locator('a').nth(-3)).toHaveText('LinkedIn');
+    await expect(legal.locator('a').nth(-2)).toHaveText('GitHub');
+    await expect(legal.locator('a').nth(-1)).toHaveText('YouTube');
     await pause(page);
     if (out) await legal.screenshot({ path: path.join(out, `github-footer-${slug}.png`) });
   }

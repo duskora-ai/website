@@ -29,7 +29,7 @@ async function expectFollowLinks(page: Page) {
   const follow = page.locator('#beta-follow');
   await expect(follow).toBeVisible();
   await expect(follow).toContainText('Follow along while you wait:');
-  for (const [name, href] of [['LinkedIn', 'https://www.linkedin.com/company/duskora-ai/'], ['Instagram', 'https://www.instagram.com/duskora_ai/']]) {
+  for (const [name, href] of [['LinkedIn', 'https://www.linkedin.com/company/duskora-ai/'], ['Instagram', 'https://www.instagram.com/duskora_ai/'], ['YouTube', 'https://www.youtube.com/@duskora-ai']]) {
     const link = follow.getByRole('link', { name, exact: true });
     await expect(link).toHaveAttribute('href', href);
     await expect(link).toHaveAttribute('target', '_blank');

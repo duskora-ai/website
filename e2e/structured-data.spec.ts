@@ -67,6 +67,7 @@ test('Organization sameAs lists exactly our confirmed profiles, each linked rel=
     'https://www.instagram.com/duskora_ai/',
     'https://www.linkedin.com/company/duskora-ai/',
     'https://github.com/duskora-ai',
+    'https://www.youtube.com/@duskora-ai',
   ]);
   const me = await page.locator('footer a[rel~="me"]').evaluateAll((as) => as.map((a) => a.getAttribute('href')));
   expect(me).toEqual(org.sameAs);

@@ -45,11 +45,13 @@ const LEGAL = [
   ['Instagram', 'https://www.instagram.com/duskora_ai/'],
   ['LinkedIn', 'https://www.linkedin.com/company/duskora-ai/'],
   ['GitHub', 'https://github.com/duskora-ai'],
+  ['YouTube', 'https://www.youtube.com/@duskora-ai'],
 ];
 const SAME_AS = [
   'https://www.instagram.com/duskora_ai/',
   'https://www.linkedin.com/company/duskora-ai/',
   'https://github.com/duskora-ai',
+  'https://www.youtube.com/@duskora-ai',
 ];
 
 for (const start of PAGES) {
