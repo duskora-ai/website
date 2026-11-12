@@ -6,7 +6,15 @@
     <atom:link href="https://duskora.ai/blog/feed.xml" rel="self" type="application/rss+xml" />
     <description>News, product updates and notes from the Duskora team on building with AI coding agents that turn tickets into reviewed pull requests.</description>
     <language>en</language>
-    <lastBuildDate>Wed, 11 Nov 2026 09:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Thu, 12 Nov 2026 22:00:00 GMT</lastBuildDate>
+    <item>
+      <title>How budgets work in Duskora: predictable spend for AI agents</title>
+      <link>https://duskora.ai/blog/how-budgets-work-in-duskora/</link>
+      <guid isPermaLink="true">https://duskora.ai/blog/how-budgets-work-in-duskora/</guid>
+      <pubDate>Thu, 12 Nov 2026 22:00:00 GMT</pubDate>
+      <category>Guides</category>
+      <description>What will AI agents cost you? How Duskora keeps spend predictable: a budget on every ticket, a monthly cap per project with alerts at 50%, 80% and 100%, and your own Anthropic or OpenAI keys, with every run&apos;s cost on the record.</description>
+    </item>
     <item>
       <title>From sign-up to shipped: your first ticket with Duskora</title>
       <link>https://duskora.ai/blog/getting-started-with-duskora/</link>
