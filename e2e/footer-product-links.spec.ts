@@ -27,7 +27,7 @@ test.beforeAll(async () => {
 test.afterAll(() => server.close());
 
 // 404.html is served at an unknown URL by GitHub Pages; here it is loaded directly.
-const PAGES = ['/', '/beta/', '/terms/', '/privacy/', '/refunds/', '/404.html', '/integrations/', '/integrations/github/', '/integrations/linear/', '/integrations/jira/', '/blog/', '/blog/welcome-to-duskora/', '/blog/getting-started-with-duskora/'];
+const PAGES = ['/', '/beta/', '/terms/', '/privacy/', '/refunds/', '/404.html', '/integrations/', '/integrations/github/', '/integrations/linear/', '/integrations/jira/', '/blog/', '/blog/welcome-to-duskora/', '/blog/getting-started-with-duskora/', '/blog/how-budgets-work-in-duskora/'];
 
 const PRODUCT = [
   ['Integrations', '/integrations/'],

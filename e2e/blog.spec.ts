@@ -36,6 +36,7 @@ test.afterAll(() => server.close());
 const ORIGIN = 'https://duskora.ai';
 // Every post, newest first. Add new posts here, to the listing, to /blog/feed.xml, sitemap.xml and llms.txt.
 const POSTS = [
+  { path: '/blog/how-budgets-work-in-duskora/', title: 'How budgets work in Duskora: predictable spend for AI agents', date: '2026-11-12' },
   { path: '/blog/getting-started-with-duskora/', title: 'From sign-up to shipped: your first ticket with Duskora', date: '2026-11-11' },
   { path: '/blog/welcome-to-duskora/', title: 'Welcome to Duskora: your software team, staffed by agents', date: '2026-11-10' },
 ];
