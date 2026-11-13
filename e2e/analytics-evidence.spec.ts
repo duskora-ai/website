@@ -57,7 +57,10 @@ test('analytics evidence: beta signup flow sends events', async ({ page }) => {
   await expect(page.locator('#beta-done')).toBeVisible();
   await pause(page, 1500);
   if (artifacts) await page.screenshot({ path: path.join(artifacts, '03-beta-submitted.png') });
-  expect(await events()).toEqual([['event', 'beta_request_submitted', { code_host: 'gitlab' }]]);
+  expect(await events()).toEqual([
+    ['event', 'beta_request_submitted', { code_host: 'gitlab' }],
+    ['event', 'conversion', { send_to: 'AW-18546795511/UHAICKuS87cdEPfH5otF' }],
+  ]);
 
   await page.close();
   if (artifacts) await page.video()?.saveAs(path.join(artifacts, 'analytics-beta-flow.webm'));

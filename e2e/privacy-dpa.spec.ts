@@ -35,7 +35,7 @@ test('privacy DPA sentence is available on request by email', async ({ page }) =
   await expect(para).toContainText('Our data processing agreement applies to all customers and is available on request from hello@duskora.ai.');
   await expect(para.locator('a')).toHaveAttribute('href', 'mailto:hello@duskora.ai');
   await expect(page.locator('a[href="/dpa"]')).toHaveCount(0);
-  await expect(page.locator('.updated')).toHaveText('Last updated: 10 November 2026');
+  await expect(page.locator('.updated')).toHaveText('Last updated: 13 November 2026');
   await para.scrollIntoViewIfNeeded();
   await pause(page);
   if (process.env.QA_ARTIFACTS_DIR) await page.screenshot({ path: path.join(process.env.QA_ARTIFACTS_DIR, '01-dpa-sentence.png') });

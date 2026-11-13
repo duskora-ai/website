@@ -6,8 +6,12 @@
 // banner. The choice is kept in localStorage under CONSENT_KEY ('granted' or 'denied'); the footer "Cookie settings"
 // button reopens the banner. The privacy page's "Cookies and analytics" section describes this.
 // Events: page views (automatic), sign_up_click (sign-up and pricing CTAs), beta_request_submitted (beta/index.html).
+// Google Ads: the same gtag.js also configures ADS_ID, the Google Ads tag, so beta/index.html can report a completed beta
+// request as a Google Ads conversion. It follows the same consent signals: with ads cookies denied it sends cookieless
+// pings that Google Ads uses to model conversions, and it sets no cookies.
 (function () {
   var GA_ID = 'G-CGBBLYCXMM';
+  var ADS_ID = 'AW-18546795511';
   if (!GA_ID || location.hostname !== 'duskora.ai') return;
 
   var CONSENT_KEY = 'duskora-consent';
@@ -33,6 +37,7 @@
   if (choice === 'granted') window.gtag('consent', 'update', consent('granted'));
   window.gtag('js', new Date());
   window.gtag('config', GA_ID, { anonymize_ip: true });
+  window.gtag('config', ADS_ID);
 
   var s = document.createElement('script');
   s.async = true;
