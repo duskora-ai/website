@@ -44,7 +44,7 @@ for (const scheme of ['light', 'dark'] as const) {
     await expect(page.getByRole('status')).toHaveText("Thanks, we'll be in touch.");
     const follow = page.locator('#beta-follow');
     await expect(follow).toBeVisible();
-    await expect(follow.getByRole('link')).toHaveCount(3);
+    await expect(follow.getByRole('link')).toHaveCount(2);
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
     const colors = await follow.evaluate((el) => {
       const bg = getComputedStyle(document.body).backgroundColor;

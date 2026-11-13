@@ -64,7 +64,6 @@ test('Organization sameAs lists exactly our confirmed profiles, each linked rel=
   const org = byType(await graph(page), 'Organization');
   // Only confirmed Duskora.ai profiles: these tell Google we are not duskora.com.
   expect(org.sameAs).toEqual([
-    'https://www.instagram.com/duskora_ai/',
     'https://www.linkedin.com/company/duskora-ai/',
     'https://github.com/duskora-ai',
     'https://www.youtube.com/@duskora-ai',
