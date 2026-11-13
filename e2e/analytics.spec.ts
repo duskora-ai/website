@@ -26,6 +26,8 @@ test.afterAll(() => server.close());
 const PAGES = ['/', '/404.html', '/beta/', '/terms/', '/privacy/', '/refunds/', '/integrations/', '/integrations/github/', '/integrations/linear/', '/integrations/jira/', '/blog/', '/blog/welcome-to-duskora/', '/blog/getting-started-with-duskora/', '/blog/how-budgets-work-in-duskora/'];
 const GTM = /^https:\/\/www\.googletagmanager\.com\//;
 const TEST_ID = 'G-TEST123';
+const ADS_ID = 'AW-18546795511';
+const BETA_CONVERSION = ['event', 'conversion', { send_to: `${ADS_ID}/UHAICKuS87cdEPfH5otF` }];
 
 const ID_LINE = /var GA_ID = '[^']*';/;
 const HOST_CHECK = "location.hostname !== 'duskora.ai'";
@@ -56,8 +58,10 @@ const calls = (page: Page) => page.evaluate(() => ((window as any).dataLayer || 
 const banner = (page: Page) => page.getByRole('region', { name: 'Cookie consent' });
 
 // gtag() pushes its arguments objects onto dataLayer
-test('analytics.js has the live measurement ID', () => {
-  expect(fs.readFileSync(path.join(root, 'analytics.js'), 'utf8')).toContain("var GA_ID = 'G-CGBBLYCXMM';");
+test('analytics.js has the live measurement ID and Google Ads tag ID', () => {
+  const src = fs.readFileSync(path.join(root, 'analytics.js'), 'utf8');
+  expect(src).toContain("var GA_ID = 'G-CGBBLYCXMM';");
+  expect(src).toContain(`var ADS_ID = '${ADS_ID}';`);
 });
 
 const events = (page: Page) =>
@@ -117,12 +121,12 @@ for (const p of PAGES) {
     expect(await page.evaluate(() => typeof (window as any).gtag)).toBe('undefined');
   });
 
-  test(`${p} loads gtag.js and configures GA with IP anonymisation once the ID is set`, async ({ page }) => {
+  test(`${p} loads gtag.js and configures GA with IP anonymisation, and the Google Ads tag, once the ID is set`, async ({ page }) => {
     const gtm = await withId(page);
     await page.goto(base + p, { waitUntil: 'networkidle' });
     expect(gtm).toEqual([`https://www.googletagmanager.com/gtag/js?id=${TEST_ID}`]);
     const config = await page.evaluate(() => (window as any).dataLayer.map((a: IArguments) => Array.from(a)).filter((a: unknown[]) => a[0] === 'config'));
-    expect(config).toEqual([['config', TEST_ID, { anonymize_ip: true }]]);
+    expect(config).toEqual([['config', TEST_ID, { anonymize_ip: true }], ['config', ADS_ID]]);
   });
 }
 
@@ -158,14 +162,14 @@ async function submitBeta(page: Page) {
   await page.getByRole('button', { name: 'Request access' }).click();
 }
 
-test('a successful beta request sends beta_request_submitted with the code host only', async ({ page }) => {
+test('a successful beta request sends beta_request_submitted with the code host only, and a Google Ads conversion', async ({ page }) => {
   await withId(page);
   await page.route('**/beta-requests', (route) => route.fulfill({ status: 201, body: '{}', contentType: 'application/json' }));
   await page.goto(`${base}/beta/`);
   await submitBeta(page);
   await expect(page.locator('#beta-done')).toBeVisible();
   const sent = await events(page);
-  expect(sent).toEqual([['event', 'beta_request_submitted', { code_host: 'gitlab' }]]);
+  expect(sent).toEqual([['event', 'beta_request_submitted', { code_host: 'gitlab' }], BETA_CONVERSION]);
   expect(JSON.stringify(sent)).not.toMatch(/Ada|ada@example\.com|Extend our API/);
 });
 

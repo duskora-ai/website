@@ -172,7 +172,11 @@
         }).then(function (res) {
           if (!res.ok) throw new Error('status ' + res.status);
           // Analytics gets the code host only, never the name, email or use case.
-          if (window.gtag) window.gtag('event', 'beta_request_submitted', { code_host: host.value });
+          if (window.gtag) {
+            window.gtag('event', 'beta_request_submitted', { code_host: host.value });
+            // Google Ads conversion "Beta request (Google Ads tag)"; it carries no form data at all.
+            window.gtag('event', 'conversion', { send_to: 'AW-18546795511/UHAICKuS87cdEPfH5otF' });
+          }
           form.hidden = true;
           var done = document.getElementById('beta-done');
           done.hidden = false;
