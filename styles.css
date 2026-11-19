@@ -218,7 +218,54 @@ section[id] { scroll-margin-top: 80px; }
 }
 
 /* Beta access request form */
-.beta-form { max-width: 560px; margin-top: 24px; }
+/* Beta page: intro and details on the left, the form card on the right (stacked on phones). */
+.beta-page { position: relative; padding: 64px 0 96px; }
+.beta-page::before { content: ''; position: absolute; inset: 0 0 auto; height: 520px; background: var(--glow); pointer-events: none; }
+.beta-grid { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 440px); grid-template-areas: 'intro card' 'details card'; column-gap: 56px; align-items: start; }
+.beta-intro { grid-area: intro; }
+.beta-card { grid-area: card; position: sticky; top: 88px; padding: 28px; background: var(--surface); border: 1px solid var(--border); border-radius: 16px; box-shadow: 0 12px 32px rgba(16, 24, 40, 0.08), var(--shadow); }
+.beta-details { grid-area: details; }
+.beta-intro .eyebrow { margin-bottom: 16px; }
+.beta-intro h1 { margin: 0 0 16px; max-width: none; font-size: clamp(34px, 5vw, 48px); }
+.beta-lede { font-size: 18px; color: var(--text-2); margin: 0 0 32px; max-width: 54ch; }
+.beta-page h2 { font-size: 20px; letter-spacing: -0.015em; line-height: 1.3; margin: 0 0 14px; }
+.beta-fit { padding: 22px 24px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); }
+.beta-checks { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.beta-checks li { position: relative; padding-left: 30px; color: var(--text-2); font-size: 15px; }
+.beta-checks li::before { position: absolute; left: 0; top: 2px; display: grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; font-size: 12px; font-weight: 700; }
+.beta-checks .yes::before { content: '\2713'; background: var(--accent-soft); color: var(--accent); }
+.beta-checks .no { margin-top: 4px; padding-top: 12px; border-top: 1px solid var(--border); }
+.beta-checks .no::before { content: '\2715'; top: 14px; background: rgba(217, 45, 32, 0.1); color: #d92d20; }
+.beta-details h2 { margin-top: 48px; }
+.beta-details p { color: var(--text-2); margin: 0; }
+.beta-details a { color: var(--accent); }
+.beta-steps { counter-reset: step; list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.beta-steps li { counter-increment: step; position: relative; padding: 14px 18px 14px 58px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); font-size: 15px; color: var(--muted); line-height: 1.5; }
+.beta-steps li::before { content: counter(step, decimal-leading-zero); position: absolute; left: 18px; top: 15px; font-size: 13px; font-weight: 700; color: var(--accent); letter-spacing: 0.04em; }
+.beta-steps strong { display: block; color: var(--text); font-size: 16px; }
+.beta-perks { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.beta-perks li { padding: 16px 18px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); font-size: 15px; color: var(--muted); line-height: 1.5; }
+.beta-perks strong { display: block; margin-bottom: 2px; color: var(--text); }
+.beta-card-title { margin: 0 0 4px !important; }
+.beta-card-sub { margin: 0 0 22px; font-size: 14px; color: var(--muted); }
+.beta-card .btn-lg { width: 100%; }
+.beta-card #beta-done { margin: 0 0 12px; font-size: 18px; font-weight: 600; color: var(--text); }
+.beta-form { margin: 0; }
+.beta-form .optional { font-weight: 400; color: var(--muted); }
+.field-hint { margin: 6px 0 0; font-size: 13px; color: var(--muted); line-height: 1.45; }
+@media (prefers-color-scheme: dark) {
+  .beta-card { box-shadow: var(--shadow); }
+  .beta-checks .no::before { background: rgba(249, 112, 102, 0.14); color: #f97066; }
+}
+@media (max-width: 900px) {
+  .beta-grid { grid-template-columns: minmax(0, 1fr); grid-template-areas: 'intro' 'card' 'details'; }
+  .beta-card { position: static; margin-top: 32px; }
+}
+@media (max-width: 560px) {
+  .beta-page { padding: 40px 0 64px; }
+  .beta-card { padding: 22px 18px; }
+  .beta-perks { grid-template-columns: minmax(0, 1fr); }
+}
 .beta-form[hidden], #beta-done[hidden], .beta-follow[hidden], .beta-form input[hidden] { display: none !important; }
 .beta-form .field { margin: 0 0 20px; padding: 0; border: 0; min-width: 0; }
 .beta-form label, .beta-form legend { display: block; padding: 0; margin: 0 0 6px; font-size: 14px; font-weight: 600; color: var(--text); }

@@ -117,6 +117,24 @@ for (const [name, width, height] of [['desktop', 1280, 900], ['phone', 375, 800]
       expect(requests[0].body).toEqual({ name: 'Ada Lovelace', email: 'ada@example.com', codeHost: 'gitlab', useCase: 'Extend our API' });
     });
 
+    test('an optional repository link is sent at the end of the use case', async ({ page }) => {
+      await fillValid(page);
+      await page.getByLabel('Repository link (optional)').fill(' https://git.example.com/acme/api ');
+      await page.getByRole('button', { name: 'Request access' }).click();
+      await expect(page.getByRole('status')).toHaveText(DONE);
+      expect(requests[0].body).toEqual({ name: 'Ada Lovelace', email: 'ada@example.com', codeHost: 'gitlab', useCase: 'Extend our API\n\nRepository: https://git.example.com/acme/api' });
+    });
+
+    test('says what Duskora is, and what it is not, before the form', async ({ page }) => {
+      await expect(page.locator('.beta-lede')).toContainText('AI coding agents');
+      await expect(page.locator('.beta-checks .no')).toContainText("doesn't generate videos");
+      // Generic about code hosts: the explainer copy doesn't single out one provider.
+      for (const sel of ['.beta-intro', '.beta-details']) await expect(page.locator(sel)).not.toContainText('GitHub');
+      const textBox = await page.locator('.beta-checks .no').boundingBox();
+      const formBox = await page.locator('#beta-form').boundingBox();
+      if (name === 'phone') expect(textBox!.y).toBeLessThan(formBox!.y);
+    });
+
     test('button is disabled while sending', async ({ page }) => {
       await page.unroute('**/beta-requests');
       let release!: () => void;

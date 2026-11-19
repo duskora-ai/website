@@ -4,14 +4,14 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Request beta access · Duskora.ai</title>
-    <meta name="description" content="Request access to the Duskora.ai beta." />
+    <meta name="description" content="Duskora is a software team staffed by AI coding agents: tickets in, reviewed pull requests out. Request access to the private beta." />
     <meta name="robots" content="noindex, follow" />
     <link rel="canonical" href="https://duskora.ai/beta/" />
     <link rel="icon" href="/favicon.ico" sizes="48x48" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <meta property="og:title" content="Request beta access · Duskora.ai" />
-    <meta property="og:description" content="Request access to the Duskora.ai beta." />
+    <meta property="og:description" content="Duskora is a software team staffed by AI coding agents: tickets in, reviewed pull requests out. Request access to the private beta." />
     <meta property="og:url" content="https://duskora.ai/beta/" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Duskora.ai" />
@@ -21,7 +21,7 @@
     <meta property="og:image:alt" content="Duskora.ai: your software team, staffed by agents" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Request beta access · Duskora.ai" />
-    <meta name="twitter:description" content="Request access to the Duskora.ai beta." />
+    <meta name="twitter:description" content="Duskora is a software team staffed by AI coding agents: tickets in, reviewed pull requests out. Request access to the private beta." />
     <meta name="twitter:image" content="https://duskora.ai/og-image.png" />
     <link rel="preload" href="/fonts/inter-latin-variable.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="stylesheet" href="/styles.css" />
@@ -45,50 +45,97 @@
       </div>
     </header>
 
-    <main class="doc">
-      <h1>Request beta access</h1>
+    <main class="beta-page">
+      <div class="wrap beta-grid">
+        <div class="beta-intro">
+          <span class="eyebrow">Private beta</span>
+          <h1>Request beta access</h1>
+          <p class="beta-lede">Duskora is a software team staffed by AI coding agents. It picks up tickets from your board, writes the code in your repository and opens pull requests for your team to review. Nothing ships until you approve it.</p>
 
-      <form id="beta-form" class="beta-form" novalidate>
-        <div class="field">
-          <label for="f-name">Name</label>
-          <input id="f-name" name="name" required autocomplete="name" aria-describedby="e-name" />
-          <p class="field-error" id="e-name" role="alert"></p>
+          <section class="beta-fit" aria-labelledby="fit-title">
+            <h2 id="fit-title">Is Duskora right for you?</h2>
+            <ul class="beta-checks">
+              <li class="yes">You have a codebase in a Git repository.</li>
+              <li class="yes">You track work as tickets, for example in Linear or Jira.</li>
+              <li class="yes">You want help shipping features, fixes and maintenance work.</li>
+              <li class="no">Duskora writes and ships software. It doesn't generate videos, images, music or marketing content.</li>
+            </ul>
+          </section>
         </div>
-        <div class="field">
-          <label for="f-email">Work email</label>
-          <input id="f-email" type="email" name="email" required autocomplete="email" aria-describedby="e-email" />
-          <p class="field-error" id="e-email" role="alert"></p>
-        </div>
-        <fieldset class="field" aria-describedby="e-host">
-          <legend>Where's your code hosted?</legend>
-          <div class="beta-hosts">
-            <label><input type="radio" name="codeHost" value="github" required /><span>GitHub</span></label>
-            <label><input type="radio" name="codeHost" value="gitlab" required /><span>GitLab</span></label>
-            <label><input type="radio" name="codeHost" value="bitbucket" required /><span>Bitbucket</span></label>
-            <label><input type="radio" name="codeHost" value="azure-devops" required /><span>Azure DevOps</span></label>
-            <label><input type="radio" name="codeHost" value="self-hosted" required /><span>Self-hosted</span></label>
-            <label><input type="radio" name="codeHost" value="other" required /><span>Other</span></label>
+
+        <div class="beta-card">
+          <h2 class="beta-card-title">Tell us about your team</h2>
+          <p class="beta-card-sub">Takes under a minute. We read every request.</p>
+          <form id="beta-form" class="beta-form" novalidate>
+            <div class="field">
+              <label for="f-name">Name</label>
+              <input id="f-name" name="name" required autocomplete="name" aria-describedby="e-name" />
+              <p class="field-error" id="e-name" role="alert"></p>
+            </div>
+            <div class="field">
+              <label for="f-email">Work email</label>
+              <input id="f-email" type="email" name="email" required autocomplete="email" aria-describedby="e-email" />
+              <p class="field-error" id="e-email" role="alert"></p>
+            </div>
+            <fieldset class="field" aria-describedby="e-host">
+              <legend>Where's your code hosted?</legend>
+              <div class="beta-hosts">
+                <label><input type="radio" name="codeHost" value="github" required /><span>GitHub</span></label>
+                <label><input type="radio" name="codeHost" value="gitlab" required /><span>GitLab</span></label>
+                <label><input type="radio" name="codeHost" value="bitbucket" required /><span>Bitbucket</span></label>
+                <label><input type="radio" name="codeHost" value="azure-devops" required /><span>Azure DevOps</span></label>
+                <label><input type="radio" name="codeHost" value="self-hosted" required /><span>Self-hosted</span></label>
+                <label><input type="radio" name="codeHost" value="other" required /><span>Other</span></label>
+              </div>
+              <p class="field-error" id="e-host" role="alert"></p>
+              <input id="f-host-other" name="hostOther" aria-label="Where's your code hosted? (other)" autocomplete="off" aria-describedby="e-host-other" hidden />
+              <p class="field-error" id="e-host-other" role="alert"></p>
+            </fieldset>
+            <div class="field">
+              <label for="f-repo">Repository link <span class="optional">(optional)</span></label>
+              <input id="f-repo" type="url" name="repoUrl" inputmode="url" autocomplete="url" maxlength="200" placeholder="https://…/your-team/your-repo" aria-describedby="h-repo" />
+              <p class="field-hint" id="h-repo">A repository you'd use Duskora on. Private is fine: we only use the link to understand your stack.</p>
+            </div>
+            <div class="field">
+              <label for="f-use">What do you want to use Duskora for?</label>
+              <textarea id="f-use" name="useCase" rows="4" required maxlength="750" placeholder="Extend our Nest.js API with new endpoints, Postgres via Prisma." aria-describedby="e-use"></textarea>
+              <p class="field-error" id="e-use" role="alert"></p>
+            </div>
+            <button class="btn btn-primary btn-lg" type="submit" id="beta-submit">Request access</button>
+            <p class="beta-privacy"><a href="/privacy/">Privacy policy</a></p>
+            <p class="field-error" id="e-form" role="alert"></p>
+          </form>
+          <p id="beta-done" role="status" tabindex="-1" hidden>Thanks, we'll be in touch.</p>
+          <div id="beta-follow" class="beta-follow" hidden>
+            <p>Follow along while you wait:</p>
+            <ul>
+              <li><a href="https://www.linkedin.com/company/duskora-ai/" target="_blank" rel="noopener">LinkedIn</a></li>
+              <li><a href="https://www.youtube.com/@duskora-ai" target="_blank" rel="noopener">YouTube</a></li>
+            </ul>
           </div>
-          <p class="field-error" id="e-host" role="alert"></p>
-          <input id="f-host-other" name="hostOther" aria-label="Where's your code hosted? (other)" autocomplete="off" aria-describedby="e-host-other" hidden />
-          <p class="field-error" id="e-host-other" role="alert"></p>
-        </fieldset>
-        <div class="field">
-          <label for="f-use">What do you want to use Duskora for?</label>
-          <textarea id="f-use" name="useCase" rows="4" required placeholder="Extend our Nest.js API with new endpoints, Postgres via Prisma." aria-describedby="e-use"></textarea>
-          <p class="field-error" id="e-use" role="alert"></p>
         </div>
-        <button class="btn btn-primary btn-lg" type="submit" id="beta-submit">Request access</button>
-        <p class="beta-privacy"><a href="/privacy/">Privacy policy</a></p>
-        <p class="field-error" id="e-form" role="alert"></p>
-      </form>
-      <p id="beta-done" role="status" tabindex="-1" hidden>Thanks, we'll be in touch.</p>
-      <div id="beta-follow" class="beta-follow" hidden>
-        <p>Follow along while you wait:</p>
-        <ul>
-          <li><a href="https://www.linkedin.com/company/duskora-ai/" target="_blank" rel="noopener">LinkedIn</a></li>
-          <li><a href="https://www.youtube.com/@duskora-ai" target="_blank" rel="noopener">YouTube</a></li>
-        </ul>
+
+        <div class="beta-details">
+          <h2>How a ticket becomes shipped code</h2>
+          <ol class="beta-steps">
+            <li><strong>Plan</strong> An agent reads the ticket and your codebase, then writes a plan before any code changes.</li>
+            <li><strong>Build</strong> It implements the change on a branch, runs your CI checks and opens a pull request.</li>
+            <li><strong>Review</strong> A separate agent reviews the diff and sends it back if it isn't right.</li>
+            <li><strong>QA</strong> Each acceptance criterion is tested, with screenshots attached as evidence.</li>
+            <li><strong>Deploy</strong> After your approval, the change is merged and followed through to production.</li>
+          </ol>
+
+          <h2>What the beta includes</h2>
+          <ul class="beta-perks">
+            <li><strong>You stay in control.</strong> Every change waits at an approval gate, in the app or in Slack.</li>
+            <li><strong>Works from your board.</strong> Two-way sync with Linear and Jira, with more tools on the way.</li>
+            <li><strong>Predictable spend.</strong> Per-ticket and monthly budgets, using your own Anthropic or OpenAI key.</li>
+            <li><strong>A direct line to us.</strong> Beta teams talk to the people building Duskora and shape what comes next.</li>
+          </ul>
+
+          <h2>What happens next</h2>
+          <p>We review each request and email you when your access is ready. Questions in the meantime? Write to <a href="mailto:hello@duskora.ai">hello@duskora.ai</a>.</p>
+        </div>
       </div>
     </main>
 
@@ -152,6 +199,7 @@
         var host = checkedHost();
         var hostOther = other.value.trim();
         var useCase = form.useCase.value.trim();
+        var repoUrl = form.repoUrl.value.trim();
         var first = null;
         function fail(input, errId, msg) { setError(input, errId, msg); if (msg && !first) first = input; }
         document.getElementById('e-form').textContent = '';
@@ -161,6 +209,9 @@
         fail(other, 'e-host-other', host && host.value === 'other' && !hostOther ? 'Tell us where your code is hosted.' : '');
         fail(form.useCase, 'e-use', useCase ? '' : 'Tell us what you want to use Duskora for.');
         if (first) { first.focus(); return; }
+        // The API has no repository field yet, so the link travels at the end of the use case
+        // (staff see it in Slack and the portal). Analytics never gets it.
+        var details = repoUrl ? useCase + '\n\nRepository: ' + repoUrl : useCase;
 
         var label = btn.textContent;
         btn.disabled = true;
@@ -168,7 +219,7 @@
         fetch(API_URL, {
           method: 'POST',
           headers: { 'content-type': 'application/json' },
-          body: JSON.stringify({ name: name, email: email, codeHost: host.value, codeHostOther: host.value === 'other' ? hostOther : undefined, useCase: useCase })
+          body: JSON.stringify({ name: name, email: email, codeHost: host.value, codeHostOther: host.value === 'other' ? hostOther : undefined, useCase: details })
         }).then(function (res) {
           if (!res.ok) throw new Error('status ' + res.status);
           // Analytics gets the code host only, never the name, email or use case.
