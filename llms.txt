@@ -32,7 +32,7 @@ Each link below is followed by the description that page gives of itself.
 
 ## Get started
 
-- [Beta access](https://duskora.ai/beta/): Request access to the Duskora.ai beta.
+- [Beta access](https://duskora.ai/beta/): Duskora is a software team staffed by AI coding agents: tickets in, reviewed pull requests out. Request access to the private beta.
 
 ## Legal
 
