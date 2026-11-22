@@ -28,6 +28,9 @@
     <link rel="preload" href="/fonts/inter-latin-variable.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="stylesheet" href="/styles.css" />
     <script src="/analytics.js" defer></script>
+    <!-- Motion: the inline line lets styles.css hide elements that site.js will reveal on scroll; if site.js never arrives, it shows them again. -->
+    <script>document.documentElement.classList.add('js');setTimeout(function(){if(!window.duskoraMotion)document.documentElement.classList.remove('js')},4000)</script>
+    <script src="/site.js" defer></script>
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
