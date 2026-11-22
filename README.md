@@ -6,6 +6,17 @@ It's plain HTML and CSS with no build step: edit the HTML and push. Shared style
 
 Legal pages (`terms/`, `privacy/`, `refunds/`) are folders with an `index.html` so URLs stay clean. To mark a fact still to be supplied, wrap it in `<mark class="fill">[…]</mark>`: the e2e check `no unfilled facts remain` fails while any are left. The text has not had legal review yet.
 
+## Motion
+
+`site.js` adds the motion on every page, and `styles.css` holds how it looks. Each page's `<head>` has, after `analytics.js`, an inline line that adds the `js` class to `<html>` (so the styles can hide what is revealed on scroll without a flash) and `<script src="/site.js" defer>`; add both to any new page. Pages are complete without JavaScript, and with the visitor's "reduce motion" setting nothing moves.
+
+- **Scroll reveals.** Give an element `data-reveal` with `up`, `left`, `right` or `scale`, or one of the image effects `wipe-r`, `wipe-u`, `iris` and `focus` on a `<picture>`. It appears when it scrolls into view, and an image waits until it has loaded. The blog and beta pages get theirs from the selector list in `site.js`.
+- **Scroll-linked values.** `data-parallax="0.1"` sets `--py` on the element for a background layer to move by, and `data-progress` sets `--p` from 0 to 1 as the element is read (the "Coming next" line).
+- **Home hero.** The sky is always dark. The sun sets behind the horizon as the page scrolls, the highlighted words in the headline are typed in (`data-type`), and the card beside it plays an example ticket through the pipeline and waits for the visitor to press Approve. Its text is in `index.html`: the markup is the "waiting for approval" state shown without JavaScript.
+- **Also:** the phone menu button, the reading-progress bar, the current-section underline in the header, and the image viewer that opens when a screenshot is clicked.
+
+The e2e check `motion` covers these.
+
 ## Pull request previews
 
 Each pull request from a branch of this repo is deployed to `https://pr-<number>.preview.duskora.ai/`, and a comment on the pull request links to it. Every push updates the preview, and closing the pull request deletes it. The workflow is `.github/workflows/preview.yml`. The AWS side (an S3 bucket, a CloudFront distribution on `*.preview.duskora.ai` and the role the workflow assumes) is Terraform in the private Duskora repo, under `infra/terraform/envs/website-previews`, with its setup steps. The workflow needs the repository variables `WEBSITE_PREVIEW_ROLE_ARN`, `WEBSITE_PREVIEW_BUCKET` and `WEBSITE_PREVIEW_DOMAIN` from that stack, and skips its jobs until they are set. Pull requests from forks and Dependabot get no preview.
