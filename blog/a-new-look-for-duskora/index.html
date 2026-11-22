@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>A new look for Duskora: redesigned by our own agents · Duskora.ai</title>
+    <meta name="description" content="Duskora.ai has a new look, and AI agents built it. We gave Duskora, running Claude Fable 5.2, a two-line brief. See the old and new site side by side, and the design decisions behind it." />
+    <link rel="canonical" href="https://duskora.ai/blog/a-new-look-for-duskora/" />
+    <link rel="icon" href="/favicon.ico" sizes="48x48" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="alternate" type="application/rss+xml" title="Duskora.ai blog" href="/blog/feed.xml" />
+    <meta property="og:title" content="A new look for Duskora: redesigned by our own agents" />
+    <meta property="og:description" content="We gave Duskora, running Claude Fable 5.2, a two-line brief to redesign this site. Drag the sliders to compare old and new, and read the design decisions behind it." />
+    <meta property="og:url" content="https://duskora.ai/blog/a-new-look-for-duskora/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Duskora.ai" />
+    <meta property="og:image" content="https://duskora.ai/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Duskora.ai: your software team, staffed by agents" />
+    <meta property="article:published_time" content="2026-11-22" />
+    <meta property="article:section" content="Announcements" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="A new look for Duskora: redesigned by our own agents" />
+    <meta name="twitter:description" content="We gave Duskora, running Claude Fable 5.2, a two-line brief to redesign this site. Drag the sliders to compare old and new, and read the design decisions behind it." />
+    <meta name="twitter:image" content="https://duskora.ai/og-image.png" />
+    <link rel="preload" href="/fonts/inter-latin-variable.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/analytics.js" defer></script>
+    <!-- Motion: the inline line lets styles.css hide elements that site.js will reveal on scroll; if site.js never arrives, it shows them again. -->
+    <script>document.documentElement.classList.add('js');setTimeout(function(){if(!window.duskoraMotion)document.documentElement.classList.remove('js')},4000)</script>
+    <script src="/site.js" defer></script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "@id": "https://duskora.ai/blog/a-new-look-for-duskora/#post",
+        "headline": "A new look for Duskora: redesigned by our own agents",
+        "description": "Duskora.ai has a new look, and AI agents built it. We gave Duskora, running Claude Fable 5.2, a two-line brief. See the old and new site side by side, and the design decisions behind it.",
+        "url": "https://duskora.ai/blog/a-new-look-for-duskora/",
+        "mainEntityOfPage": "https://duskora.ai/blog/a-new-look-for-duskora/",
+        "image": "https://duskora.ai/og-image.png",
+        "datePublished": "2026-11-22",
+        "dateModified": "2026-11-22",
+        "articleSection": "Announcements",
+        "author": { "@type": "Organization", "@id": "https://duskora.ai/#organization", "name": "Duskora.ai", "url": "https://duskora.ai/" },
+        "publisher": { "@type": "Organization", "@id": "https://duskora.ai/#organization", "name": "Duskora.ai", "logo": { "@type": "ImageObject", "url": "https://duskora.ai/apple-touch-icon.png" } },
+        "isPartOf": { "@type": "Blog", "@id": "https://duskora.ai/blog/#blog", "name": "Duskora.ai blog", "url": "https://duskora.ai/blog/" }
+      }
+    </script>
+  </head>
+  <body>
+    <header>
+      <div class="wrap nav">
+        <a class="brand" href="/" aria-label="Duskora.ai home">
+          <img src="/logo.svg" width="44" height="30" alt="" />
+          <span class="wordmark">Duskora<span>.ai</span></span>
+        </a>
+        <nav class="nav-links" aria-label="Main">
+          <a class="hide-sm" href="/#how">How it works</a>
+          <a class="hide-sm" href="/#platform">Platform</a>
+          <a class="hide-sm" href="/#features">Features</a>
+          <a class="hide-sm" href="/#pricing">Pricing</a>
+          <a class="hide-sm" href="/blog/">Blog</a>
+          <a class="btn btn-ghost" href="https://factory.duskora.ai">Sign in</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <article class="post">
+        <a class="back-link" href="/blog/">← All posts</a>
+        <div class="post-header">
+          <div class="post-meta">
+            <span class="post-tag">Announcements</span>
+            <time datetime="2026-11-22">22 November 2026</time>
+            <span class="dot" aria-hidden="true">·</span>
+            <span>5 min read</span>
+          </div>
+          <h1>A new look for Duskora: redesigned by our own agents</h1>
+          <p class="post-lede">Duskora.ai looks different today. We didn't hire an agency or block out a sprint for it. We wrote a two-line brief, gave it to Duskora running Claude Fable 5.2, and approved the pull request that came back. Here is the old site next to the new one, and the decisions behind the design.</p>
+          <div class="byline">
+            <img src="/logo.svg" width="44" height="30" alt="" />
+            <div><strong>The Duskora team</strong>Duskora.ai</div>
+          </div>
+          <div class="cover" role="img" aria-label="How the redesign happened: brief, design, build, checks, approved">
+            <ol class="cover-flow" aria-hidden="true">
+              <li><span>Brief</span></li>
+              <li><span>Design</span></li>
+              <li><span>Build</span></li>
+              <li><span>Checks</span></li>
+              <li><span>Approved</span></li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="prose">
+          <p>Our old site did its job. It said what Duskora does, showed the app and listed the prices. It was also plain: a light page of cards that could have belonged to anyone. We wanted a site that looks like Duskora and shows the product working, and we wanted to make it the way we ask our customers to make software: by handing the work to agents and keeping the decision to ship.</p>
+
+          <h2>The brief</h2>
+          <p>This is all we wrote:</p>
+          <blockquote><p>Spruce up the website. Keep all the current content and functionality, but make it visually more appealing and add animations: parallax, scroll animations, images that load in different ways, typing text.</p></blockquote>
+          <p>We offered to send some sites for inspiration. It didn't need them. The design direction, the motion and every decision below came from Duskora, with Anthropic's Claude Fable 5.2 as the model behind the agents.</p>
+
+          <h2>Before and after</h2>
+          <p>Drag the handle, or focus it and use the arrow keys, to move between the old home page and the new one.</p>
+          <figure class="post-figure">
+            <div class="compare">
+              <picture class="compare-new">
+                <source type="image/avif" srcset="/blog/a-new-look-for-duskora/hero-new-760.avif 760w, /blog/a-new-look-for-duskora/hero-new-1520.avif 1520w" sizes="(max-width: 760px) calc(100vw - 32px), 712px" />
+                <source type="image/webp" srcset="/blog/a-new-look-for-duskora/hero-new-760.webp 760w, /blog/a-new-look-for-duskora/hero-new-1520.webp 1520w" sizes="(max-width: 760px) calc(100vw - 32px), 712px" />
+                <img src="/blog/a-new-look-for-duskora/hero-new.png" width="1520" height="950" alt="The new Duskora.ai home page: a dusk sky with a setting sun, the headline on the left and an example ticket run on the right" loading="lazy" decoding="async" />
+              </picture>
+              <picture class="compare-old">
+                <source type="image/avif" srcset="/blog/a-new-look-for-duskora/hero-old-760.avif 760w, /blog/a-new-look-for-duskora/hero-old-1520.avif 1520w" sizes="(max-width: 760px) calc(100vw - 32px), 712px" />
+                <source type="image/webp" srcset="/blog/a-new-look-for-duskora/hero-old-760.webp 760w, /blog/a-new-look-for-duskora/hero-old-1520.webp 1520w" sizes="(max-width: 760px) calc(100vw - 32px), 712px" />
+                <img src="/blog/a-new-look-for-duskora/hero-old.png" width="1520" height="950" alt="The old Duskora.ai home page: a light page with a centred headline and two buttons" loading="lazy" decoding="async" />
+              </picture>
+              <span class="compare-tag compare-tag-old" aria-hidden="true">Before</span>
+              <span class="compare-tag compare-tag-new" aria-hidden="true">After</span>
+              <span class="compare-handle" aria-hidden="true"></span>
+              <input class="compare-range" type="range" min="0" max="100" value="50" aria-label="Slide between the old and the new home page" />
+            </div>
+            <figcaption>The top of the home page. Old on the left, new on the right.</figcaption>
+          </figure>
+
+          <p>A still picture misses most of it, so here is the new page moving: the headline typing in, a ticket running through the pipeline, and the sun going down as the page scrolls.</p>
+          <figure class="post-figure">
+            <video controls playsinline muted loop preload="none" width="1280" height="800" poster="/blog/a-new-look-for-duskora/tour-poster.jpg" aria-label="Screen recording of the new home page: the headline types in, an example ticket runs through the pipeline and is approved, and the sun sets as the page scrolls">
+              <source src="/blog/a-new-look-for-duskora/tour.mp4" type="video/mp4" />
+              <a href="/blog/a-new-look-for-duskora/tour.mp4">Download the video (MP4)</a>
+            </video>
+            <figcaption>The new home page in 20 seconds. Or <a href="/">open it</a> and scroll for yourself.</figcaption>
+          </figure>
+
+          <h2>The decisions</h2>
+
+          <h3>A sky at dusk</h3>
+          <p>The name is Duskora, and the logo is a sun going down behind a horizon with three points in orbit around it. The old site used none of that. The new hero is that logo at full size: a night sky, the orbit, and a sun sitting on the horizon. As you scroll, the sun sets behind it. The parallax is there because it is the brand, not because parallax is fashionable.</p>
+          <p>The hero is dark whether your device is set to light or dark. The app itself is dark, so the site now starts in the same place the product does.</p>
+
+          <h3>Show the product working</h3>
+          <p>The old hero told you that agents plan, build, review, test and deploy. The new one shows it. The card beside the headline takes an example ticket through each stage, typing out what the agent did, and then it stops. It waits at the approval gate until you press Approve. Only then does it deploy.</p>
+          <p>That is the most important thing about Duskora, and it is now the first thing you can do on the site: nothing ships without you.</p>
+          <figure class="post-figure post-figure-narrow">
+            <picture>
+                <source type="image/avif" srcset="/blog/a-new-look-for-duskora/run-shipped-464.avif 464w, /blog/a-new-look-for-duskora/run-shipped-928.avif 928w" sizes="(max-width: 422px) calc(100vw - 32px), 390px" />
+                <source type="image/webp" srcset="/blog/a-new-look-for-duskora/run-shipped-464.webp 464w, /blog/a-new-look-for-duskora/run-shipped-928.webp 928w" sizes="(max-width: 422px) calc(100vw - 32px), 390px" />
+                <img src="/blog/a-new-look-for-duskora/run-shipped.png" width="928" height="1072" alt="The example run after Approve was pressed: Plan, Build, Review, QA, Approval and Deploy all ticked, with the status Shipped to production" loading="lazy" decoding="async" />
+              </picture>
+            <figcaption>The example run, after someone pressed Approve.</figcaption>
+          </figure>
+
+          <h3>Dark screenshots on a dark page</h3>
+          <p>Screenshots of a dark app looked heavy on a light page. They now sit on a band of night sky in both colour schemes. Each one arrives differently as you scroll to it: wiped in from the side, opened from the centre, wiped up from below, or pulled into focus. Click one and it opens large enough to read.</p>
+          <figure class="post-figure">
+            <div class="compare">
+              <picture class="compare-new">
+                <source type="image/avif" srcset="/blog/a-new-look-for-duskora/platform-new-760.avif 760w, /blog/a-new-look-for-duskora/platform-new-1520.avif 1520w" sizes="(max-width: 760px) calc(100vw - 32px), 712px" />
+                <source type="image/webp" srcset="/blog/a-new-look-for-duskora/platform-new-760.webp 760w, /blog/a-new-look-for-duskora/platform-new-1520.webp 1520w" sizes="(max-width: 760px) calc(100vw - 32px), 712px" />
+                <img src="/blog/a-new-look-for-duskora/platform-new.png" width="1520" height="950" alt="The new Platform section: the same screenshots on a band of night sky" loading="lazy" decoding="async" />
+              </picture>
+              <picture class="compare-old">
+                <source type="image/avif" srcset="/blog/a-new-look-for-duskora/platform-old-760.avif 760w, /blog/a-new-look-for-duskora/platform-old-1520.avif 1520w" sizes="(max-width: 760px) calc(100vw - 32px), 712px" />
+                <source type="image/webp" srcset="/blog/a-new-look-for-duskora/platform-old-760.webp 760w, /blog/a-new-look-for-duskora/platform-old-1520.webp 1520w" sizes="(max-width: 760px) calc(100vw - 32px), 712px" />
+                <img src="/blog/a-new-look-for-duskora/platform-old.png" width="1520" height="950" alt="The old Platform section: four dark app screenshots on a light page" loading="lazy" decoding="async" />
+              </picture>
+              <span class="compare-tag compare-tag-old" aria-hidden="true">Before</span>
+              <span class="compare-tag compare-tag-new" aria-hidden="true">After</span>
+              <span class="compare-handle" aria-hidden="true"></span>
+              <input class="compare-range" type="range" min="0" max="100" value="50" aria-label="Slide between the old and the new Platform section" />
+            </div>
+            <figcaption>The Platform section. The screenshots are the same; the page around them changed.</figcaption>
+          </figure>
+
+          <h3>A roadmap that reads as a timeline</h3>
+          <p>The list of integrations we are working on was seven boxes in a column down the left of the page. It is now a timeline with entries on both sides, and the line down the middle fills in as you read. It takes less room and looks like what it is.</p>
+          <figure class="post-figure">
+            <div class="compare">
+              <picture class="compare-new">
+                <source type="image/avif" srcset="/blog/a-new-look-for-duskora/roadmap-new-760.avif 760w, /blog/a-new-look-for-duskora/roadmap-new-1520.avif 1520w" sizes="(max-width: 760px) calc(100vw - 32px), 712px" />
+                <source type="image/webp" srcset="/blog/a-new-look-for-duskora/roadmap-new-760.webp 760w, /blog/a-new-look-for-duskora/roadmap-new-1520.webp 1520w" sizes="(max-width: 760px) calc(100vw - 32px), 712px" />
+                <img src="/blog/a-new-look-for-duskora/roadmap-new.png" width="1520" height="950" alt="The new Coming next section: a timeline with entries on alternate sides of a centre line" loading="lazy" decoding="async" />
+              </picture>
+              <picture class="compare-old">
+                <source type="image/avif" srcset="/blog/a-new-look-for-duskora/roadmap-old-760.avif 760w, /blog/a-new-look-for-duskora/roadmap-old-1520.avif 1520w" sizes="(max-width: 760px) calc(100vw - 32px), 712px" />
+                <source type="image/webp" srcset="/blog/a-new-look-for-duskora/roadmap-old-760.webp 760w, /blog/a-new-look-for-duskora/roadmap-old-1520.webp 1520w" sizes="(max-width: 760px) calc(100vw - 32px), 712px" />
+                <img src="/blog/a-new-look-for-duskora/roadmap-old.png" width="1520" height="950" alt="The old Coming next section: a single column of seven boxes" loading="lazy" decoding="async" />
+              </picture>
+              <span class="compare-tag compare-tag-old" aria-hidden="true">Before</span>
+              <span class="compare-tag compare-tag-new" aria-hidden="true">After</span>
+              <span class="compare-handle" aria-hidden="true"></span>
+              <input class="compare-range" type="range" min="0" max="100" value="50" aria-label="Slide between the old and the new Coming next section" />
+            </div>
+            <figcaption>The Coming next section.</figcaption>
+          </figure>
+
+          <h3>Phones get a menu</h3>
+          <p>On a phone, the old site hid the links to the rest of the page and offered nothing in their place. The new one has a menu button. It is a small thing that the brief never asked for, and the kind of gap you would hope a good engineer notices while they are in the file.</p>
+          <figure class="post-figure">
+            <div class="compare compare-phone">
+              <picture class="compare-new">
+                <source type="image/avif" srcset="/blog/a-new-look-for-duskora/phone-new-390.avif 390w, /blog/a-new-look-for-duskora/phone-new-780.avif 780w" sizes="(max-width: 422px) calc(100vw - 32px), 390px" />
+                <source type="image/webp" srcset="/blog/a-new-look-for-duskora/phone-new-390.webp 390w, /blog/a-new-look-for-duskora/phone-new-780.webp 780w" sizes="(max-width: 422px) calc(100vw - 32px), 390px" />
+                <img src="/blog/a-new-look-for-duskora/phone-new.png" width="780" height="1688" alt="The new home page on a phone, with a menu button in the header" loading="lazy" decoding="async" />
+              </picture>
+              <picture class="compare-old">
+                <source type="image/avif" srcset="/blog/a-new-look-for-duskora/phone-old-390.avif 390w, /blog/a-new-look-for-duskora/phone-old-780.avif 780w" sizes="(max-width: 422px) calc(100vw - 32px), 390px" />
+                <source type="image/webp" srcset="/blog/a-new-look-for-duskora/phone-old-390.webp 390w, /blog/a-new-look-for-duskora/phone-old-780.webp 780w" sizes="(max-width: 422px) calc(100vw - 32px), 390px" />
+                <img src="/blog/a-new-look-for-duskora/phone-old.png" width="780" height="1688" alt="The old home page on a phone" loading="lazy" decoding="async" />
+              </picture>
+              <span class="compare-tag compare-tag-old" aria-hidden="true">Before</span>
+              <span class="compare-tag compare-tag-new" aria-hidden="true">After</span>
+              <span class="compare-handle" aria-hidden="true"></span>
+              <input class="compare-range" type="range" min="0" max="100" value="50" aria-label="Slide between the old and the new home page on a phone" />
+            </div>
+            <figcaption>The home page on a phone.</figcaption>
+          </figure>
+
+          <h3>Motion with an off switch</h3>
+          <p>Every animation is optional. If your device asks for reduced motion, nothing moves: no typing, no parallax, no reveals. If JavaScript doesn't load, every word is still on the page, because the text is in the HTML and the script only decides when to show it. The headline that types itself in is one complete sentence to a search engine or a screen reader.</p>
+          <p>There is no framework and no animation library behind any of it. The site is still plain HTML and CSS with one small script, and it still loads one font.</p>
+
+          <h2>What didn't change</h2>
+          <p>The brief said to keep the content and the functionality, and that is the part we checked hardest.</p>
+          <ul>
+            <li><strong>The words.</strong> Headlines, descriptions, prices, plans, the FAQ and the legal pages say what they said before.</li>
+            <li><strong>The behaviour.</strong> Currency and billing switches, the beta form, analytics and cookie consent all work as they did.</li>
+            <li><strong>The checks.</strong> The site has 290 automated checks, covering everything from prices matching the structured data to no page scrolling sideways on a phone. All 290 passed before the redesign and all 290 pass after it. The agents added 21 more for the new behaviour.</li>
+          </ul>
+          <p>Those checks did real work. They are why the pricing cards still line up, why the page still loads a single font, and why the screenshots still download at the right size for your screen. A redesign is exactly the kind of change that quietly breaks things like that, and here it couldn't.</p>
+
+          <aside class="post-cta" aria-labelledby="cta-mid-title">
+            <h2 id="cta-mid-title">Have a backlog like our website?</h2>
+            <p>Work you know how to do and never get to is what Duskora is for. Tell us where your code lives and what you'd like agents to take on.</p>
+            <div class="cta-row">
+              <a class="btn btn-primary" data-signup href="/beta/">Request beta access</a>
+              <span>Takes about a minute</span>
+            </div>
+          </aside>
+
+          <h2>We still decided what shipped</h2>
+          <p>The redesign arrived as one pull request. We reviewed it and merged it. That is the same deal we offer everyone who uses Duskora: agents do the work, and you keep the judgement calls.</p>
+          <p>We could have asked for changes. We did ask for one more thing afterwards: this post, sliders included. The agents wrote that too.</p>
+
+          <h2>See it for yourself</h2>
+          <p>The best demonstration is the site you are on. <a href="/">Go to the home page</a>, watch the ticket run, and press Approve. Then think about what in your own backlog you would hand over first.</p>
+
+          <aside class="post-cta" aria-labelledby="cta-end-title">
+            <h2 id="cta-end-title">Get early access to Duskora</h2>
+            <p>Every plan starts with a free 7-day trial. Fill in the short beta form and we'll get you set up. Questions first? Email <a href="mailto:hello@duskora.ai">hello@duskora.ai</a>.</p>
+            <div class="cta-row">
+              <a class="btn btn-primary btn-lg" data-signup href="/beta/">Request beta access</a>
+              <span>7 days free · No card needed</span>
+            </div>
+          </aside>
+        </div>
+
+        <div class="share" aria-label="Share this post">
+          <span class="share-label">Share this post</span>
+          <a href="https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fduskora.ai%2Fblog%2Fa-new-look-for-duskora%2F" target="_blank" rel="noopener">LinkedIn</a>
+          <a href="https://x.com/intent/post?url=https%3A%2F%2Fduskora.ai%2Fblog%2Fa-new-look-for-duskora%2F&amp;text=A%20new%20look%20for%20Duskora%3A%20redesigned%20by%20our%20own%20agents" target="_blank" rel="noopener">X</a>
+          <button type="button" id="copy-link" data-url="https://duskora.ai/blog/a-new-look-for-duskora/">Copy link</button>
+        </div>
+
+        <nav class="post-next" aria-labelledby="next-title">
+          <h2 id="next-title">Keep reading</h2>
+          <div class="next-grid">
+            <a href="/"><strong>See the new home page</strong><span>Scroll it, and press Approve.</span></a>
+            <a href="/blog/getting-started-with-duskora/"><strong>From sign-up to shipped</strong><span>Your first ticket with Duskora, screen by screen.</span></a>
+            <a href="/blog/how-budgets-work-in-duskora/"><strong>How budgets work</strong><span>Predictable spend for AI agents.</span></a>
+          </div>
+        </nav>
+      </article>
+    </main>
+
+    <footer>
+      <div class="wrap foot">
+        <span>© <span id="year">2026</span> Duskora.ai</span>
+        <div class="foot-groups">
+          <nav class="foot-links" aria-label="Product">
+            <a href="/integrations/">Integrations</a>
+            <a href="/integrations/github/">GitHub</a>
+            <a href="/integrations/linear/">Linear</a>
+            <a href="/integrations/jira/">Jira</a>
+            <a href="/#pricing">Pricing</a>
+            <a href="/blog/">Blog</a>
+          </nav>
+          <nav class="foot-links" aria-label="Legal">
+            <a href="/terms/">Terms</a>
+            <a href="/privacy/">Privacy</a>
+            <a href="/refunds/">Refunds</a>
+            <a href="mailto:hello@duskora.ai">hello@duskora.ai</a>
+            <a href="https://www.linkedin.com/company/duskora-ai/" rel="me">LinkedIn</a>
+            <a href="https://github.com/duskora-ai" rel="me">GitHub</a>
+            <a href="https://www.youtube.com/@duskora-ai" rel="me">YouTube</a>
+          </nav>
+        </div>
+      </div>
+    </footer>
+    <script>
+      document.getElementById('year').textContent = new Date().getFullYear();
+      // Copy link: does nothing where the Clipboard API is unavailable.
+      var copy = document.getElementById('copy-link');
+      copy.addEventListener('click', function () {
+        if (!navigator.clipboard) return;
+        navigator.clipboard.writeText(copy.getAttribute('data-url')).then(function () {
+          copy.textContent = 'Link copied';
+          setTimeout(function () { copy.textContent = 'Copy link'; }, 2000);
+        });
+      });
+    </script>
+  </body>
+</html>

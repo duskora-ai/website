@@ -7,7 +7,7 @@ import type { AddressInfo } from 'node:net';
 // Motion added by site.js: scroll reveals, the typed headline, the hero's example run, the phone menu and the image viewer.
 const root = path.resolve(__dirname, '..');
 const types: Record<string, string> = { '.html': 'text/html', '.css': 'text/css', '.js': 'text/javascript', '.svg': 'image/svg+xml', '.png': 'image/png', '.webp': 'image/webp', '.avif': 'image/avif', '.woff2': 'font/woff2' };
-const PAGES = ['/', '/beta/', '/privacy/', '/refunds/', '/terms/', '/integrations/', '/integrations/github/', '/integrations/linear/', '/integrations/jira/', '/blog/', '/blog/welcome-to-duskora/', '/blog/getting-started-with-duskora/', '/blog/how-budgets-work-in-duskora/', '/404.html'];
+const PAGES = ['/', '/beta/', '/privacy/', '/refunds/', '/terms/', '/integrations/', '/integrations/github/', '/integrations/linear/', '/integrations/jira/', '/blog/', '/blog/welcome-to-duskora/', '/blog/getting-started-with-duskora/', '/blog/how-budgets-work-in-duskora/', '/blog/a-new-look-for-duskora/', '/404.html'];
 let server: http.Server;
 let base = '';
 
@@ -124,4 +124,41 @@ test('clicking a platform screenshot opens it large, and Escape closes it', asyn
   await expect(viewer.locator('img')).toHaveAttribute('src', /\/screenshots\/plan-1200\.(avif|webp)$/);
   await page.keyboard.press('Escape');
   await expect(viewer).toBeHidden();
+});
+
+test('before/after sliders move with the keyboard and by dragging', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await page.goto(`${base}/blog/a-new-look-for-duskora/`);
+  const sliders = page.locator('.compare');
+  await expect(sliders).toHaveCount(4);
+  const slider = sliders.first();
+  const range = slider.getByRole('slider', { name: 'Slide between the old and the new home page' });
+  const pos = () => slider.evaluate((el) => parseFloat((el as HTMLElement).style.getPropertyValue('--pos')));
+  await slider.scrollIntoViewIfNeeded();
+  await range.focus();
+  await page.keyboard.press('ArrowRight');
+  expect(await pos()).toBe(51);
+  // the old picture is clipped to the left of the handle
+  const box = (await slider.boundingBox())!;
+  await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+  await page.mouse.down();
+  await page.mouse.move(box.x + box.width * 0.2, box.y + box.height / 2, { steps: 5 });
+  await page.mouse.up();
+  expect(await pos()).toBeLessThan(25);
+  const handle = (await slider.locator('.compare-handle').boundingBox())!;
+  expect(Math.abs(handle.x + handle.width / 2 - (box.x + box.width * 0.2))).toBeLessThan(8);
+  // both pictures are the same size, so they line up
+  for (const side of ['old', 'new']) await expect(slider.locator(`.compare-${side} img`)).toHaveAttribute('width', '1520');
+});
+
+test('before/after sliders show both pictures without JavaScript', async ({ browser }) => {
+  const ctx = await browser.newContext({ javaScriptEnabled: false });
+  const page = await ctx.newPage();
+  await page.goto(`${base}/blog/a-new-look-for-duskora/`);
+  const slider = page.locator('.compare').first();
+  const oldBox = (await slider.locator('.compare-old').boundingBox())!;
+  const newBox = (await slider.locator('.compare-new').boundingBox())!;
+  expect(oldBox.y).toBeGreaterThanOrEqual(newBox.y + newBox.height - 1);
+  await expect(slider.locator('.compare-range')).toBeHidden();
+  await ctx.close();
 });

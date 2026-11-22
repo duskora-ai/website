@@ -128,7 +128,7 @@
       if (!el.hasAttribute('data-reveal') && el.getBoundingClientRect().top > window.innerHeight) el.setAttribute('data-reveal', pair[1]);
     });
   });
-  $$('.post-figure picture, .post-figure video').forEach(function (el, i) {
+  $$('.post-figure > picture, .post-figure > video, .compare').forEach(function (el, i) {
     if (el.getBoundingClientRect().top > window.innerHeight) el.setAttribute('data-reveal', IMAGE_KINDS[i % IMAGE_KINDS.length]);
   });
 
@@ -353,6 +353,35 @@
     }
   }
 
+  // ---- Before/after sliders: the range input's value is where the old picture ends and the new one begins.
+  // The first time one scrolls into view the handle sways once, to show that it moves; any touch stops that. ----
+  $$('.compare').forEach(function (el) {
+    var range = $('.compare-range', el);
+    var touched = false;
+    var set = function (v) { el.style.setProperty('--pos', v + '%'); };
+    var stop = function () { touched = true; };
+    range.addEventListener('input', function () { stop(); set(range.value); });
+    range.addEventListener('pointerdown', stop);
+    range.addEventListener('keydown', stop);
+    set(range.value);
+    if (reduce || !('IntersectionObserver' in window)) return;
+    var hint = new IntersectionObserver(function (entries) {
+      if (!entries[0].isIntersecting) return;
+      hint.disconnect();
+      var start = null;
+      (function sway(now) {
+        if (touched) return;
+        if (start === null) start = now;
+        var t = (now - start) / 2200;
+        if (t >= 1) { set(range.value); return; }
+        // out to one side, across to the other and back to the middle
+        set((+range.value + Math.sin(t * Math.PI * 2) * 16 * (1 - t * 0.3)).toFixed(2));
+        requestAnimationFrame(sway);
+      })(performance.now());
+    }, { threshold: 0.6 });
+    hint.observe(el);
+  });
+
   // ---- Image viewer: click or press Enter on a screenshot to see it large. ----
   var box;
   function openViewer(img) {
@@ -371,7 +400,7 @@
     box.showModal();
   }
   if (window.HTMLDialogElement) {
-    $$('.shot picture, .post-figure picture').forEach(function (pic) {
+    $$('.shot picture, .post-figure > picture').forEach(function (pic) {
       var img = $('img', pic);
       if (!img) return;
       pic.setAttribute('role', 'button');

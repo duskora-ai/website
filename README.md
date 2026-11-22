@@ -64,6 +64,14 @@ Next to each PNG, `shots:frame` also writes WebP and AVIF copies at 600w and 120
 5. Add the URL to `sitemap.xml`, and a link to `llms.txt` whose note is the post's meta description word for word.
 6. Add the post to `POSTS` in `e2e/blog.spec.ts` and to the page lists in the other specs (search for `/blog/welcome-to-duskora/`).
 
+### Before/after sliders
+
+A post can compare two pictures with a slider the reader drags: copy a `<div class="compare">` block from `blog/a-new-look-for-duskora/`. It holds the new picture (`.compare-new`), the old one (`.compare-old`) at the same size, the two labels, the handle and a range input, whose `aria-label` says what is being compared. `site.js` copies the input's value into `--pos`, so it works by mouse, touch and arrow keys; without JavaScript both pictures show, one after the other. Add `compare-phone` for phone-sized pictures.
+
+### New look post screenshots and video
+
+`blog/a-new-look-for-duskora/` compares the site before and after the redesign. `node scripts/new-look/capture.mjs` serves both versions from git history (the two commits named at its top), so the pictures don't change as the site does, and records the stills and a screencast into `blog/a-new-look-for-duskora/raw/` (git-ignored). `node scripts/new-look/encode.mjs` then writes the WebP/AVIF/PNG images, `tour.mp4` and its poster next to the post (it needs `ffmpeg`). Commit those.
+
 ### Onboarding walkthrough screenshots and video
 
 `blog/getting-started-with-duskora/` shows the real app's sign-up and setup flow. `scripts/onboarding/` regenerates its stills and screen recording against a local Duskora checkout, with no real GitHub or model accounts:

@@ -6,7 +6,15 @@
     <atom:link href="https://duskora.ai/blog/feed.xml" rel="self" type="application/rss+xml" />
     <description>News, product updates and notes from the Duskora team on building with AI coding agents that turn tickets into reviewed pull requests.</description>
     <language>en</language>
-    <lastBuildDate>Thu, 12 Nov 2026 22:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Sun, 22 Nov 2026 18:00:00 GMT</lastBuildDate>
+    <item>
+      <title>A new look for Duskora: redesigned by our own agents</title>
+      <link>https://duskora.ai/blog/a-new-look-for-duskora/</link>
+      <guid isPermaLink="true">https://duskora.ai/blog/a-new-look-for-duskora/</guid>
+      <pubDate>Sun, 22 Nov 2026 18:00:00 GMT</pubDate>
+      <category>Announcements</category>
+      <description>Duskora.ai has a new look, and AI agents built it. We gave Duskora, running Claude Fable 5.2, a two-line brief. See the old and new site side by side, and the design decisions behind it.</description>
+    </item>
     <item>
       <title>How budgets work in Duskora: predictable spend for AI agents</title>
       <link>https://duskora.ai/blog/how-budgets-work-in-duskora/</link>
