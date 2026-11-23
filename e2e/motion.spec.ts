@@ -4,7 +4,7 @@ import http from 'node:http';
 import fs from 'node:fs';
 import type { AddressInfo } from 'node:net';
 
-// Motion added by site.js: scroll reveals, the typed headline, the hero's example run, the phone menu and the image viewer.
+// Motion added by site.js: scroll reveals, the typed headline, the hero's example run, the factory, the phone menu and the image viewer.
 const root = path.resolve(__dirname, '..');
 const types: Record<string, string> = { '.html': 'text/html', '.css': 'text/css', '.js': 'text/javascript', '.svg': 'image/svg+xml', '.png': 'image/png', '.webp': 'image/webp', '.avif': 'image/avif', '.woff2': 'font/woff2' };
 const PAGES = ['/', '/beta/', '/privacy/', '/refunds/', '/terms/', '/integrations/', '/integrations/github/', '/integrations/linear/', '/integrations/jira/', '/blog/', '/blog/welcome-to-duskora/', '/blog/getting-started-with-duskora/', '/blog/how-budgets-work-in-duskora/', '/blog/a-new-look-for-duskora/', '/404.html'];
@@ -71,6 +71,47 @@ test('nothing is hidden or typed with reduced motion', async ({ browser }) => {
   await page.locator('#run-approve').click();
   await expect(page.locator('#run-badge')).toHaveText('Shipped');
   await ctx.close();
+});
+
+test('the factory moves tickets through all six stations and ships them', async ({ page }) => {
+  await page.goto(`${base}/`);
+  await expect(page.locator('.factory-steps .stage h3')).toHaveText(['Plan', 'Build', 'Review', 'QA', 'Approval', 'Deploy']);
+  await expect(page.locator('.factory-svg .fm')).toHaveCount(6);
+  await expect(page.locator('.factory-count')).toHaveText('0');
+  await page.locator('.factory-svg').scrollIntoViewIfNeeded();
+  // A machine lights up while a ticket is under its arm, and so does its step in the list.
+  await expect(page.locator('.fm.busy').first()).toBeVisible();
+  await expect(page.locator('.factory-steps .stage.live').first()).toBeVisible();
+  // The ticket that starts at Deploy rides to the pad, takes off and is counted; a new one enters behind it.
+  await expect(page.locator('.factory-count')).toHaveText('1', { timeout: 15000 });
+  await expect(page.locator('.crate', { hasText: 'SHOP-7' })).toHaveCount(0);
+  await expect(page.locator('.crate', { hasText: 'SHOP-12' })).toHaveCount(1);
+  // Each ticket takes the colour of the station it has just left.
+  await expect(page.locator('.crate', { hasText: 'SHOP-8' })).toHaveAttribute('data-form', /[456]/);
+  for (const width of [1280, 375]) {
+    await page.setViewportSize({ width, height: 800 });
+    const m = await page.evaluate(() => ({ sw: document.documentElement.scrollWidth, cw: document.documentElement.clientWidth }));
+    expect(m.sw).toBeLessThanOrEqual(m.cw);
+  }
+});
+
+test('the factory stands still with reduced motion and without JavaScript', async ({ browser }) => {
+  for (const options of [{ reducedMotion: 'reduce' as const }, { javaScriptEnabled: false }]) {
+    const ctx = await browser.newContext(options);
+    const page = await ctx.newPage();
+    await page.goto(`${base}/`);
+    await page.locator('.factory-svg').scrollIntoViewIfNeeded();
+    await page.waitForTimeout(1500);
+    await expect(page.locator('.crate')).toHaveCount(5);
+    await expect(page.locator('.fm.busy')).toHaveCount(0);
+    await expect(page.locator('.factory-steps .stage')).toHaveCount(6);
+    await ctx.close();
+  }
+});
+
+test('the factory drawing in index.html is what scripts/factory.mjs writes', async () => {
+  const { execFileSync } = await import('node:child_process');
+  execFileSync('node', [path.join(root, 'scripts/factory.mjs'), '--check']);
 });
 
 test('the headline keeps its full text while the highlighted words are typed in', async ({ page }) => {

@@ -1,5 +1,5 @@
 // Motion and small interactions for every page: scroll reveals, parallax, the typed hero headline, the hero's example
-// ticket run, the phone menu, the image viewer and the reading-progress bar. styles.css holds the looks; this file only
+// ticket run, the factory, the phone menu, the image viewer and the reading-progress bar. styles.css holds the looks; this file only
 // adds classes and CSS variables. Each page's <head> adds the `js` class to <html> before first paint, so the styles can
 // hide what gets revealed on scroll; pages stay complete without JavaScript, and with "reduce motion" set nothing moves.
 (function () {
@@ -352,6 +352,96 @@
       } else play();
     }
   }
+
+  // ---- Factory: example tickets ride the belt round the factory floor (drawn by scripts/factory.mjs, which also
+  // writes the belt's path and stops on the <svg>). The line is indexed: every ticket moves one stop on, then every
+  // machine with a ticket under its arm works and gives the ticket its colour. A new ticket enters on every second
+  // move, and a ticket that reaches the pad at the end takes off and is counted as shipped. The markup holds a still
+  // factory with five tickets on the belt, which is what shows without JavaScript and with reduced motion. It only
+  // runs while it is on screen. ----
+  var scene = $('.factory-svg');
+  // In a function of its own, so its names stay out of the rest of the file.
+  if (scene && !reduce && 'IntersectionObserver' in window) (function () {
+    var nums = function (name, sep) { return scene.getAttribute(name).split(sep || ',').map(Number); };
+    var route = scene.getAttribute('data-path').split(';').map(function (p) { return p.split(',').map(Number); }); // x, y, distance
+    var stops = nums('data-stops');
+    var machineAt = nums('data-machines'); // the stop each machine stands at
+    var PAD = stops.length - 1;
+    var parts = machineAt.map(function (s, m) { return $$('[data-m="' + m + '"]', scene); });
+    var stageEls = $$('.factory-steps .stage');
+    var holder = $('.factory-tickets', scene);
+    var count = $('.factory-count');
+    var MOVE = 1100, WORK = 1700;
+    var serial = 12, shipped = 0, moves = 0, onScreen = false, running = false;
+    var tickets = $$('.crate', scene).map(function (el) { return { el: el, stop: +el.getAttribute('data-stop') }; });
+    var template = tickets[0].el;
+    var place = function (t, d) {
+      for (var i = 1; i < route.length - 1 && d > route[i][2]; i++);
+      var a = route[i - 1], b = route[i], k = (d - a[2]) / (b[2] - a[2]);
+      t.el.setAttribute('transform', 'translate(' + (a[0] + (b[0] - a[0]) * k).toFixed(1) + ' ' + (a[1] + (b[1] - a[1]) * k).toFixed(1) + ')');
+    };
+    var mark = function (m, cls, on) {
+      parts[m].forEach(function (el) { el.classList.toggle(cls, on); });
+      if (cls === 'busy') stageEls[m].classList.toggle('live', on);
+    };
+    var enter = function () {
+      var el = template.cloneNode(true);
+      el.setAttribute('class', 'crate');
+      el.setAttribute('data-form', 0);
+      el.setAttribute('data-stop', 0);
+      $('text', el).textContent = 'SHOP-' + serial++;
+      var t = { el: el, stop: 0 };
+      place(t, stops[0]);
+      holder.appendChild(el);
+      tickets.push(t);
+    };
+    var work = function () {
+      scene.classList.remove('moving');
+      machineAt.forEach(function (s, m) { mark(m, 'done', false); });
+      tickets = tickets.filter(function (t) {
+        if (t.stop < PAD) return true;
+        t.el.classList.add('launch');
+        setTimeout(function () { t.el.remove(); count.textContent = ++shipped; }, 1000);
+        return false;
+      });
+      var busy = tickets.filter(function (t) { return machineAt.indexOf(t.stop) !== -1; });
+      busy.forEach(function (t) { mark(machineAt.indexOf(t.stop), 'busy', true); });
+      setTimeout(function () {
+        busy.forEach(function (t) {
+          var m = machineAt.indexOf(t.stop);
+          mark(m, 'done', true);
+          t.el.setAttribute('data-form', m + 1);
+          t.el.classList.remove('pop');
+          void t.el.getBoundingClientRect();
+          t.el.classList.add('pop');
+        });
+      }, WORK * 0.62);
+      setTimeout(move, WORK);
+    };
+    var move = function () {
+      machineAt.forEach(function (s, m) { mark(m, 'busy', false); });
+      if (!onScreen) { running = false; return; }
+      if (++moves % 2 === 0) enter();
+      tickets.forEach(function (t) { t.from = stops[t.stop]; t.to = stops[++t.stop]; });
+      scene.classList.add('moving');
+      var start = null;
+      requestAnimationFrame(function step(now) {
+        if (start === null) start = now;
+        var k = Math.min((now - start) / MOVE, 1);
+        var eased = k < 0.5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;
+        tickets.forEach(function (t) {
+          place(t, t.from + (t.to - t.from) * eased);
+          // A new ticket shows once it is clear of the inbox.
+          if (k > 0.3) t.el.setAttribute('data-stop', t.stop);
+        });
+        if (k < 1) requestAnimationFrame(step); else work();
+      });
+    };
+    new IntersectionObserver(function (entries) {
+      onScreen = entries[0].isIntersecting;
+      if (onScreen && !running) { running = true; work(); }
+    }, { threshold: 0.2 }).observe(scene);
+  })();
 
   // ---- Before/after sliders: the range input's value is where the old picture ends and the new one begins.
   // The first time one scrolls into view the handle sways once, to show that it moves; any touch stops that. ----

@@ -203,30 +203,94 @@ section h2 { font-size: clamp(26px, 3.5vw, 40px); letter-spacing: -0.03em; line-
 .kicker::before { content: ''; width: 28px; height: 2px; border-radius: 2px; background: var(--dusk-line); }
 #how { padding-top: 72px; }
 
-/* ---- Pipeline: the five stages light up in order once the row scrolls into view. ---- */
-.pipeline { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; margin: 16px 0 112px; }
-.stage { position: relative; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px 20px 20px; box-shadow: var(--shadow); transition: opacity 0.6s var(--ease), border-color 0.2s, box-shadow 0.25s; }
-.stage:hover { box-shadow: var(--shadow-lift); }
-.stage > * { transition: transform 0.7s var(--ease); }
-/* Accent bar along the top of each stage, drawn left to right. */
-.stage::before { content: ''; position: absolute; left: 14px; right: 14px; top: -1px; height: 2px; border-radius: 2px; background: var(--dusk-line); transform-origin: 0 50%; transition: transform 0.7s var(--ease); }
-/* Arrow between one stage and the next. */
-.stage:not(:last-child)::after { content: ''; position: absolute; z-index: 1; right: -13px; top: 26px; width: 8px; height: 8px; border: solid var(--muted); border-width: 2px 2px 0 0; rotate: 45deg; opacity: 0.7; transition: opacity 0.4s; }
-.stage-num { display: inline-grid; place-items: center; min-width: 30px; height: 22px; padding: 0 7px; border-radius: 6px; background: var(--accent-soft); font-family: var(--mono); font-size: 12px; font-weight: 600; color: var(--accent); letter-spacing: 0.04em; animation: stage-turn 10s linear infinite; }
-.stage:nth-child(2) .stage-num { animation-delay: 2s; }
-.stage:nth-child(3) .stage-num { animation-delay: 4s; }
-.stage:nth-child(4) .stage-num { animation-delay: 6s; }
-.stage:nth-child(5) .stage-num { animation-delay: 8s; }
+/* ---- Factory: an isometric factory floor at night, in both colour schemes. The drawing is an SVG written by scripts/factory.mjs.
+   site.js moves the tickets round the belt, adds .moving to the drawing while the belt runs, .busy and .done to a machine as it
+   works, and .live to the step being worked on. ---- */
+.factory {
+  --text: #f4f3ff; --text-2: #c9c7e6; --muted: #9c9ac0; --c1: #7d74ff; --c2: #9b6bff; --c3: #c56cf0; --c4: #f27aa9; --c5: #ffb454; --c6: #ff8a6a;
+  position: relative; isolation: isolate; overflow: clip; margin: 8px 0 112px; border-radius: 24px; border: 1px solid rgba(255, 255, 255, 0.08); color: var(--text);
+  background: radial-gradient(45% 50% at 12% 30%, rgba(111, 102, 255, 0.2), transparent 70%), radial-gradient(40% 55% at 92% 60%, rgba(255, 127, 106, 0.16), transparent 70%), linear-gradient(180deg, #060714, #0d0f2a);
+  box-shadow: 0 40px 80px -50px rgba(11, 15, 36, 0.9);
+}
+.factory::before { content: ''; position: absolute; inset: 0; z-index: -1; opacity: 0.55; background-image: radial-gradient(1px 1px at 8% 12%, #fff, transparent), radial-gradient(1.5px 1.5px at 22% 34%, #fff, transparent), radial-gradient(1px 1px at 37% 8%, #fff, transparent), radial-gradient(1px 1px at 71% 14%, #fff, transparent), radial-gradient(1.5px 1.5px at 88% 28%, #fff, transparent), radial-gradient(1px 1px at 94% 9%, #fff, transparent), radial-gradient(1px 1px at 4% 46%, #fff, transparent), radial-gradient(1px 1px at 83% 47%, #fff, transparent); animation: twinkle 6s ease-in-out infinite alternate; }
+.factory-hud { display: flex; justify-content: space-between; gap: 12px; padding: 16px 22px 0; font-family: var(--mono); font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.factory-hud b { display: inline-block; min-width: 2ch; color: var(--c5); text-align: right; }
+.factory-light { display: inline-block; width: 6px; height: 6px; margin-right: 8px; border-radius: 50%; background: #6ee7a0; box-shadow: 0 0 8px #6ee7a0; vertical-align: 1px; animation: blink 2.4s ease-in-out infinite; }
+.factory-floor { padding: 0 8px 4px; }
+.factory-svg { display: block; width: 100%; max-width: 980px; height: auto; margin: 0 auto; font-family: var(--font); }
+.factory-svg text { stroke: none; }
+.factory-ink { stroke: #070818; stroke-width: 1.5; stroke-linejoin: round; stroke-linecap: round; }
+.factory-grid { fill: none; stroke: rgba(255, 255, 255, 0.05); stroke-width: 1; }
+.factory-decal, .fm-name { font-family: var(--mono); font-size: 15px; font-weight: 700; letter-spacing: 0.14em; fill: rgba(255, 255, 255, 0.34); }
+.fm-name { font-size: 16px; letter-spacing: 0.08em; fill: color-mix(in srgb, var(--c) 75%, #fff); transition: fill 0.3s; }
+.factory-pad ellipse { fill: rgba(255, 180, 84, 0.12); stroke: var(--c5); stroke-width: 3; }
+.factory-pad ellipse + ellipse { fill: rgba(255, 180, 84, 0.25); stroke-dasharray: 9 7; }
+.factory-dash { fill: none; stroke: #7379e0; stroke-width: 4; stroke-dasharray: 8 14; animation: belt-run 0.45s linear infinite paused; }
+.factory-svg.moving .factory-dash { animation-play-state: running; }
+/* Machines. */
+.fm-glow { fill: var(--c); stroke: none; opacity: 0; transition: opacity 0.4s; }
+.fm-window { fill: #0d0e2a; transition: fill 0.3s; }
+.fm-icon { fill: none; stroke: #fff; stroke-width: 2; opacity: 0.75; transition: opacity 0.3s; }
+.fm-lamp { fill: #ff6b6b; animation: blink 1.6s steps(2, jump-none) infinite; }
+.fm-check { fill: #3b2748; }
+.fm-stop { fill: #ff5d5d; }
+.fm-go { fill: #1d3a35; }
+.fm-sign circle { fill: var(--c); }
+.fm-sign text { font-size: 21px; font-weight: 700; fill: #0b0c22; }
+.fm-gear, .fm-pupil, .crate-in { transform-box: fill-box; transform-origin: 50% 50%; }
+.fm.busy .fm-glow { opacity: 0.3; }
+.fm.busy .fm-window { fill: #ffe7a3; }
+.fm.busy .fm-icon { opacity: 1; }
+.fm.busy .fm-name { fill: #fff; }
+.fm.busy:not(.done) .fm-gear { animation: spin 0.9s linear infinite; }
+.fm.busy:not(.done) .fm-pupil { animation: look 0.7s ease-in-out infinite alternate; }
+.fm.busy .fm-check { animation: check-on 0.25s forwards; }
+.fm.busy .fm-check-1 { animation-delay: 0.35s; }
+.fm.busy .fm-check-2 { animation-delay: 0.7s; }
+.fm-approval.busy:not(.done) .fm-stop { animation: blink 0.5s steps(2, jump-none) infinite; }
+.fm-approval.done .fm-stop { fill: #47213a; }
+.fm-approval.done .fm-go { fill: #6ee7a0; }
+/* The approval gate: a barrier across the belt that lifts once the ticket is approved. */
+.fm-barrier { fill: var(--c5); transition: transform 0.45s var(--ease), opacity 0.45s; }
+.fm-barrier.done { transform: translateY(-44px); opacity: 0.35; }
+/* Drawn over the tickets: the light under each arm, Plan's scan line and Build's steam. */
+.fx-beam { fill: var(--c); opacity: 0; transition: opacity 0.35s; }
+.fx.busy .fx-beam { opacity: 0.42; }
+.fx.busy.done .fx-beam { opacity: 0.2; }
+.fx-qa.busy:not(.done) .fx-beam { animation: strobe 0.36s steps(2, jump-none) infinite; }
+.fx-scan { fill: none; stroke: #fff; stroke-width: 3; stroke-linecap: round; opacity: 0; }
+.fx-plan.busy:not(.done) .fx-scan { opacity: 0.9; animation: scan 0.5s ease-in-out infinite alternate; }
+.fx-puff { fill: #fff; opacity: 0; transform-box: fill-box; transform-origin: 50% 50%; }
+.fx-build.busy .fx-puff { animation: puff 1.2s ease-out infinite; }
+.fx-build.busy .fx-puff-1 { animation-delay: 0.4s; }
+.fx-build.busy .fx-puff-2 { animation-delay: 0.8s; }
+
+/* A ticket on the belt: a parcel that takes the colour of the last station it left. */
+.crate { --cc: #a3a6c9; transition: opacity 0.5s; }
+.crate[data-stop='0'] { opacity: 0; }
+.crate[data-form='1'] { --cc: var(--c1); }
+.crate[data-form='2'] { --cc: var(--c2); }
+.crate[data-form='3'] { --cc: var(--c3); }
+.crate[data-form='4'] { --cc: var(--c4); }
+.crate[data-form='5'] { --cc: var(--c5); }
+.crate[data-form='6'] { --cc: #6ee7a0; }
+.crate-box { fill: var(--cc); transition: fill 0.3s; }
+.crate-flame { fill: var(--c5); stroke: var(--c6); stroke-width: 2; opacity: 0; }
+.crate-tag rect { fill: rgba(7, 8, 24, 0.88); stroke: var(--cc); stroke-width: 1.5; }
+.crate-tag text { font-family: var(--mono); font-size: 10px; font-weight: 600; fill: #fff; }
+.crate.pop .crate-in { animation: crate-pop 0.55s var(--ease); }
+/* Shipped: the parcel takes off from the pad at the end of the belt. */
+.crate.launch .crate-in { animation: launch 1s cubic-bezier(0.5, 0, 0.9, 0.4) forwards; }
+.crate.launch .crate-flame { opacity: 1; }
+.crate.launch .crate-tag { opacity: 0; }
+
+/* The steps, one under each station on wide screens. */
+.factory-steps { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); margin: 0; padding: 22px 0 28px; list-style: none; border-top: 1px solid rgba(255, 255, 255, 0.08); background: rgba(6, 7, 20, 0.35); }
+.stage { padding: 0 14px; text-align: center; }
+.stage-num { display: inline-grid; place-items: center; min-width: 30px; height: 22px; padding: 0 7px; border-radius: 6px; background: color-mix(in srgb, var(--c) 16%, transparent); font-family: var(--mono); font-size: 12px; font-weight: 600; color: var(--c); letter-spacing: 0.04em; transition: background 0.3s, color 0.3s, box-shadow 0.3s; }
+.stage.live .stage-num { background: var(--c); color: #0b0c22; box-shadow: 0 0 0 4px color-mix(in srgb, var(--c) 22%, transparent); }
 .stage h3 { margin: 10px 0 6px; font-size: 17px; letter-spacing: -0.01em; }
 .stage p { margin: 0; font-size: 14px; color: var(--muted); line-height: 1.5; }
-.js .pipeline:not(.in) .stage { opacity: 0; }
-.js .pipeline:not(.in) .stage > * { transform: translateY(14px); }
-.js .pipeline:not(.in) .stage::before { transform: scaleX(0); }
-.js .pipeline:not(.in) .stage::after { opacity: 0; }
-.pipeline:not(.done) .stage:nth-child(2), .pipeline:not(.done) .stage:nth-child(2) > *, .pipeline:not(.done) .stage:nth-child(2)::before { transition-delay: 0.16s; }
-.pipeline:not(.done) .stage:nth-child(3), .pipeline:not(.done) .stage:nth-child(3) > *, .pipeline:not(.done) .stage:nth-child(3)::before { transition-delay: 0.32s; }
-.pipeline:not(.done) .stage:nth-child(4), .pipeline:not(.done) .stage:nth-child(4) > *, .pipeline:not(.done) .stage:nth-child(4)::before { transition-delay: 0.48s; }
-.pipeline:not(.done) .stage:nth-child(5), .pipeline:not(.done) .stage:nth-child(5) > *, .pipeline:not(.done) .stage:nth-child(5)::before { transition-delay: 0.64s; }
 
 /* ---- Platform: a night-sky band, so the dark app screenshots sit on a dark page in both colour schemes. ---- */
 .band-night {
@@ -311,8 +375,8 @@ footer::before { content: ''; position: absolute; top: -1px; left: 0; right: 0; 
   .hero-demo { width: 100%; max-width: 520px; margin: 0 auto; text-align: left; }
 }
 @media (max-width: 860px) {
-  .pipeline { grid-template-columns: 1fr 1fr; }
-  .stage:not(:last-child)::after { display: none; }
+  .factory-steps { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 26px 0; }
+  .stage { padding: 0 20px; text-align: left; }
   .features { grid-template-columns: 1fr; }
   .shots { grid-template-columns: 1fr; }
   .band-night { border-radius: 24px; padding: 64px 0 56px; }
@@ -322,6 +386,7 @@ footer::before { content: ''; position: absolute; top: -1px; left: 0; right: 0; 
   .tl-item:nth-child(n)::before { right: auto; left: -36px; }
 }
 @media (max-width: 720px) {
+  .crate-tag { display: none; }
   /* Phones: the page links fold into a menu under the bar. Without JavaScript there is no button, and the links stay hidden as before. */
   .js .nav-links .hide-sm { display: none; }
   .js .nav { flex-wrap: wrap; }
@@ -341,7 +406,13 @@ footer::before { content: ''; position: absolute; top: -1px; left: 0; right: 0; 
   .hero-ground { left: -110%; width: 320%; bottom: -580px; }
   #how { padding-top: 40px; }
   .hero-orbit { bottom: 85px; }
-  .pipeline { grid-template-columns: 1fr; }
+  .factory { border-radius: 18px; }
+  .factory-hud { padding: 14px 16px 0; font-size: 10px; }
+  .factory-floor { padding: 0; }
+  /* Phones: the floor's empty left and right corners run off the panel, so the machines are larger. */
+  .factory-svg { width: 118%; max-width: none; margin-left: -9%; }
+  .factory-steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .stage { padding: 0 16px; }
   .run { padding: 16px 16px 18px; }
   .run-steps li { grid-template-columns: 18px 56px minmax(0, 1fr); gap: 0 10px; font-size: 13px; }
   .closer { padding: 56px 20px 104px; border-radius: 22px; }
@@ -734,15 +805,23 @@ html:not(.js) .compare-handle, html:not(.js) .compare-range, html:not(.js) .comp
 @keyframes sway { from { rotate: -9deg; } to { rotate: 9deg; } }
 @keyframes sun-in { from { opacity: 0; transform: translateY(90px); } }
 @keyframes bob { 50% { transform: translateY(-5px); } }
-/* Each stage number takes its turn to light up, as if a ticket were passing through. */
-@keyframes stage-turn { 0%, 18%, 100% { background: var(--accent-soft); color: var(--accent); box-shadow: none; } 4%, 12% { background: var(--accent); color: var(--accent-text); box-shadow: 0 0 0 4px var(--accent-soft); } }
+/* Factory: the belt's markings, the machines at work and a ticket being stamped, then taking off. */
+@keyframes belt-run { to { stroke-dashoffset: -22; } }
+@keyframes spin { to { rotate: 1turn; } }
+@keyframes look { from { translate: -7px 0; } to { translate: 7px 0; } }
+@keyframes check-on { to { fill: #6ee7a0; } }
+@keyframes strobe { 50% { opacity: 0.12; } }
+@keyframes scan { from { translate: 0 -18px; } to { translate: 0 18px; } }
+@keyframes puff { 0% { opacity: 0.75; scale: 0.5; } 100% { opacity: 0; scale: 1.7; translate: 10px -46px; } }
+@keyframes crate-pop { 30% { scale: 1.22; filter: brightness(1.7); } }
+@keyframes launch { to { translate: 0 -340px; opacity: 0; } }
 
 html { scroll-behavior: smooth; }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation: none !important; transition: none !important; }
-  .js [data-reveal]:not(.in), .js .pipeline:not(.in) .stage, .js .plans:not(.in) .plan { opacity: 1; transform: none; filter: none; clip-path: none; }
-  .js .pipeline:not(.in) .stage > *, .js .pipeline:not(.in) .stage::before, .js .tl-item:not(.in)::before { transform: none; }
+  .js [data-reveal]:not(.in), .js .plans:not(.in) .plan { opacity: 1; transform: none; filter: none; clip-path: none; }
+  .js .tl-item:not(.in)::before { transform: none; }
   .js .timeline { --p: 1; }
   .js .feature:not(.in) .icon svg [pathLength] { stroke-dashoffset: 0; }
   .typing .ch, .js [data-type]:not(.typing) { visibility: visible; }
