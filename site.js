@@ -360,7 +360,8 @@
   // factory with five tickets on the belt, which is what shows without JavaScript and with reduced motion. It only
   // runs while it is on screen. ----
   var scene = $('.factory-svg');
-  if (scene && !reduce && 'IntersectionObserver' in window) {
+  // In a function of its own, so its names stay out of the rest of the file.
+  if (scene && !reduce && 'IntersectionObserver' in window) (function () {
     var nums = function (name, sep) { return scene.getAttribute(name).split(sep || ',').map(Number); };
     var route = scene.getAttribute('data-path').split(';').map(function (p) { return p.split(',').map(Number); }); // x, y, distance
     var stops = nums('data-stops');
@@ -440,7 +441,7 @@
       onScreen = entries[0].isIntersecting;
       if (onScreen && !running) { running = true; work(); }
     }, { threshold: 0.2 }).observe(scene);
-  }
+  })();
 
   // ---- Before/after sliders: the range input's value is where the old picture ends and the new one begins.
   // The first time one scrolls into view the handle sways once, to show that it moves; any touch stops that. ----
