@@ -198,12 +198,41 @@
           Each ticket moves through the same stages a good engineering team follows. A dedicated
           agent owns each step, and every step leaves a trail you can read.
         </p>
-        <div class="pipeline" data-reveal="group">
-          <div class="stage"><div class="stage-num">01</div><h3>Plan</h3><p>Reads the ticket and your codebase, then writes a plan before any code changes.</p></div>
-          <div class="stage"><div class="stage-num">02</div><h3>Build</h3><p>Implements the change on a branch, runs your CI checks and opens a pull request.</p></div>
-          <div class="stage"><div class="stage-num">03</div><h3>Review</h3><p>A separate agent reviews the diff and sends it back if it isn't right.</p></div>
-          <div class="stage"><div class="stage-num">04</div><h3>QA</h3><p>Tests every acceptance criterion and attaches screenshots and recordings as evidence.</p></div>
-          <div class="stage"><div class="stage-num">05</div><h3>Deploy</h3><p>After your approval, merges and watches the deploy through to production.</p></div>
+        <!-- The factory line. The scene is decorative: site.js moves example tickets along the belt, one station at a time, and each
+             station stamps its mark on them. The steps underneath are the content. Without JavaScript, and with reduced motion, the line stands still. -->
+        <div class="factory" data-reveal="up">
+          <div class="factory-scene" aria-hidden="true">
+            <div class="factory-hud"><span><i class="factory-light"></i>Dark factory · lights out</span><span>Shipped <b class="factory-count">0</b></span></div>
+            <div class="factory-floor">
+            <svg class="factory-icons" width="0" height="0">
+              <symbol id="fi-0" viewBox="0 0 24 24"><path d="M3 9V6a1 1 0 0 1 1-1h16a1 1 0 0 1 1 1v3a3 3 0 0 0 0 6v3a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-3a3 3 0 0 0 0-6z"/></symbol>
+              <symbol id="fi-1" viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6z"/><path d="M9 8h3M9 12h7M9 16h7"/></symbol>
+              <symbol id="fi-2" viewBox="0 0 24 24"><path d="m8 8-4 4 4 4M16 8l4 4-4 4M13.5 5l-3 14"/></symbol>
+              <symbol id="fi-3" viewBox="0 0 24 24"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></symbol>
+              <symbol id="fi-4" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8.5 12 2.5 2.5 4.5-5"/></symbol>
+              <symbol id="fi-5" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></symbol>
+              <symbol id="fi-6" viewBox="0 0 24 24"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></symbol>
+            </svg>
+            <div class="factory-belt"></div>
+            <div class="machine m-plan" style="--n:0"><div class="machine-box"><svg viewBox="0 0 24 24"><use href="#fi-1"/></svg><span>Plan</span></div><i class="machine-beam"></i><i class="machine-tool"></i></div>
+            <div class="machine m-build" style="--n:1"><div class="machine-box"><svg viewBox="0 0 24 24"><use href="#fi-2"/></svg><span>Build</span></div><i class="machine-beam"></i><i class="machine-tool"></i></div>
+            <div class="machine m-review" style="--n:2"><div class="machine-box"><svg viewBox="0 0 24 24"><use href="#fi-3"/></svg><span>Review</span></div><i class="machine-beam"></i><i class="machine-tool"></i></div>
+            <div class="machine m-qa" style="--n:3"><div class="machine-box"><svg viewBox="0 0 24 24"><use href="#fi-4"/></svg><span>QA</span></div><i class="machine-beam"></i><i class="machine-tool"></i></div>
+            <div class="machine m-approval" style="--n:4"><div class="machine-box"><svg viewBox="0 0 24 24"><use href="#fi-5"/></svg><span>Approval</span></div><i class="machine-beam"></i><i class="machine-tool"></i></div>
+            <div class="machine m-deploy" style="--n:5"><div class="machine-box"><svg viewBox="0 0 24 24"><use href="#fi-6"/></svg><span>Deploy</span></div><i class="machine-beam"></i><i class="machine-tool"></i></div>
+            <div class="crate" data-form="4" style="--pos:4"><svg viewBox="0 0 24 24"><use href="#fi-4"/></svg><b>SHOP-7</b><span class="pips"><i></i><i></i><i></i><i></i><i></i><i></i></span></div>
+            <div class="crate" data-form="2" style="--pos:2"><svg viewBox="0 0 24 24"><use href="#fi-2"/></svg><b>SHOP-8</b><span class="pips"><i></i><i></i><i></i><i></i><i></i><i></i></span></div>
+            <div class="crate" data-form="0" style="--pos:0"><svg viewBox="0 0 24 24"><use href="#fi-0"/></svg><b>SHOP-9</b><span class="pips"><i></i><i></i><i></i><i></i><i></i><i></i></span></div>
+            </div>
+          </div>
+          <ol class="factory-steps">
+            <li class="stage"><div class="stage-num">01</div><h3>Plan</h3><p>Reads the ticket and your codebase, then writes a plan before any code changes.</p></li>
+            <li class="stage"><div class="stage-num">02</div><h3>Build</h3><p>Implements the change on a branch, runs your CI checks and opens a pull request.</p></li>
+            <li class="stage"><div class="stage-num">03</div><h3>Review</h3><p>A separate agent reviews the diff and sends it back if it isn't right.</p></li>
+            <li class="stage"><div class="stage-num">04</div><h3>QA</h3><p>Tests every acceptance criterion and attaches screenshots and recordings as evidence.</p></li>
+            <li class="stage"><div class="stage-num">05</div><h3>Approval</h3><p>Every change waits at a gate for you. Approve, request changes or retry from the app or Slack.</p></li>
+            <li class="stage"><div class="stage-num">06</div><h3>Deploy</h3><p>After your approval, merges and watches the deploy through to production.</p></li>
+          </ol>
         </div>
       </section>
 

@@ -1,5 +1,5 @@
 // Motion and small interactions for every page: scroll reveals, parallax, the typed hero headline, the hero's example
-// ticket run, the phone menu, the image viewer and the reading-progress bar. styles.css holds the looks; this file only
+// ticket run, the factory line, the phone menu, the image viewer and the reading-progress bar. styles.css holds the looks; this file only
 // adds classes and CSS variables. Each page's <head> adds the `js` class to <html> before first paint, so the styles can
 // hide what gets revealed on scroll; pages stay complete without JavaScript, and with "reduce motion" set nothing moves.
 (function () {
@@ -351,6 +351,71 @@
         seen.observe(run);
       } else play();
     }
+  }
+
+  // ---- Factory line: example tickets ride the belt through the six stations. The line is indexed: every ticket moves
+  // one station on, then every station with a ticket under it works and stamps its mark on it. A new ticket enters on
+  // every second move, so three are on the line at a time. The markup holds a still line with three tickets on it,
+  // which is what shows without JavaScript and with reduced motion. The line only runs while it is on screen. ----
+  var floor = $('.factory-floor');
+  if (floor && !reduce && 'IntersectionObserver' in window) {
+    var machines = $$('.machine', floor);
+    var stageEls = $$('.factory-steps .stage');
+    var count = $('.factory-count');
+    var LAST = machines.length;
+    var MOVE = 1100, WORK = 1700;
+    var serial = 10, shipped = 0, moves = 0, onScreen = false, running = false;
+    var setForm = function (c, form) {
+      c.el.setAttribute('data-form', form);
+      $('use', c.el).setAttribute('href', '#fi-' + form);
+    };
+    var crates = $$('.crate', floor).map(function (el) { return { el: el, pos: +el.style.getPropertyValue('--pos') }; });
+    var enter = function () {
+      var el = document.createElement('div');
+      el.className = 'crate';
+      el.innerHTML = '<svg viewBox="0 0 24 24"><use href="#fi-0"/></svg><b>SHOP-' + serial++ + '</b><span class="pips"><i></i><i></i><i></i><i></i><i></i><i></i></span>';
+      el.setAttribute('data-form', 0);
+      el.style.setProperty('--pos', -1);
+      floor.appendChild(el);
+      void el.offsetWidth; // start from outside the left edge
+      el.style.setProperty('--pos', 0);
+      crates.push({ el: el, pos: 0 });
+    };
+    var work = function () {
+      floor.classList.remove('moving');
+      machines.forEach(function (m) { m.classList.remove('done'); });
+      crates.forEach(function (c) { machines[c.pos].classList.add('busy'); stageEls[c.pos].classList.add('live'); });
+      setTimeout(function () {
+        crates.forEach(function (c) {
+          machines[c.pos].classList.add('done');
+          setForm(c, c.pos + 1);
+          c.el.classList.remove('pop');
+          void c.el.offsetWidth;
+          c.el.classList.add('pop');
+        });
+      }, WORK * 0.62);
+      setTimeout(move, WORK);
+    };
+    var move = function () {
+      machines.forEach(function (m, i) { m.classList.remove('busy'); stageEls[i].classList.remove('live'); });
+      if (!onScreen) { running = false; return; }
+      moves++;
+      crates = crates.filter(function (c) {
+        c.el.style.setProperty('--pos', ++c.pos);
+        if (c.pos < LAST) return true;
+        // Off the end of the line: shipped.
+        c.el.classList.add('out');
+        setTimeout(function () { c.el.remove(); count.textContent = ++shipped; }, MOVE);
+        return false;
+      });
+      if (moves % 2 === 0) enter();
+      floor.classList.add('moving');
+      setTimeout(work, MOVE);
+    };
+    new IntersectionObserver(function (entries) {
+      onScreen = entries[0].isIntersecting;
+      if (onScreen && !running) { running = true; work(); }
+    }, { threshold: 0.2 }).observe(floor);
   }
 
   // ---- Before/after sliders: the range input's value is where the old picture ends and the new one begins.
